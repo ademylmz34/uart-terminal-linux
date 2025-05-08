@@ -1,11 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <errno.h>
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "log_parser.h"

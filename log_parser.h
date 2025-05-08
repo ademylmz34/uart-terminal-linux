@@ -1,11 +1,9 @@
 #ifndef LOG_PARSER_H
 #define LOG_PARSER_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-
 #include "mainwindow.h"
+
 #define MAX_KEY_LEN 32
 
 class LogParser

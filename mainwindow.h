@@ -6,16 +6,8 @@
 #include <QSerialPortInfo>
 #include <QTimer>
 
-#include <QDir>
-#include <QDateTime>
-#include <QFile>
-#include <QTextStream>
-
 #include "log_parser.h"
 #include "creator.h"
-
-#include <stdio.h>
-#include <stdlib.h>
 
 #define RX_BUFFER_LEN 1024
 

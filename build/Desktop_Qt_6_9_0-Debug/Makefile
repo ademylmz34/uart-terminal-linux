@@ -1929,54 +1929,7 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../log_parser.h \
 		../../creator.h \
 		../../../Qt/6.9.0/gcc_64/include/QtCore/QString \
-		ui_mainwindow.h \
-		../../../Qt/6.9.0/gcc_64/include/QtCore/QVariant \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt/6.9.0/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt/6.9.0/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QHBoxLayout \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qpicture.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qtextdocument.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qpen.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QPlainTextEdit \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qplaintextedit.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qabstracttextdocumentlayout.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qtextlayout.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qglyphrun.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qrawfont.h \
-		../../../Qt/6.9.0/gcc_64/include/QtGui/qfontdatabase.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QVBoxLayout \
-		../../../Qt/6.9.0/gcc_64/include/QtWidgets/QWidget
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
