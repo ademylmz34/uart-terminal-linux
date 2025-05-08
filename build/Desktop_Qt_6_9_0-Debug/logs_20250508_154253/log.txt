@@ -1,0 +1,41 @@
+Log oluşturuldu: Thu May 8 15:42:53 2025
+>2025-05-08 15:40:25 L ?r   - sistemi yeniden baslat
+>2025-05-08 15:40:25 L ?l [0/1]  - loglama 0:durdur/1:baslat
+>2025-05-08 15:40:25 L 
+>2025-05-08 15:40:25 L ?tp [0/1] - pompa 0:durdur/1:baslat
+>2025-05-08 15:40:25 L ?te [0/1] - eksoz 0:durdur/1:baslat
+>2025-05-08 15:40:25 L ?to [0/1] - ozon 0:durdur/1:baslat
+>2025-05-08 15:40:25 L ?td <period> <duty cycle> - ozon ureteci pwm param. (ms)
+>2025-05-08 15:40:25 L 
+>2025-05-08 15:40:25 L ?sb <uart_no> <baud> - baud rate ayarla.
+>2025-05-08 15:40:25 L      - <uartno> 1, 2
+>2025-05-08 15:40:25 L         - uart 1: OMT CLI terminal
+>2025-05-08 15:40:25 L         - uart 2: OM106L terminal
+>2025-05-08 15:40:25 L      - <baud> 2400, 4800, 9600, 19200
+>2025-05-08 15:40:25 L ?sd <yymmddhhmmssw> - tarih ve saati ayarla
+>2025-05-08 15:40:25 L ?sc  - kalibrasyonu baslat
+>2025-05-08 15:40:25 L 
+>2025-05-08 15:40:25 L ?spd - kalibrasyon param. fabrika ayarlarina getir
+>2025-05-08 15:40:25 L ?spp <c0 ... c9> - kal noktalarini ayarla, sonuna 0 gir
+>2025-05-08 15:40:25 L ?spt <sicaklik> - kalibrasyon sicakligini ayarla
+>2025-05-08 15:40:25 L ?spc <sure> - kabin hava degisim suresini ayarla
+>2025-05-08 15:40:25 L ?sps <sure> - stabilizasyon suresini ayarla
+>2025-05-08 15:40:25 L ?spz <kons> - temiz hava konsantrasyonunu ayarla
+>2025-05-08 15:40:25 L ?spy <hass> - kalibrasyon hassasiyetini ayarla
+>2025-05-08 15:40:25 L ?spr <tekr> - kalibrasyon sayisini belirle
+>2025-05-08 15:40:25 L ?spe [0/1]  - sensor tipi, 0:O3-MiCS2614, 1:O3-FIS-SP3-61
+>2025-05-08 15:40:25 L ?spn <S0 S1 S2 S3 S4 S5 S6 S7 S8 S9> - sensor IDlerini girin
+>2025-05-08 15:40:25 L ?spw <sure> - yeni kalibrasyon bekleme suresini ayarla
+>2025-05-08 15:40:25 L ?spv <direnc_sayisi> - sensor kalibrasyon direnc sayisi
+>2025-05-08 15:40:25 L         - <direnc_sayisi> 1, 2, 3
+>2025-05-08 15:40:25 L              - 1: Tek Direnc - 33K ohm
+>2025-05-08 15:40:25 L              - 2: Iki Direnc - (33K + 47K) ohm
+>2025-05-08 15:40:25 L              - 3: Uc Direnc -  (33K + 47K + 120K) ohm
+>2025-05-08 15:40:25 L 
+>2025-05-08 15:40:25 L ?gt  - sicaklik, nem ve sensor kartlari durumunu oku
+>2025-05-08 15:40:25 L ?go  - O3 sensor degerlerini oku
+>2025-05-08 15:40:25 L ?gc  - kalibrasyon parametrelerini oku
+>2025-05-08 15:40:25 L ?gk  - kalibrasyon durumunu oku
+>2025-05-08 15:40:25 L ?ge  - hata durumunu oku
+>2025-05-08 15:40:25 L ?gd  - tarih ve saati oku
+>2025-05-08 15:40:25 L ?gu  - uart bilgileri

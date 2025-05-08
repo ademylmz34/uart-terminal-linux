@@ -1,0 +1,11 @@
+*.pro.user
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.qrc.depends
+*.moc
+*.qmlc
+build-*/
