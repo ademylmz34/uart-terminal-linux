@@ -3,6 +3,16 @@
 #include "log_parser.h"
 
 Creator file_folder_creator;
+int calibrationRepeatCount;
+int activeSensorCount;
+int kalPoint;
+int kalPointVal;
+uint16_t calibrationPoints[NUM_OF_CAL_POINTS];
+
+QString cal_repeat_count_command;
+QString active_sensor_count_command;
+QString cal_points_request_command;
+Request currentRequest;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow), serial(new QSerialPort(this))
 {
@@ -48,10 +58,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
             }
         )"
     );
-
+    cal_repeat_count_command = "?spr";
+    active_sensor_count_command = "?spa";
+    cal_points_request_command = "?spd";
     uart_buffer_index = 0;
     //create_files_folders();
-
+    currentRequest = NONE;
     file_folder_creator.create_files_folders();
     uart_log_parser = new LogParser();
     //create_folders();
@@ -73,6 +85,36 @@ int8_t MainWindow::uart_line_process(char* input)
         printf("Hatali satir atlandi.\n");
     }
     return 0;
+}
+
+void MainWindow::getDataFromMCU(QString command, Request _request)
+{
+    currentRequest = _request;
+    sendData();
+}
+
+void MainWindow::handleReceivedData()
+{
+    char ch;
+    while (serial->bytesAvailable())
+    {
+        serial->read(&ch, 1);
+
+        if (ch == '\n')
+        {
+            uart_rx_buffer[uart_buffer_index] = '\0';
+
+            line = QString::fromUtf8(uart_rx_buffer);
+            ui->plainTextEdit->appendPlainText(line);
+            //logStream << line << "\n";
+            uart_line_process(uart_rx_buffer);
+            uart_buffer_index = 0;
+            memset(uart_rx_buffer, 0, RX_BUFFER_LEN);
+        } else {
+            if (uart_buffer_index < RX_BUFFER_LEN - 1)
+                uart_rx_buffer[uart_buffer_index++] = ch;
+        }
+    }
 }
 
 void MainWindow::checkConnectionStatus()
@@ -106,9 +148,19 @@ void MainWindow::checkConnectionStatus()
            } else {
                ui->plainTextEdit->appendPlainText("Port var ama açılamıyor.");
            }
+           //getDataFromMCU(cal_repeat_count_command, CAL_REPEAT_COUNT);
+           getDataFromMCU(active_sensor_count_command, ACTIVE_SENSOR_COUNT);
+           //QTimer::singleShot(10000, this, &MainWindow::onTimeout);
+           //getDataFromMCU(cal_points_request_command, CAL_POINTS);
         }
     }
 }
+
+void MainWindow::onTimeout()
+{
+    getDataFromMCU(active_sensor_count_command, ACTIVE_SENSOR_COUNT);
+}
+
 
 void MainWindow::Log2LinePlainText(QString command)
 {
@@ -169,6 +221,22 @@ void MainWindow::readSerial()
 void MainWindow::sendData()
 {
     QString command = ui->lineEdit->text();
+    if (command.isEmpty())
+    {
+        switch (currentRequest) {
+            case CAL_REPEAT_COUNT:
+                command = cal_repeat_count_command;
+                break;
+            case ACTIVE_SENSOR_COUNT:
+                command = active_sensor_count_command;
+                break;
+            case CAL_POINTS:
+                command = cal_points_request_command;
+                break;
+            default:
+                break;
+        }
+    }
     Log2LinePlainText(command);
     serial->write(command.toUtf8());
     serial->write("\r\n");

@@ -161,6 +161,45 @@ int8_t LogParser::parse_pwm_data(const char* input, PWMData* pwm_data) {
     return 0;
 }
 
+int8_t LogParser::parseCalibrationData(const char* input)
+{
+    char buff[256];
+    if (input[0] != '>') {
+        return 0;
+    }
+    const char* p = input + 21;
+    qDebug() << p;
+    switch(currentRequest) {
+    case CAL_REPEAT_COUNT:
+        if (sscanf(p, "L Yeni kalibrasyon sayisi %d", &calibrationRepeatCount) == 1) {
+            qDebug() << "Calibration Repeat Count: " << QString::number(calibrationRepeatCount);
+            //ui->plainTextEdit->appendPlainText("Calibration Repeat Count: " + QString::number(calibrationRepeatCount));
+            return 1;
+        }
+        break;
+    case ACTIVE_SENSOR_COUNT:
+        if (sscanf(p, "L Aktif sensor sayisi %d", &activeSensorCount) == 1) {
+            qDebug() << "Active Sensor Count: " << QString::number(activeSensorCount);
+            //ui->plainTextEdit->appendPlainText("Active Sensor Count: " + QString::number(activeSensorCount));
+            return 1;
+        }
+        break;
+    case CAL_POINTS:
+        if (sscanf(p, "L KN%d %d", &kalPoint, &kalPointVal) == 2) {
+            //if (kalPointVal == 0) return;
+            calibrationPoints[kalPoint] = kalPointVal;
+            sprintf(buff, "L KN%d %d", kalPoint, kalPointVal);
+            qDebug() << buff;
+            return 1;
+        }
+        break;
+
+    default:
+        break;
+    }
+    return 0;
+}
+
 int8_t LogParser::parse_line(const char* input, Packet* packet) {
     if (input[0] != '>') {
         return -1;
@@ -199,6 +238,8 @@ int8_t LogParser::parse_line(const char* input, Packet* packet) {
 
     if (packet->command.type == CMD_L) {
         packet->data_str = strdup(p);
+        if (!parseCalibrationData(p))
+            //qDebug() << "Veri Alma işlemi başarısız";
         return 0;
     }
 

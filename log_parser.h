@@ -78,14 +78,15 @@ class LogParser
             PWMData pwm_data;
         } Packet;
 
-        int8_t parse_line(const char* input, Packet* packet);
-        int8_t process_packet(const Packet* packet);
-        void free_packet(Packet* packet);
+        int8_t parse_line(const char*, Packet*);
+        int8_t process_packet(const Packet*);
+        void free_packet(Packet*);
 
     private:
-        ParsedCommand parse_command_extended(const char* cmd);
-        int8_t parse_th_data(const char* input, THData* th_data);
-        int8_t parse_pwm_data(const char* input, PWMData* pwm_data);
-        void print_command_info(const Packet* packet);
+        ParsedCommand parse_command_extended(const char*);
+        int8_t parseCalibrationData(const char*);
+        int8_t parse_th_data(const char*, THData*);
+        int8_t parse_pwm_data(const char*, PWMData*);
+        void print_command_info(const Packet*);
 };
 #endif // LOG_PARSER_H
