@@ -39,12 +39,12 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
         "MainWindow",
-        "on_btnClear_clicked",
+        "onBtnClearClicked",
         ""
     };
 
     QtMocHelpers::UintData qt_methods {
-        // Slot 'on_btnClear_clicked'
+        // Slot 'onBtnClearClicked'
         QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
@@ -69,7 +69,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     auto *_t = static_cast<MainWindow *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->on_btnClear_clicked(); break;
+        case 0: _t->onBtnClearClicked(); break;
         default: ;
         }
     }

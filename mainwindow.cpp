@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     active_sensor_count_data_received = 0;
     cal_points_data_received = 0;
 
-    dataReceivedTime = 10;
+    data_received_time = 10;
 
     uart_buffer_index = 0;
     //createFilesFolders();
@@ -89,7 +89,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-int8_t MainWindow::uart_line_process(char* input)
+int8_t MainWindow::uartLineProcess(char* input)
 {
     if (uart_log_parser->parseLine(input, &packet) == 0) {
         uart_log_parser->processPacket(&packet);
@@ -104,33 +104,33 @@ void MainWindow::getDataFromMCU()
 {
     switch (current_request) {
         case CAL_REPEAT_COUNT:
-            if (dataReceivedTime == 0) {
+            if (data_received_time == 0) {
                 qDebug() << "Calibration repeat count data couldn't get received";
                 current_request = ACTIVE_SENSOR_COUNT;
             } else if (cal_repeat_count_data_received) {
                 qDebug() << "Calibration repeat count data get received";
                 current_request = ACTIVE_SENSOR_COUNT;
-                dataReceivedTime = 10;
+                data_received_time = 10;
             } else {
                 sendData();
             }
             break;
 
         case ACTIVE_SENSOR_COUNT:
-            if (dataReceivedTime == 0) {
+            if (data_received_time == 0) {
                 qDebug() << "Active sensor count data couldn't get received";
                 current_request = CAL_POINTS;
             } else if (active_sensor_count_data_received) {
                 qDebug() << "Active sensor count data get received";
                 current_request = CAL_POINTS;
-                dataReceivedTime = 10;
+                data_received_time = 10;
             } else {
                 sendData();
             }
             break;
 
         case CAL_POINTS:
-            if (dataReceivedTime == 0) {
+            if (data_received_time == 0) {
                 qDebug() << "Calibration points data couldn't get received";
                 current_request = NONE;
             } else if (cal_points_data_received) {
@@ -148,10 +148,10 @@ void MainWindow::getDataFromMCU()
 
 void MainWindow::checkTime()
 {
-    if (dataReceivedTime && current_request != NONE) {
-        dataReceivedTime--;
-    } else if (dataReceivedTime == 0) {
-        dataReceivedTime = 10;
+    if (data_received_time && current_request != NONE) {
+        data_received_time--;
+    } else if (data_received_time == 0) {
+        data_received_time = 10;
     }
     if (current_request != NONE) {
         getDataFromMCU();
@@ -244,7 +244,7 @@ void MainWindow::readSerial()
 
             QString line = QString::fromUtf8(uart_rx_buffer);
             ui->plainTextEdit->appendPlainText(line);
-            uart_line_process(uart_rx_buffer);
+            uartLineProcess(uart_rx_buffer);
             uart_buffer_index = 0;
             memset(uart_rx_buffer, 0, RX_BUFFER_LEN);
         } else {

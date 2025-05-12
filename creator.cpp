@@ -102,7 +102,7 @@ int8_t Creator::createFilesFolders() {
 
         QVector<QFile*> calpoints;
         QVector<QTextStream*> calpointstreams;
-        getcalibration_pointsArraySize();
+        getCalibrationPointsArraySize();
         // Kalibrasyon klasörü
         kal_folder = sub_folder + "/Kalibrasyon_Noktalari";
         if (!dir.mkpath(kal_folder)) {
