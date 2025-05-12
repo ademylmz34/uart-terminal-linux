@@ -3,21 +3,21 @@
 #include "log_parser.h"
 
 Creator file_folder_creator;
-int calibrationRepeatCount;
-int activeSensorCount;
-int kalPoint;
-int kalPointVal;
+int calibration_repeat_count;
+int active_sensor_count;
+int kal_point;
+int kal_point_val;
 
-uint8_t calRepeatCountDataReceived;
-uint8_t activeSensorCountDataReceived;
-uint8_t calPointsDataReceived;
+uint8_t cal_repeat_count_data_received;
+uint8_t active_sensor_count_data_received;
+uint8_t cal_points_data_received;
 
-uint16_t calibrationPoints[NUM_OF_CAL_POINTS];
+uint16_t calibration_points[NUM_OF_CAL_POINTS];
 
 QString cal_repeat_count_command;
 QString active_sensor_count_command;
 QString cal_points_request_command;
-Request currentRequest;
+Request current_request;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow), serial(new QSerialPort(this))
 {
@@ -43,13 +43,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::sendData);
     connect(qApp, &QCoreApplication::aboutToQuit, this, &MainWindow::onAppExit);
 
-    selectedPortName = ui->cmbPort->currentText();
+    selected_port_name = ui->cmbPort->currentText();
 
-    connectionCheckTimer = new QTimer(this);
-    timeCheck = new QTimer(this);
-    connect(timeCheck, &QTimer::timeout, this, &MainWindow::checkTime);
-    connect(connectionCheckTimer, &QTimer::timeout, this, &MainWindow::checkConnectionStatus);
-    connectionCheckTimer->start(2000); // Her 2 saniyede bir kontrol et
+    connection_check_timer = new QTimer(this);
+    time_check = new QTimer(this);
+    connect(time_check, &QTimer::timeout, this, &MainWindow::checkTime);
+    connect(connection_check_timer, &QTimer::timeout, this, &MainWindow::checkConnectionStatus);
+    connection_check_timer->start(2000); // Her 2 saniyede bir kontrol et
 
     ui->btnSend->setStyleSheet(
         R"(
@@ -70,15 +70,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     active_sensor_count_command = "?gpa";
     cal_points_request_command = "?gpd";
 
-    calRepeatCountDataReceived = 0;
-    activeSensorCountDataReceived = 0;
-    calPointsDataReceived = 0;
+    cal_repeat_count_data_received = 0;
+    active_sensor_count_data_received = 0;
+    cal_points_data_received = 0;
 
     dataReceivedTime = 10;
 
     uart_buffer_index = 0;
-    //create_files_folders();
-    currentRequest = CAL_REPEAT_COUNT;
+    //createFilesFolders();
+    current_request = CAL_REPEAT_COUNT;
     uart_log_parser = new LogParser();
     //create_folders();
 }
@@ -91,9 +91,9 @@ MainWindow::~MainWindow()
 
 int8_t MainWindow::uart_line_process(char* input)
 {
-    if (uart_log_parser->parse_line(input, &packet) == 0) {
-        uart_log_parser->process_packet(&packet);
-        uart_log_parser->free_packet(&packet);
+    if (uart_log_parser->parseLine(input, &packet) == 0) {
+        uart_log_parser->processPacket(&packet);
+        uart_log_parser->freePacket(&packet);
     } else {
         printf("Hatali satir atlandi.\n");
     }
@@ -102,14 +102,14 @@ int8_t MainWindow::uart_line_process(char* input)
 
 void MainWindow::getDataFromMCU()
 {
-    switch (currentRequest) {
+    switch (current_request) {
         case CAL_REPEAT_COUNT:
             if (dataReceivedTime == 0) {
                 qDebug() << "Calibration repeat count data couldn't get received";
-                currentRequest = ACTIVE_SENSOR_COUNT;
-            } else if (calRepeatCountDataReceived) {
+                current_request = ACTIVE_SENSOR_COUNT;
+            } else if (cal_repeat_count_data_received) {
                 qDebug() << "Calibration repeat count data get received";
-                currentRequest = ACTIVE_SENSOR_COUNT;
+                current_request = ACTIVE_SENSOR_COUNT;
                 dataReceivedTime = 10;
             } else {
                 sendData();
@@ -119,10 +119,10 @@ void MainWindow::getDataFromMCU()
         case ACTIVE_SENSOR_COUNT:
             if (dataReceivedTime == 0) {
                 qDebug() << "Active sensor count data couldn't get received";
-                currentRequest = CAL_POINTS;
-            } else if (activeSensorCountDataReceived) {
+                current_request = CAL_POINTS;
+            } else if (active_sensor_count_data_received) {
                 qDebug() << "Active sensor count data get received";
-                currentRequest = CAL_POINTS;
+                current_request = CAL_POINTS;
                 dataReceivedTime = 10;
             } else {
                 sendData();
@@ -132,10 +132,10 @@ void MainWindow::getDataFromMCU()
         case CAL_POINTS:
             if (dataReceivedTime == 0) {
                 qDebug() << "Calibration points data couldn't get received";
-                currentRequest = NONE;
-            } else if (calPointsDataReceived) {
+                current_request = NONE;
+            } else if (cal_points_data_received) {
                 qDebug() << "Calibration points data get received";
-                currentRequest = NONE;
+                current_request = NONE;
             } else {
                 sendData();
             }
@@ -148,12 +148,12 @@ void MainWindow::getDataFromMCU()
 
 void MainWindow::checkTime()
 {
-    if (dataReceivedTime && currentRequest != NONE) {
+    if (dataReceivedTime && current_request != NONE) {
         dataReceivedTime--;
     } else if (dataReceivedTime == 0) {
         dataReceivedTime = 10;
     }
-    if (currentRequest != NONE) {
+    if (current_request != NONE) {
         getDataFromMCU();
     }
 }
@@ -163,7 +163,7 @@ void MainWindow::checkConnectionStatus()
     bool portStillAvailable = false;
     foreach (const QSerialPortInfo & info, QSerialPortInfo::availablePorts())
     {
-        if (info.portName() == selectedPortName)
+        if (info.portName() == selected_port_name)
         {
             portStillAvailable = true;
             break;
@@ -175,13 +175,13 @@ void MainWindow::checkConnectionStatus()
         if (serial->isOpen())
         {
             serial->close();
-            ui->plainTextEdit->appendPlainText("Bağlantı koptu: " + selectedPortName);
+            ui->plainTextEdit->appendPlainText("Bağlantı koptu: " + selected_port_name);
         }
     } else {
         if (!serial->isOpen())
         {
            // Otomatik yeniden bağlanma istenirse:
-           serial->setPortName(selectedPortName);
+           serial->setPortName(selected_port_name);
            serial->setBaudRate(ui->cmbBaudRate->currentText().toInt());
            if (serial->open(QIODevice::ReadWrite))
            {
@@ -258,13 +258,13 @@ void MainWindow::sendData()
 {
     QString command = ui->lineEdit->text();
     if (command == "create-f") {
-        file_folder_creator.create_files_folders();
+        file_folder_creator.createFilesFolders();
     } else if (command == "get-data") {
-        timeCheck->start(1000);
+        time_check->start(1000);
     } else {
         if (command.isEmpty())
         {
-            switch (currentRequest) {
+            switch (current_request) {
                 case CAL_REPEAT_COUNT:
                     command = cal_repeat_count_command;
                     break;
@@ -286,7 +286,7 @@ void MainWindow::sendData()
     ui->lineEdit->clear();
 }
 
-void MainWindow::on_btnClear_clicked()
+void MainWindow::onBtnClearClicked()
 {
     ui->plainTextEdit->clear();
 }

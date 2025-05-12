@@ -7,15 +7,13 @@ LogParser::LogParser()
 {
     repeat_calibration_index = 0;
     calibration_completed = 0;
-    //printf("sinif cagirildi\n");
 }
 
 LogParser::~LogParser()
 {
-    //printf("sinif yok edildi\n");
 }
 
-LogParser::ParsedCommand LogParser::parse_command_extended(const char* cmd) {
+LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     ParsedCommand result = { .type = CMD_UNKNOWN, .th_no = -1, .kn_no = -1, .s_no = -1, .or_no = -1 };
 
     if (strcmp(cmd, "R1") == 0) result.type = CMD_R1;
@@ -128,8 +126,8 @@ LogParser::ParsedCommand LogParser::parse_command_extended(const char* cmd) {
     else if (strncmp(cmd, "KB", 2) == 0) {
         int kt_no;
         if (sscanf(cmd, "KB%d", &kt_no) == 1) {
-            repeat_calibration_index = (calibrationRepeatCount - kt_no) + 1;
-            if (repeat_calibration_index < calibrationRepeatCount)
+            repeat_calibration_index = (calibration_repeat_count - kt_no) + 1;
+            if (repeat_calibration_index < calibration_repeat_count)
                 calibration_completed = 0;
             else
                 calibration_completed = 1;
@@ -138,7 +136,7 @@ LogParser::ParsedCommand LogParser::parse_command_extended(const char* cmd) {
     return result;
 }
 
-int8_t LogParser::parse_th_data(const char* input, THData* th_data) {
+int8_t LogParser::parseThData(const char* input, THData* th_data) {
     float temp_value = 0.0f;
     char unit[8];
     char humidity_str[16];
@@ -162,7 +160,7 @@ int8_t LogParser::parse_th_data(const char* input, THData* th_data) {
     return 0;
 }
 
-int8_t LogParser::parse_pwm_data(const char* input, PWMData* pwm_data) {
+int8_t LogParser::parsePwmData(const char* input, PWMData* pwm_data) {
     int pwm_duty, pwm_period;
     if (sscanf(input, "%d/%dmsec", &pwm_duty, &pwm_period) == 2) {
         pwm_data->duty = pwm_duty;
@@ -178,37 +176,35 @@ int8_t LogParser::parseCalibrationData(const char* input)
 {
     char buff[256];
 
-    switch(currentRequest) {
+    switch(current_request) {
         case CAL_REPEAT_COUNT:
-            if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibrationRepeatCount) == 1) {
-                qDebug() << "Calibration Repeat Count: " << QString::number(calibrationRepeatCount);
-                calRepeatCountDataReceived = 1;
-                //ui->plainTextEdit->appendPlainText("Calibration Repeat Count: " + QString::number(calibrationRepeatCount));
+            if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
+                qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
+                cal_repeat_count_data_received = 1;
                 return 1;
             }
             break;
         case ACTIVE_SENSOR_COUNT:
-            if (sscanf(input, "Aktif sensor sayisi %d", &activeSensorCount) == 1) {
-                qDebug() << "Active Sensor Count: " << QString::number(activeSensorCount);
-                activeSensorCountDataReceived = 1;
-                //ui->plainTextEdit->appendPlainText("Active Sensor Count: " + QString::number(activeSensorCount));
+            if (sscanf(input, "Aktif sensor sayisi %d", &active_sensor_count) == 1) {
+                qDebug() << "Active Sensor Count: " << QString::number(active_sensor_count);
+                active_sensor_count_data_received = 1;
                 return 1;
             }
             break;
         case CAL_POINTS:
-            if (sscanf(input, "KN%d %d", &kalPoint, &kalPointVal) == 2) {
-                //if (kalPointVal == 0) return;
-                calibrationPoints[kalPoint] = kalPointVal;
-                sprintf(buff, "L KN%d %d", kalPoint, kalPointVal);
+            if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2) {
+                //if (kal_point_val == 0) return;
+                calibration_points[kal_point] = kal_point_val;
+                sprintf(buff, "L KN%d %d", kal_point, kal_point_val);
                 qDebug() << buff;
-                calPointsDataReceived = 1;
+                cal_points_data_received = 1;
                 return 1;
             }
             break;
 
         default:
-            if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibrationRepeatCount) == 1) {
-                qDebug() << "Calibration Repeat Count: " << QString::number(calibrationRepeatCount);
+            if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
+                qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
                 return 1;
             }
             break;
@@ -216,7 +212,7 @@ int8_t LogParser::parseCalibrationData(const char* input)
     return 0;
 }
 
-int8_t LogParser::parse_line(const char* input, Packet* packet) {
+int8_t LogParser::parseLine(const char* input, Packet* packet) {
     if (input[0] != '>') {
         return -1;
     }
@@ -231,7 +227,7 @@ int8_t LogParser::parse_line(const char* input, Packet* packet) {
     }
     command[i] = '\0';
 
-    packet->command = parse_command_extended(command);
+    packet->command = parseCommandExtended(command);
     packet->command_str = strdup(command);
 
     if (*p == ' ') p++;
@@ -246,7 +242,7 @@ int8_t LogParser::parse_line(const char* input, Packet* packet) {
     }
 
     if (packet->command.type == CMD_TH) {
-        if (parse_th_data(p, &packet->th_data) == 0) {
+        if (parseThData(p, &packet->th_data) == 0) {
             packet->is_th_data = 1;
             return 0;
         }
@@ -265,7 +261,7 @@ int8_t LogParser::parse_line(const char* input, Packet* packet) {
     }
 
     if (packet->command.type == CMD_KN_PWM) {
-        if (parse_pwm_data(p, &packet->pwm_data) == 0) {
+        if (parsePwmData(p, &packet->pwm_data) == 0) {
             packet->is_pwm_data = 1;
             return 0;
         } else {
@@ -316,7 +312,7 @@ int8_t LogParser::parse_line(const char* input, Packet* packet) {
     return 0;
 }
 
-void LogParser::print_command_info(const Packet* packet) {
+void LogParser::printCommandInfo(const Packet* packet) {
     printf("Komut: %s\n", packet->command_str);
     printf("Komut Tipi: %d\n", packet->command.type);
     printf("KN No: %d\n", packet->command.kn_no); // kalibrasyon noktası no
@@ -325,7 +321,7 @@ void LogParser::print_command_info(const Packet* packet) {
     printf("******************************\n");
 }
 
-int8_t LogParser::process_packet(const Packet* packet) {
+int8_t LogParser::processPacket(const Packet* packet) {
     int sensor_no;
     char buff[256];
     char str[50];
@@ -341,20 +337,18 @@ int8_t LogParser::process_packet(const Packet* packet) {
             if (sscanf(packet->data[i].key, "s%d", &sensor_no) == 1) {
                 if (sensor_no == 0) continue;
                 sprintf(buff, ">%s %s %s %f\n", packet->date, packet->time, packet->command_str, packet->data[i].value);
-                *(file_folder_creator.sensorStreams[repeat_calibration_index][sensor_no - 1]) << buff;
-                //fprintf(sensor_files[sensor_no - 1], ">%s %s %s %f\n", packet->date, packet->time, packet->command_str, packet->data[i].value);
+                *(file_folder_creator.sensor_streams[repeat_calibration_index][sensor_no - 1]) << buff;
             }
         }
         break;
     case CMD_L:
     case CMD_D:
         sprintf(buff, ">%s %s %s %s\n", packet->date, packet->time, packet->command_str, packet->data_str);
-        file_folder_creator.logStream << buff;
+        file_folder_creator.log_stream << buff;
         break;
     case CMD_TH:
         sprintf(buff, ">%s %s %s %.2f %s %.1f%%\n", packet->date, packet->time, packet->command_str, packet->th_data.temperature, packet->th_data.temp_unit, packet->th_data.humidity);
-        *(file_folder_creator.sensorStreams[repeat_calibration_index][packet->command.s_no - 1]) << buff;
-        //fprintf(sensor_files[packet->command.s_no - 1], ">%s %s %s %.2f %s %.1f%%\n", packet->date, packet->time, packet->command_str, packet->th_data.temperature, packet->th_data.temp_unit, packet->th_data.humidity);
+        *(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff;
         break;
 
     case CMD_OM:
@@ -371,14 +365,11 @@ int8_t LogParser::process_packet(const Packet* packet) {
             }
         }
         if (packet->command.type == CMD_KN_S) {
-            *(file_folder_creator.sensorStreams[repeat_calibration_index][packet->command.s_no - 1]) << buff << "\n";
-            *(file_folder_creator.kalStreams[repeat_calibration_index][packet->command.kn_no]) << buff << "\n";
-            //fprintf(sensor_files[packet->command.s_no - 1], "%s\n", buff);
-            //fprintf(kal_files[packet->command.kn_no], "%s\n", buff);
+            *(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff << "\n";
+            *(file_folder_creator.kal_streams[repeat_calibration_index][packet->command.kn_no]) << buff << "\n";
         }
         else if (packet->command.type == CMD_OM) {
-            *(file_folder_creator.om106LogStreams[0]) << buff << "\n";
-            //fprintf(om106log, "%s\n", buff);
+            *(file_folder_creator.om106_log_streams[0]) << buff << "\n";
         }
         break;
 
@@ -392,14 +383,12 @@ int8_t LogParser::process_packet(const Packet* packet) {
     case CMD_KN_PV:
         if (packet->is_pwm_data) {
             sprintf(buff, ">%s %s %s %d/%dmsec\n", packet->date, packet->time, packet->command_str, packet->pwm_data.duty, packet->pwm_data.period);
-            //fprintf(kal_files[packet->command.kn_no], ">%s %s %s %d/%dmsec\n", packet->date, packet->time, packet->command_str, packet->pwm_data.duty, packet->pwm_data.period);
         } else {
             if (sscanf(packet->data[0].key, "s%d", &sensor_no) == 1) {
                 sprintf(buff, ">%s %s %s %.3f\n", packet->date, packet->time, packet->command_str, packet->data[0].value);
-                //fprintf(kal_files[packet->command.kn_no], ">%s %s %s %.3f\n", packet->date, packet->time, packet->command_str, packet->data[0].value);
             }
         }
-        *(file_folder_creator.kalStreams[repeat_calibration_index][packet->command.kn_no]) << buff;
+        *(file_folder_creator.kal_streams[repeat_calibration_index][packet->command.kn_no]) << buff;
         break;
 
     case CMD_KB_S_R:
@@ -420,9 +409,7 @@ int8_t LogParser::process_packet(const Packet* packet) {
             }
             strcat(buff, str);
         }
-        //printf("buff: %s\n", buff);
-        *(file_folder_creator.sensorStreams[repeat_calibration_index][packet->command.s_no - 1]) << buff << "\n";
-        //fprintf(sensor_files[packet->command.s_no - 1], "%s\n", buff);
+        *(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff << "\n";
         break;
     default:
         break;
@@ -430,7 +417,7 @@ int8_t LogParser::process_packet(const Packet* packet) {
     return 1;
 }
 
-void LogParser::free_packet(Packet* packet) {
+void LogParser::freePacket(Packet* packet) {
     if (packet->data) {
         free(packet->data);
         packet->data = NULL;

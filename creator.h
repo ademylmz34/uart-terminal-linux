@@ -14,47 +14,31 @@ class Creator {
         Creator();
         ~Creator();
 
-        QVector<QVector<QFile*>> sensorFiles;        // sensorFiles[tekrar][dosya]
-        QVector<QVector<QTextStream*>> sensorStreams;
+        QVector<QVector<QFile*>> sensor_files;        // sensor_files[tekrar][dosya]
+        QVector<QVector<QTextStream*>> sensor_streams;
 
-        QVector<QFile*> om106LogFiles;               // her tekrarda 1 tane
-        QVector<QTextStream*> om106LogStreams;
+        QVector<QFile*> om106_log_files;               // her tekrarda 1 tane
+        QVector<QTextStream*> om106_log_streams;
 
-        QVector<QVector<QFile*>> kalFiles;        // kalFiles[tekrar][dosya]
-        QVector<QVector<QTextStream*>> kalStreams;
+        QVector<QVector<QFile*>> kal_files;        // kal_files[tekrar][dosya]
+        QVector<QVector<QTextStream*>> kal_streams;
 
-        QFile logFile;
-        QTextStream logStream;
+        QFile log_file;
+        QTextStream log_stream;
 
-        /*QVector<QFile*> sensorFiles;
-        QVector<QFile*> kalFiles;
-        QVector<QFile*> om106LogFiles;
-        //QFile om106LogFile;
-        QFile logFile;
-
-        QVector<QTextStream*> sensorStreams;
-        QVector<QTextStream*> kalStreams;
-        QVector<QTextStream*> om106LogStreams;
-        QTextStream logStream;
-        //QTextStream om106LogStream;*/
-
-        uint8_t tekrar_sayisi;
-        uint8_t sensor_sayisi;
-        uint8_t kalibrasyon_noktasi_sayisi;
-
-        QString timestamp;
-        QString rootFolder;
-        QString subFolder;
-        QString kalFolder;
+        QString time_stamp;
+        QString root_folder;
+        QString sub_folder;
+        QString kal_folder;
         QDir dir;
 
-        QString logFilePath;
-        QString om106LogPath;
+        QString log_file_path;
+        QString om106_log_path;
 
-        uint8_t calPointArraySize;
+        uint8_t cal_point_array_size;
 
         int8_t getCalibrationPointsArraySize();
-        int8_t create_files_folders();
+        int8_t createFilesFolders();
 };
 
 #endif // CREATOR_H
