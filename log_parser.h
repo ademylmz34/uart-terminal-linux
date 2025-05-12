@@ -20,6 +20,7 @@ class LogParser
             CMD_TH,
             CMD_OM,
             CMD_L,
+            CMD_D,
             CMD_KN_S,
             CMD_KN_O3,
             CMD_KN_T,
@@ -83,6 +84,8 @@ class LogParser
         void free_packet(Packet*);
 
     private:
+        int8_t repeat_calibration_index;
+        int8_t calibration_completed;
         ParsedCommand parse_command_extended(const char*);
         int8_t parseCalibrationData(const char*);
         int8_t parse_th_data(const char*, THData*);

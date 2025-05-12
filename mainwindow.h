@@ -24,6 +24,10 @@ extern int calibrationRepeatCount;
 extern int activeSensorCount;
 extern int kalPoint;
 extern int kalPointVal;
+extern uint8_t calRepeatCountDataReceived;
+extern uint8_t activeSensorCountDataReceived;
+extern uint8_t calPointsDataReceived;
+
 extern uint16_t calibrationPoints[NUM_OF_CAL_POINTS];
 extern QString cal_repeat_count_command;
 extern QString active_sensor_count_command;
@@ -51,6 +55,7 @@ private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
     QTimer *connectionCheckTimer;
+    QTimer *timeCheck;
     QString selectedPortName;
     QString line;
 
@@ -59,12 +64,14 @@ private:
 
     char uart_rx_buffer[RX_BUFFER_LEN];
     uint16_t uart_buffer_index;
+    uint8_t dataReceivedTime;
 
     int8_t uart_line_process(char*);
     void onTimeout();
-    void getDataFromMCU(QString, Request);
+    void getDataFromMCU();
     void handleReceivedData();
     void onAppExit();
+    void checkTime();
     void checkConnectionStatus();
     void Log2LinePlainText(QString);
     void connectSerial();

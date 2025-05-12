@@ -7,6 +7,11 @@ int calibrationRepeatCount;
 int activeSensorCount;
 int kalPoint;
 int kalPointVal;
+
+uint8_t calRepeatCountDataReceived;
+uint8_t activeSensorCountDataReceived;
+uint8_t calPointsDataReceived;
+
 uint16_t calibrationPoints[NUM_OF_CAL_POINTS];
 
 QString cal_repeat_count_command;
@@ -41,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     selectedPortName = ui->cmbPort->currentText();
 
     connectionCheckTimer = new QTimer(this);
+    timeCheck = new QTimer(this);
+    connect(timeCheck, &QTimer::timeout, this, &MainWindow::checkTime);
     connect(connectionCheckTimer, &QTimer::timeout, this, &MainWindow::checkConnectionStatus);
     connectionCheckTimer->start(2000); // Her 2 saniyede bir kontrol et
 
@@ -58,13 +65,20 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
             }
         )"
     );
-    cal_repeat_count_command = "?spr";
-    active_sensor_count_command = "?spa";
-    cal_points_request_command = "?spd";
+
+    cal_repeat_count_command = "?gpr";
+    active_sensor_count_command = "?gpa";
+    cal_points_request_command = "?gpd";
+
+    calRepeatCountDataReceived = 0;
+    activeSensorCountDataReceived = 0;
+    calPointsDataReceived = 0;
+
+    dataReceivedTime = 10;
+
     uart_buffer_index = 0;
     //create_files_folders();
-    currentRequest = NONE;
-    file_folder_creator.create_files_folders();
+    currentRequest = CAL_REPEAT_COUNT;
     uart_log_parser = new LogParser();
     //create_folders();
 }
@@ -77,7 +91,6 @@ MainWindow::~MainWindow()
 
 int8_t MainWindow::uart_line_process(char* input)
 {
-    file_folder_creator.logStream << input << "\n";
     if (uart_log_parser->parse_line(input, &packet) == 0) {
         uart_log_parser->process_packet(&packet);
         uart_log_parser->free_packet(&packet);
@@ -87,33 +100,61 @@ int8_t MainWindow::uart_line_process(char* input)
     return 0;
 }
 
-void MainWindow::getDataFromMCU(QString command, Request _request)
+void MainWindow::getDataFromMCU()
 {
-    currentRequest = _request;
-    sendData();
+    switch (currentRequest) {
+        case CAL_REPEAT_COUNT:
+            if (dataReceivedTime == 0) {
+                qDebug() << "Calibration repeat count data couldn't get received";
+                currentRequest = ACTIVE_SENSOR_COUNT;
+            } else if (calRepeatCountDataReceived) {
+                qDebug() << "Calibration repeat count data get received";
+                currentRequest = ACTIVE_SENSOR_COUNT;
+                dataReceivedTime = 10;
+            } else {
+                sendData();
+            }
+            break;
+
+        case ACTIVE_SENSOR_COUNT:
+            if (dataReceivedTime == 0) {
+                qDebug() << "Active sensor count data couldn't get received";
+                currentRequest = CAL_POINTS;
+            } else if (activeSensorCountDataReceived) {
+                qDebug() << "Active sensor count data get received";
+                currentRequest = CAL_POINTS;
+                dataReceivedTime = 10;
+            } else {
+                sendData();
+            }
+            break;
+
+        case CAL_POINTS:
+            if (dataReceivedTime == 0) {
+                qDebug() << "Calibration points data couldn't get received";
+                currentRequest = NONE;
+            } else if (calPointsDataReceived) {
+                qDebug() << "Calibration points data get received";
+                currentRequest = NONE;
+            } else {
+                sendData();
+            }
+            break;
+
+        default:
+            break;
+    }
 }
 
-void MainWindow::handleReceivedData()
+void MainWindow::checkTime()
 {
-    char ch;
-    while (serial->bytesAvailable())
-    {
-        serial->read(&ch, 1);
-
-        if (ch == '\n')
-        {
-            uart_rx_buffer[uart_buffer_index] = '\0';
-
-            line = QString::fromUtf8(uart_rx_buffer);
-            ui->plainTextEdit->appendPlainText(line);
-            //logStream << line << "\n";
-            uart_line_process(uart_rx_buffer);
-            uart_buffer_index = 0;
-            memset(uart_rx_buffer, 0, RX_BUFFER_LEN);
-        } else {
-            if (uart_buffer_index < RX_BUFFER_LEN - 1)
-                uart_rx_buffer[uart_buffer_index++] = ch;
-        }
+    if (dataReceivedTime && currentRequest != NONE) {
+        dataReceivedTime--;
+    } else if (dataReceivedTime == 0) {
+        dataReceivedTime = 10;
+    }
+    if (currentRequest != NONE) {
+        getDataFromMCU();
     }
 }
 
@@ -128,8 +169,8 @@ void MainWindow::checkConnectionStatus()
             break;
         }
     }
-
     if (!portStillAvailable)
+
     {
         if (serial->isOpen())
         {
@@ -148,17 +189,13 @@ void MainWindow::checkConnectionStatus()
            } else {
                ui->plainTextEdit->appendPlainText("Port var ama açılamıyor.");
            }
-           //getDataFromMCU(cal_repeat_count_command, CAL_REPEAT_COUNT);
-           getDataFromMCU(active_sensor_count_command, ACTIVE_SENSOR_COUNT);
-           //QTimer::singleShot(10000, this, &MainWindow::onTimeout);
-           //getDataFromMCU(cal_points_request_command, CAL_POINTS);
         }
     }
 }
 
 void MainWindow::onTimeout()
 {
-    getDataFromMCU(active_sensor_count_command, ACTIVE_SENSOR_COUNT);
+    getDataFromMCU();
 }
 
 
@@ -207,7 +244,6 @@ void MainWindow::readSerial()
 
             QString line = QString::fromUtf8(uart_rx_buffer);
             ui->plainTextEdit->appendPlainText(line);
-            //logStream << line << "\n";
             uart_line_process(uart_rx_buffer);
             uart_buffer_index = 0;
             memset(uart_rx_buffer, 0, RX_BUFFER_LEN);
@@ -221,22 +257,29 @@ void MainWindow::readSerial()
 void MainWindow::sendData()
 {
     QString command = ui->lineEdit->text();
-    if (command.isEmpty())
-    {
-        switch (currentRequest) {
-            case CAL_REPEAT_COUNT:
-                command = cal_repeat_count_command;
-                break;
-            case ACTIVE_SENSOR_COUNT:
-                command = active_sensor_count_command;
-                break;
-            case CAL_POINTS:
-                command = cal_points_request_command;
-                break;
-            default:
-                break;
+    if (command == "create-f") {
+        file_folder_creator.create_files_folders();
+    } else if (command == "get-data") {
+        timeCheck->start(1000);
+    } else {
+        if (command.isEmpty())
+        {
+            switch (currentRequest) {
+                case CAL_REPEAT_COUNT:
+                    command = cal_repeat_count_command;
+                    break;
+                case ACTIVE_SENSOR_COUNT:
+                    command = active_sensor_count_command;
+                    break;
+                case CAL_POINTS:
+                    command = cal_points_request_command;
+                    break;
+                default:
+                    break;
+            }
         }
     }
+
     Log2LinePlainText(command);
     serial->write(command.toUtf8());
     serial->write("\r\n");

@@ -14,15 +14,29 @@ class Creator {
         Creator();
         ~Creator();
 
-        QVector<QFile*> sensorFiles;
+        QVector<QVector<QFile*>> sensorFiles;        // sensorFiles[tekrar][dosya]
+        QVector<QVector<QTextStream*>> sensorStreams;
+
+        QVector<QFile*> om106LogFiles;               // her tekrarda 1 tane
+        QVector<QTextStream*> om106LogStreams;
+
+        QVector<QVector<QFile*>> kalFiles;        // kalFiles[tekrar][dosya]
+        QVector<QVector<QTextStream*>> kalStreams;
+
+        QFile logFile;
+        QTextStream logStream;
+
+        /*QVector<QFile*> sensorFiles;
         QVector<QFile*> kalFiles;
-        QFile om106LogFile;
+        QVector<QFile*> om106LogFiles;
+        //QFile om106LogFile;
         QFile logFile;
 
         QVector<QTextStream*> sensorStreams;
         QVector<QTextStream*> kalStreams;
+        QVector<QTextStream*> om106LogStreams;
         QTextStream logStream;
-        QTextStream om106LogStream;
+        //QTextStream om106LogStream;*/
 
         uint8_t tekrar_sayisi;
         uint8_t sensor_sayisi;
@@ -37,6 +51,9 @@ class Creator {
         QString logFilePath;
         QString om106LogPath;
 
+        uint8_t calPointArraySize;
+
+        int8_t getCalibrationPointsArraySize();
         int8_t create_files_folders();
 };
 
