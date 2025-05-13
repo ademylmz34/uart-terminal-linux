@@ -12,6 +12,7 @@
 #define RX_BUFFER_LEN 1024
 #define NUM_OF_CAL_POINTS 10
 #define NUM_OF_OM106L_DEVICE 2
+#define NUM_OF_SENSOR_BOARD 15
 
 enum Request {
     CAL_REPEAT_COUNT,

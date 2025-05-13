@@ -256,14 +256,15 @@ uint8_t MainWindow::parseLineEditInput(const QString& input, QStringList& output
     parts.removeFirst();
 
     // 15 değer var mı?
-    if (parts.size() != active_sensor_count) {
-        qDebug() << "Geçersiz giriş: aktif sensör kader adet sXXXX formatında değer yok.";
+    if (parts.size() != NUM_OF_SENSOR_BOARD) {
+        qDebug() << "Geçersiz giriş: 15 adet sXXXX formatında değer yok.";
         return 0;
     }
 
     // Her bir değeri kontrol et
     QRegularExpression regex("^s\\d{4}$");
     for (const QString& part : parts) {
+        if (part == "0") continue;
         if (!regex.match(part).hasMatch()) {
             qDebug() << "Geçersiz format:" << part;
             return 0;
