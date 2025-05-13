@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>739</width>
+    <width>746</width>
     <height>644</height>
    </rect>
   </property>
@@ -100,7 +100,7 @@
           <item>
            <widget class="QComboBox" name="cmbPort">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(255, 255, 255);

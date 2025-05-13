@@ -11,15 +11,17 @@ int kal_point_val;
 uint8_t cal_repeat_count_data_received;
 uint8_t active_sensor_count_data_received;
 uint8_t cal_points_data_received;
+uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE] = {0};
 
-uint16_t calibration_points[NUM_OF_CAL_POINTS];
-
+uint16_t calibration_points[NUM_OF_CAL_POINTS] = {0};
 QString cal_repeat_count_command;
 QString active_sensor_count_command;
 QString cal_points_request_command;
 Request current_request;
 
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow), serial(new QSerialPort(this))
+QStringList sensor_ids;
+
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow), serial(new QSerialPort(this)), serial_2(new QSerialPort(this))
 {
     ui->setupUi(this);
 
@@ -36,20 +38,25 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     // Port bağlanınca gelen veriyi dinle
     connect(serial, &QSerialPort::readyRead, this, &MainWindow::readSerial);
+    //connect(serial_2, &QSerialPort::readyRead, this, &MainWindow::readSerial_2);
 
     // Butonlara sinyal-slot bağla
-    connect(ui->btnConnect, &QPushButton::clicked, this, &MainWindow::connectSerial);
-    connect(ui->btnSend, &QPushButton::clicked, this, &MainWindow::sendData);
-    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::sendData);
-    connect(qApp, &QCoreApplication::aboutToQuit, this, &MainWindow::onAppExit);
+    connect(ui->btnConnect, &QPushButton::clicked,          this, &MainWindow::connectSerial);
+    connect(ui->btnSend,    &QPushButton::clicked,          this, &MainWindow::sendData);
+    connect(ui->lineEdit,   &QLineEdit::returnPressed,      this, &MainWindow::sendData);
+    connect(qApp,           &QCoreApplication::aboutToQuit, this, &MainWindow::onAppExit);
 
-    selected_port_name = ui->cmbPort->currentText();
+    selected_port_name   = ui->cmbPort->currentText();
+    selected_port_name_2 = ui->cmbPort->itemText(1); //ui->cmbPort->itemText(1); //ttyUSB1
 
-    connection_check_timer = new QTimer(this);
+    connection_check_timer   = new QTimer(this);
+    connection_check_timer_2 = new QTimer(this);
     time_check = new QTimer(this);
     connect(time_check, &QTimer::timeout, this, &MainWindow::checkTime);
     connect(connection_check_timer, &QTimer::timeout, this, &MainWindow::checkConnectionStatus);
+    connect(connection_check_timer_2, &QTimer::timeout, this, &MainWindow::checkConnectionStatus_2);
     connection_check_timer->start(2000); // Her 2 saniyede bir kontrol et
+    connection_check_timer_2->start(2000);
 
     ui->btnSend->setStyleSheet(
         R"(
@@ -77,10 +84,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     data_received_time = 10;
 
     uart_buffer_index = 0;
-    //createFilesFolders();
     current_request = CAL_REPEAT_COUNT;
     uart_log_parser = new LogParser();
-    //create_folders();
 }
 
 MainWindow::~MainWindow()
@@ -89,7 +94,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-int8_t MainWindow::uartLineProcess(char* input)
+uint8_t MainWindow::uartLineProcess(char* input)
 {
     if (uart_log_parser->parseLine(input, &packet) == 0) {
         uart_log_parser->processPacket(&packet);
@@ -158,6 +163,43 @@ void MainWindow::checkTime()
     }
 }
 
+void MainWindow::checkConnectionStatus_2()
+{
+    bool portStillAvailable = false;
+    foreach (const QSerialPortInfo & info, QSerialPortInfo::availablePorts())
+    {
+        if (info.portName() == selected_port_name_2)
+        {
+            portStillAvailable = true;
+            break;
+        }
+    }
+    if (!portStillAvailable)
+    {
+        if (serial_2->isOpen())
+        {
+            serial_2->close();
+            ui->plainTextEdit->appendPlainText("Port-2 Bağlantı koptu: " + selected_port_name_2);
+            om106l_device_status[DEVICE_2] = 0;
+        }
+    } else {
+        if (!serial_2->isOpen())
+        {
+            // Otomatik yeniden bağlanma istenirse:
+            serial_2->setPortName(selected_port_name_2);
+            serial_2->setBaudRate(ui->cmbBaudRate->currentText().toInt());
+            if (serial_2->open(QIODevice::ReadWrite))
+            {
+                ui->plainTextEdit->appendPlainText("Port-2 Bağlantı yeniden kuruldu.");
+                om106l_device_status[DEVICE_2] = 1;
+            } else {
+                ui->plainTextEdit->appendPlainText("Port-2 var ama açılamıyor.");
+                om106l_device_status[DEVICE_2] = 0;
+            }
+        }
+    }
+}
+
 void MainWindow::checkConnectionStatus()
 {
     bool portStillAvailable = false;
@@ -170,12 +212,12 @@ void MainWindow::checkConnectionStatus()
         }
     }
     if (!portStillAvailable)
-
     {
         if (serial->isOpen())
         {
             serial->close();
-            ui->plainTextEdit->appendPlainText("Bağlantı koptu: " + selected_port_name);
+            ui->plainTextEdit->appendPlainText("Port-1 Bağlantı koptu: " + selected_port_name);
+            om106l_device_status[DEVICE_1] = 0;
         }
     } else {
         if (!serial->isOpen())
@@ -185,19 +227,15 @@ void MainWindow::checkConnectionStatus()
            serial->setBaudRate(ui->cmbBaudRate->currentText().toInt());
            if (serial->open(QIODevice::ReadWrite))
            {
-               ui->plainTextEdit->appendPlainText("Bağlantı yeniden kuruldu.");
+               ui->plainTextEdit->appendPlainText("Port-1 Bağlantı yeniden kuruldu.");
+               om106l_device_status[DEVICE_1] = 1;
            } else {
-               ui->plainTextEdit->appendPlainText("Port var ama açılamıyor.");
+               ui->plainTextEdit->appendPlainText("Port-1 var ama açılamıyor.");
+               om106l_device_status[DEVICE_1] = 0;
            }
         }
     }
 }
-
-void MainWindow::onTimeout()
-{
-    getDataFromMCU();
-}
-
 
 void MainWindow::Log2LinePlainText(QString command)
 {
@@ -206,6 +244,38 @@ void MainWindow::Log2LinePlainText(QString command)
         ui->lineEdit->clear();  // Girişi temizle
     }
 }
+
+uint8_t MainWindow::parseLineEditInput(const QString& input, QStringList& outputList)
+{
+    outputList.clear();
+
+    // Boşlukla ayırıp elemanlara ayır
+    QStringList parts = input.split(" ", Qt::SkipEmptyParts);
+
+    // İlk eleman ?spn olduğundan onu çıkar
+    parts.removeFirst();
+
+    // 15 değer var mı?
+    if (parts.size() != active_sensor_count) {
+        qDebug() << "Geçersiz giriş: aktif sensör kader adet sXXXX formatında değer yok.";
+        return 0;
+    }
+
+    // Her bir değeri kontrol et
+    QRegularExpression regex("^s\\d{4}$");
+    for (const QString& part : parts) {
+        if (!regex.match(part).hasMatch()) {
+            qDebug() << "Geçersiz format:" << part;
+            return 0;
+        }
+    }
+
+    outputList = parts;
+
+    qDebug() << "Giriş geçerli.";
+    return 1;
+}
+
 
 void MainWindow::connectSerial()
 {
@@ -221,13 +291,41 @@ void MainWindow::connectSerial()
 
         if (serial->open(QIODevice::ReadWrite))
         {
-            ui->plainTextEdit->appendPlainText("Port acildi.");
+            ui->plainTextEdit->appendPlainText("Port-1 acildi.");
+            om106l_device_status[DEVICE_1] = 1;
         } else {
-            ui->plainTextEdit->appendPlainText("Port acilamadi.");
+            ui->plainTextEdit->appendPlainText("Port-1 acilamadi.");
+            om106l_device_status[DEVICE_1] = 0;
         }
     } else {
         serial->close();
-        ui->plainTextEdit->appendPlainText("Port kapatildi.");
+        ui->plainTextEdit->appendPlainText("Port-1 kapatildi.");
+        om106l_device_status[DEVICE_1] = 0;
+    }
+
+    if (!serial_2->isOpen())
+    {
+        serial_2->setPortName(ui->cmbPort->itemText(1));
+        //serial->setBaudRate(ui->cmbBaudRate->itemText(3).toInt());
+        serial_2->setBaudRate(ui->cmbBaudRate->currentText().toInt());
+        serial_2->setDataBits(QSerialPort::Data8);
+        serial_2->setParity(QSerialPort::NoParity);
+        serial_2->setStopBits(QSerialPort::OneStop);
+        serial_2->setFlowControl(QSerialPort::NoFlowControl);
+
+        if (serial_2->open(QIODevice::ReadWrite))
+        {
+            ui->plainTextEdit->appendPlainText("Port-2 acildi.");
+            om106l_device_status[DEVICE_2] = 1;
+
+        } else {
+            ui->plainTextEdit->appendPlainText("Port-2 acilamadi.");
+            om106l_device_status[DEVICE_2] = 0;
+        }
+    } else {
+        serial_2->close();
+        ui->plainTextEdit->appendPlainText("Port-2 kapatildi.");
+        om106l_device_status[DEVICE_2] = 0;
     }
 }
 
@@ -241,7 +339,6 @@ void MainWindow::readSerial()
         if (ch == '\n')
         {
             uart_rx_buffer[uart_buffer_index] = '\0';
-
             QString line = QString::fromUtf8(uart_rx_buffer);
             ui->plainTextEdit->appendPlainText(line);
             uartLineProcess(uart_rx_buffer);
@@ -258,9 +355,17 @@ void MainWindow::sendData()
 {
     QString command = ui->lineEdit->text();
     if (command == "create-f") {
+        Log2LinePlainText(command);
         file_folder_creator.createFilesFolders();
     } else if (command == "get-data") {
+        Log2LinePlainText(command);
         time_check->start(1000);
+    } else if (command.startsWith("?spn")) {
+        Log2LinePlainText(command);
+        if (!parseLineEditInput(command, sensor_ids)) {
+            ui->plainTextEdit->appendPlainText("Geçersiz format: " + command);
+            return;
+        }
     } else {
         if (command.isEmpty())
         {
@@ -278,11 +383,10 @@ void MainWindow::sendData()
                     break;
             }
         }
+        Log2LinePlainText(command);
+        serial->write(command.toUtf8());
+        serial->write("\r\n");
     }
-
-    Log2LinePlainText(command);
-    serial->write(command.toUtf8());
-    serial->write("\r\n");
     ui->lineEdit->clear();
 }
 
