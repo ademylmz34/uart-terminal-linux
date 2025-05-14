@@ -20,7 +20,7 @@ QString cal_points_request_command;
 Request current_request;
 
 QStringList sensor_ids;
-
+QMap<QString, uint8_t> sensor_folder_create_status;
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow), serial(new QSerialPort(this)), serial_2(new QSerialPort(this))
 {
     ui->setupUi(this);
@@ -42,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     // Butonlara sinyal-slot bağla
     connect(ui->btnConnect, &QPushButton::clicked,          this, &MainWindow::connectSerial);
-    connect(ui->btnSend,    &QPushButton::clicked,          this, &MainWindow::sendData);
-    connect(ui->lineEdit,   &QLineEdit::returnPressed,      this, &MainWindow::sendData);
+    connect(ui->btnSend,    &QPushButton::clicked,          this, &MainWindow::commandLineProcess);
+    connect(ui->lineEdit,   &QLineEdit::returnPressed,      this, &MainWindow::commandLineProcess);
     connect(qApp,           &QCoreApplication::aboutToQuit, this, &MainWindow::onAppExit);
 
     selected_port_name   = ui->cmbPort->currentText();
@@ -77,14 +77,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     active_sensor_count_command = "?gpa";
     cal_points_request_command = "?gpd";
 
-    cal_repeat_count_data_received = 0;
-    active_sensor_count_data_received = 0;
-    cal_points_data_received = 0;
-
-    data_received_time = 10;
-
     uart_buffer_index = 0;
-    current_request = CAL_REPEAT_COUNT;
     uart_log_parser = new LogParser();
 }
 
@@ -112,12 +105,14 @@ void MainWindow::getDataFromMCU()
             if (data_received_time == 0) {
                 qDebug() << "Calibration repeat count data couldn't get received";
                 current_request = ACTIVE_SENSOR_COUNT;
+                request_command = active_sensor_count_command;
             } else if (cal_repeat_count_data_received) {
                 qDebug() << "Calibration repeat count data get received";
                 current_request = ACTIVE_SENSOR_COUNT;
                 data_received_time = 10;
+                request_command = active_sensor_count_command;
             } else {
-                sendData();
+                sendData(request_command);
             }
             break;
 
@@ -125,12 +120,14 @@ void MainWindow::getDataFromMCU()
             if (data_received_time == 0) {
                 qDebug() << "Active sensor count data couldn't get received";
                 current_request = CAL_POINTS;
+                request_command = cal_points_request_command;
             } else if (active_sensor_count_data_received) {
                 qDebug() << "Active sensor count data get received";
                 current_request = CAL_POINTS;
+                request_command = cal_points_request_command;
                 data_received_time = 10;
             } else {
-                sendData();
+                sendData(request_command);
             }
             break;
 
@@ -138,22 +135,25 @@ void MainWindow::getDataFromMCU()
             if (data_received_time == 0) {
                 qDebug() << "Calibration points data couldn't get received";
                 current_request = NONE;
+                request_command = "";
             } else if (cal_points_data_received) {
                 qDebug() << "Calibration points data get received";
                 current_request = NONE;
+                request_command = "";
             } else {
-                sendData();
+                sendData(request_command);
             }
             break;
 
         default:
+            time_check->stop();
             break;
     }
 }
 
 void MainWindow::checkTime()
 {
-    if (data_received_time && current_request != NONE) {
+    if (data_received_time) {
         data_received_time--;
     } else if (data_received_time == 0) {
         data_received_time = 10;
@@ -245,25 +245,19 @@ void MainWindow::Log2LinePlainText(QString command)
     }
 }
 
-uint8_t MainWindow::parseLineEditInput(const QString& input, QStringList& outputList)
+uint8_t MainWindow::parseLineEditInput(const QStringList& inputList, QStringList& outputList)
 {
     outputList.clear();
 
-    // Boşlukla ayırıp elemanlara ayır
-    QStringList parts = input.split(" ", Qt::SkipEmptyParts);
-
-    // İlk eleman ?spn olduğundan onu çıkar
-    parts.removeFirst();
-
     // 15 değer var mı?
-    if (parts.size() != NUM_OF_SENSOR_BOARD) {
+    if (inputList.size() != NUM_OF_SENSOR_BOARD) {
         qDebug() << "Geçersiz giriş: 15 adet sXXXX formatında değer yok.";
         return 0;
     }
 
     // Her bir değeri kontrol et
     QRegularExpression regex("^s\\d{4}$");
-    for (const QString& part : parts) {
+    for (const QString& part : inputList) {
         if (part == "0") continue;
         if (!regex.match(part).hasMatch()) {
             qDebug() << "Geçersiz format:" << part;
@@ -271,7 +265,7 @@ uint8_t MainWindow::parseLineEditInput(const QString& input, QStringList& output
         }
     }
 
-    outputList = parts;
+    outputList = inputList;
 
     qDebug() << "Giriş geçerli.";
     return 1;
@@ -352,43 +346,146 @@ void MainWindow::readSerial()
     }
 }
 
-void MainWindow::sendData()
+QStringList MainWindow::getSensorFolderNames()
 {
-    QString command = ui->lineEdit->text();
-    if (command == "create-f") {
-        Log2LinePlainText(command);
-        file_folder_creator.createFilesFolders();
-    } else if (command == "get-data") {
-        Log2LinePlainText(command);
-        time_check->start(1000);
-    } else if (command.startsWith("?spn")) {
-        Log2LinePlainText(command);
-        if (!parseLineEditInput(command, sensor_ids)) {
-            ui->plainTextEdit->appendPlainText("Geçersiz format: " + command);
-            return;
+    QRegularExpression regex("^s\\d{4}$");
+    QStringList folder_names;
+    QStringList sensors_folders;
+
+    folder_names = file_folder_creator.getFolderNames();
+    for (const QString& folder_name: folder_names) {
+        if (regex.match(folder_name).hasMatch()) {
+            sensor_folder_create_status[folder_name] = 1;
+            sensors_folders << folder_name;
         }
-    } else {
-        if (command.isEmpty())
-        {
-            switch (current_request) {
-                case CAL_REPEAT_COUNT:
-                    command = cal_repeat_count_command;
-                    break;
-                case ACTIVE_SENSOR_COUNT:
-                    command = active_sensor_count_command;
-                    break;
-                case CAL_POINTS:
-                    command = cal_points_request_command;
-                    break;
-                default:
-                    break;
+    }
+    return sensors_folders;
+}
+
+void MainWindow::parseCommand(QString command)
+{
+    Command type;
+    QString command_str;
+    command = command.trimmed();
+    if (command.startsWith("cl")) command_str = command.split(" ", Qt::SkipEmptyParts).value(1);
+
+    if (command_str == "csf") {
+        type = CMD_CSF;
+        sensor_numbers = command.split(" ", Qt::SkipEmptyParts);
+        sensor_numbers.removeFirst();
+        sensor_numbers.removeFirst();
+    }
+    else if (command_str == "cslf") type = CMD_CSLF;
+    else if (command_str == "comf") type = CMD_COMF;
+    else if (command_str == "comlf") type = CMD_COMLF;
+    else if (command_str == "gcd") type = CMD_GCD;
+    //else if (command_str == "gsn") type = CMD_GSN;
+    else {
+        type = CMD_SM;
+        mcu_command = command;
+    }
+    processCommand(type);
+}
+
+uint8_t MainWindow::processCommand(Command command_type)
+{
+    QStringList sensors_folders;
+    uint8_t status;
+    switch (command_type) {
+        case CMD_CSF:
+            if (!parseLineEditInput(sensor_numbers, sensor_ids)) {
+                ui->plainTextEdit->appendPlainText("Değerleri doğru girdiğinizden emin olunuz");
             }
-        }
-        Log2LinePlainText(command);
+            if (!sensor_ids.isEmpty()) {
+                for (const QString& sensor_id: sensor_ids) {
+                    status = file_folder_creator.createSensorFolder(sensor_id);
+                    if (status == 1) {
+                        ui->plainTextEdit->appendPlainText(sensor_id + " klasörü oluşturuldu.");
+                        sensor_folder_create_status.insert(sensor_id, 1);
+                    } else if (status == 2) {
+                        ui->plainTextEdit->appendPlainText(sensor_id + " klasörü zaten var.");
+                        sensor_folder_create_status.insert(sensor_id, 1);
+                    } else {
+                        ui->plainTextEdit->appendPlainText(sensor_id + " klasörü oluşturulumadi.");
+                        sensor_folder_create_status.insert(sensor_id, 0);
+                    }
+                }
+            } else {
+                ui->plainTextEdit->appendPlainText("?cl gsn komutu ile sensör numaralarını girmeniz gerekmektedir.");
+            }
+            break;
+        case CMD_CSLF:
+            sensors_folders = getSensorFolderNames();
+            for (const QString& sensor_id: sensors_folders) {
+                if (!sensor_folder_create_status[sensor_id]) {
+                    ui->plainTextEdit->appendPlainText(sensor_id + " klasörü bulunamadi.");
+                } else {
+                    status = file_folder_creator.createSensorLogFolder(sensor_id);
+                    if (status == 1) {
+                        ui->plainTextEdit->appendPlainText(sensor_id + " log klasörü oluşturuldu.");
+                    } else if (status == 2) {
+                        ui->plainTextEdit->appendPlainText(sensor_id + " log klasörü zaten var.");
+                    } else {
+                        ui->plainTextEdit->appendPlainText(sensor_id + " log klasörü oluşturulamadi.");
+                    }
+                }
+            }
+            break;
+        case CMD_COMF:
+            status = file_folder_creator.createOm106lFolder();
+            if (status == 1) {
+                ui->plainTextEdit->appendPlainText("om106l klasörü oluşturuldu.");
+            } else if (status == 2) {
+                ui->plainTextEdit->appendPlainText("om106l klasörü zaten var.");
+            } else {
+                ui->plainTextEdit->appendPlainText("om106l klasörü oluşturulamadi.");
+            }
+            break;
+        case CMD_COMLF:
+            status = file_folder_creator.createOm106LogFolder();
+            if (status == 1) {
+                ui->plainTextEdit->appendPlainText("om106 log klasörü oluşturuldu.");
+            } else if (status == 2) {
+                ui->plainTextEdit->appendPlainText("om106 log klasörü zaten var.");
+            } else {
+                ui->plainTextEdit->appendPlainText("om106 log klasörü oluşturulamadi.");
+            }
+            break;
+        case CMD_GCD:
+            current_request = CAL_REPEAT_COUNT;
+            request_command = cal_repeat_count_command;
+            cal_repeat_count_data_received = 0;
+            active_sensor_count_data_received = 0;
+            cal_points_data_received = 0;
+            data_received_time = 10;
+            time_check->start(1000);
+            break;
+        case CMD_GSN:
+            break;
+        case CMD_SM:
+            sendData(mcu_command);
+            break;
+        default:
+            break;
+    }
+    return 1;
+}
+
+void MainWindow::commandLineProcess()
+{
+    QString command_cl = ui->lineEdit->text();
+    Log2LinePlainText(command_cl);
+    parseCommand(command_cl);
+
+    ui->lineEdit->clear();
+}
+
+void MainWindow::sendData(QString command)
+{
+    if (serial->isOpen()) {
         serial->write(command.toUtf8());
         serial->write("\r\n");
     }
-    ui->lineEdit->clear();
 }
 
 void MainWindow::onBtnClearClicked()

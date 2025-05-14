@@ -45,13 +45,15 @@ class Creator {
         uint8_t createMainFolder();
         uint8_t createSensorFolder(QString);
         uint8_t createSensorLogFiles(QString);
-        uint8_t createSensorLogFolder();
+        uint8_t createSensorLogFolder(QString);
         uint8_t createOm106lFolder();
         uint8_t createOm106LogFolder();
         uint8_t createOm106LogFiles(QString);
 
         int8_t getCalibrationPointsArraySize();
         int8_t createFilesFolders();
+
+        QStringList getFolderNames();
 };
 
 #endif // CREATOR_H

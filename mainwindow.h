@@ -21,9 +21,19 @@ enum Request {
     NONE
 };
 
-enum Om106l_Devices{
+enum Om106l_Devices {
     DEVICE_1,
     DEVICE_2
+};
+
+enum Command {
+    CMD_CSF,
+    CMD_CSLF,
+    CMD_COMF,
+    CMD_COMLF,
+    CMD_GCD,
+    CMD_GSN,
+    CMD_SM
 };
 
 struct SensorFiles {
@@ -41,6 +51,7 @@ extern uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
 
 extern QMap<QString, SensorFiles> sensor_map;
 extern QMap<Om106l_Devices, QFile*> om106_map;
+extern QMap<QString, uint8_t> sensor_folder_create_status;
 
 extern Creator file_folder_creator;
 extern int calibration_repeat_count;
@@ -59,6 +70,7 @@ extern QString cal_points_request_command;
 extern Request current_request;
 
 extern QStringList sensor_ids;
+//extern QStringList sensors_folder;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -87,6 +99,9 @@ class MainWindow : public QMainWindow
         QString selected_port_name;
         QString selected_port_name_2;
         QString line;
+        QString request_command;
+        QStringList sensor_numbers;
+        QString mcu_command;
 
         LogParser* uart_log_parser;
         LogParser::Packet packet;
@@ -96,8 +111,12 @@ class MainWindow : public QMainWindow
         uint8_t data_received_time;
 
         uint8_t uartLineProcess(char*);
-        uint8_t parseLineEditInput(const QString&, QStringList&);
+        uint8_t parseLineEditInput(const QStringList&, QStringList&);
+        uint8_t processCommand(Command);
 
+        QStringList getSensorFolderNames();
+
+        void parseCommand(QString);
         void getDataFromMCU();
         void onAppExit();
         void checkTime();
@@ -106,6 +125,7 @@ class MainWindow : public QMainWindow
         void Log2LinePlainText(QString);
         void connectSerial();
         void readSerial();
-        void sendData();
+        void commandLineProcess();
+        void sendData(QString);
 };
 #endif // MAINWINDOW_H
