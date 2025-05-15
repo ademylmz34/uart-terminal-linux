@@ -47,11 +47,24 @@ struct SensorFiles {
     QTextStream* kal_end_stream;
 };
 
+struct Om106Files {
+    Om106l_Devices device_id;
+    QFile* om106_log_file;
+    QTextStream* om106_stream;
+};
+
 extern uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
 
-extern QMap<QString, SensorFiles> sensor_map;
-extern QMap<Om106l_Devices, QFile*> om106_map;
+extern QMap<uint16_t, SensorFiles> sensor_map;
+extern QMap<Om106l_Devices, Om106Files> om106_map;
 extern QMap<QString, uint8_t> sensor_folder_create_status;
+extern QMap<QString, uint8_t> sensor_log_folder_create_status;
+
+extern QFile* main_log_file;
+extern QTextStream* main_log_stream;
+
+extern QFile* calibration_log_file;
+extern QTextStream* calibration_stream;
 
 extern Creator file_folder_creator;
 extern int calibration_repeat_count;
@@ -109,6 +122,7 @@ class MainWindow : public QMainWindow
         char uart_rx_buffer[RX_BUFFER_LEN];
         uint16_t uart_buffer_index;
         uint8_t data_received_time;
+        uint8_t is_oml_log_folder_created;
 
         uint8_t uartLineProcess(char*);
         uint8_t parseLineEditInput(const QStringList&, QStringList&);
@@ -116,6 +130,9 @@ class MainWindow : public QMainWindow
 
         QStringList getSensorFolderNames();
 
+        QString readFullResponse(QSerialPort&, int);
+        void detectOm106Devices();
+        void checkPortConnection(QSerialPort*, const QString&, int);
         void parseCommand(QString);
         void getDataFromMCU();
         void onAppExit();

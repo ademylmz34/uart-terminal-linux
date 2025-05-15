@@ -41,8 +41,13 @@ class Creator {
         QString om106_log_path;
 
         uint8_t cal_point_array_size;
+        uint8_t sensor_id_counter;
+        uint8_t is_main_log_file_created;
+        uint8_t is_calibration_file_created;
 
         uint8_t createMainFolder();
+        uint8_t createCalibrationLogFile(QString);
+        uint8_t createMainLogFile(QString);
         uint8_t createSensorFolder(QString);
         uint8_t createSensorLogFiles(QString);
         uint8_t createSensorLogFolder(QString);

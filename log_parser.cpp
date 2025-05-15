@@ -19,6 +19,13 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     if (strcmp(cmd, "R1") == 0) result.type = CMD_R1;
     else if (strcmp(cmd, "R2") == 0) result.type = CMD_R2;
     else if (strcmp(cmd, "R3") == 0) result.type = CMD_R3;
+    else if (strncmp(cmd, "SK", 2) == 0) {
+        int s_no;
+        if (sscanf(cmd, "SK-%d", &s_no) == 1) {
+            result.type = CMD_SK;
+            result.s_no = s_no;
+        }
+    }
     else if (strncmp(cmd, "TH", 2) == 0) {
         int no = atoi(cmd + 2);
         if (no >= 1 && no <= 15) {
@@ -29,6 +36,7 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     else if (strcmp(cmd, "OM") == 0) result.type = CMD_OM;
     else if (strcmp(cmd, "L") == 0) result.type = CMD_L;
     else if (strcmp(cmd, "D") == 0) result.type = CMD_D;
+    else if (strcmp(cmd, "KL") == 0) result.type = CMD_KL;
     else if (strncmp(cmd, "KN", 2) == 0) {
         int kn, s;
 
@@ -255,6 +263,11 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         return 0;
     }
 
+    if (packet->command.type == CMD_KL) {
+        packet->data_str = strdup(p);
+        return 0;
+    }
+
     if (packet->command.type == CMD_L) {
         packet->data_str = strdup(p);
         return 0;
@@ -330,7 +343,7 @@ int8_t LogParser::processPacket(const Packet* packet) {
     if (calibration_completed) return 0;
 
     switch (packet->command.type) {
-    case CMD_R1:
+    /*case CMD_R1:
     case CMD_R2:
     case CMD_R3:
         for (uint8_t i = 0; i < packet->data_count; i++) {
@@ -341,14 +354,37 @@ int8_t LogParser::processPacket(const Packet* packet) {
             }
         }
         break;
+    */
+    case CMD_SK:
+        sprintf(buff, ">%s %s ", packet->date, packet->time);
+        for (uint8_t i = 0; i < packet->data_count; i++) {
+            if (
+                strcmp(packet->data[i].key, "OM") == 0 ||
+                strcmp(packet->data[i].key, "T") == 0  ||
+                strcmp(packet->data[i].key, "H") == 0
+                ) {
+                sprintf(str, "%.2f ", packet->data[i].value);
+            } else {
+                sprintf(str, "%.0f ", packet->data[i].value);
+            }
+            strcat(buff, str);
+        }
+        *(sensor_map[packet->command.s_no].log_stream) << buff << "\n";
+        break;
+
+    case CMD_KL:
+        sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
+        *(calibration_stream) << buff;
+        break;
+
     case CMD_L:
     case CMD_D:
         sprintf(buff, ">%s %s %s %s\n", packet->date, packet->time, packet->command_str, packet->data_str);
-        file_folder_creator.log_stream << buff;
+        *(main_log_stream) << buff;
         break;
     case CMD_TH:
-        sprintf(buff, ">%s %s %s %.2f %s %.1f%%\n", packet->date, packet->time, packet->command_str, packet->th_data.temperature, packet->th_data.temp_unit, packet->th_data.humidity);
-        *(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff;
+        //sprintf(buff, ">%s %s %s %.2f %s %.1f%%\n", packet->date, packet->time, packet->command_str, packet->th_data.temperature, packet->th_data.temp_unit, packet->th_data.humidity);
+        //*(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff;
         break;
 
     case CMD_OM:
@@ -365,11 +401,10 @@ int8_t LogParser::processPacket(const Packet* packet) {
             }
         }
         if (packet->command.type == CMD_KN_S) {
-            *(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff << "\n";
-            *(file_folder_creator.kal_streams[repeat_calibration_index][packet->command.kn_no]) << buff << "\n";
+            *(sensor_map[packet->command.s_no].kal_stream) << buff << "\n";
         }
         else if (packet->command.type == CMD_OM) {
-            *(file_folder_creator.om106_log_streams[0]) << buff << "\n";
+            *(om106_map[DEVICE_1].om106_stream) << buff << "\n"; // log'un hangi om106l cihazından geldiğini bilmem lazım
         }
         break;
 
@@ -388,7 +423,7 @@ int8_t LogParser::processPacket(const Packet* packet) {
                 sprintf(buff, ">%s %s %s %.3f\n", packet->date, packet->time, packet->command_str, packet->data[0].value);
             }
         }
-        *(file_folder_creator.kal_streams[repeat_calibration_index][packet->command.kn_no]) << buff;
+        *(calibration_stream) << buff;
         break;
 
     case CMD_KB_S_R:
@@ -409,7 +444,7 @@ int8_t LogParser::processPacket(const Packet* packet) {
             }
             strcat(buff, str);
         }
-        *(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff << "\n";
+        *(sensor_map[packet->command.s_no].kal_end_stream) << buff << "\n";
         break;
     default:
         break;

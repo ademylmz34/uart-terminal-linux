@@ -1,15 +1,24 @@
 #include "creator.h"
 #include "mainwindow.h"
 
-QMap<QString, SensorFiles> sensor_map;
-QMap<Om106l_Devices, QFile*> om106_map;
+QMap<uint16_t, SensorFiles> sensor_map;
+QMap<Om106l_Devices, Om106Files> om106_map;
+
+QFile* main_log_file;
+QTextStream* main_log_stream;
+
+QFile* calibration_log_file;
+QTextStream* calibration_stream;
+
 Creator::Creator() {
     cal_point_array_size = 0;
+    is_main_log_file_created = 0;
+    is_calibration_file_created = 0;
     root_folder = "O3_Kalibrasyon_Loglari";
+    om106l_folder = QString("%1/om106Logs").arg(root_folder);
 }
 
 Creator::~Creator() {
-
     for (auto& s : sensor_map) {
         if (s.log_file) {
             if (s.log_file->isOpen()) s.log_file->close();
@@ -29,12 +38,28 @@ Creator::~Creator() {
         delete s.kal_end_stream;
     }
 
-    for (auto file : om106_map) {
-        if (file->isOpen()) {
-            file->close();
+    for (auto&om : om106_map) {
+        if (om.om106_log_file) {
+            if (om.om106_log_file->isOpen()) om.om106_log_file->close();
+            delete om.om106_log_file;
         }
-        delete file; // new ile açtığımız için serbest bırakmamız gerekir
+        delete om.om106_stream;
     }
+
+    if (main_log_file->isOpen()) {
+        main_log_file->close();
+    }
+
+    delete main_log_file;
+    delete main_log_stream;
+
+
+    if (calibration_log_file->isOpen()) {
+        calibration_log_file->close();
+    }
+
+    delete calibration_log_file;
+    delete calibration_stream;
 
     om106_map.clear();
     sensor_map.clear();
@@ -63,7 +88,6 @@ int8_t Creator::getCalibrationPointsArraySize() {
 }
 
 uint8_t Creator::createMainFolder() {
-    root_folder = QString("O3-Kalibrasyon-Karti-Verileri");
     if (dir.exists(root_folder)) {
         qDebug() << "Ana klasör zaten var: " << root_folder;
         return 2;
@@ -73,6 +97,43 @@ uint8_t Creator::createMainFolder() {
     } else {
         qDebug() << "Ana klasör oluşturulamadı:" << root_folder;
         return 0;
+    }
+    return 1;
+}
+
+uint8_t Creator::createMainLogFile(QString folder_name) {
+    time_stamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmm");
+    QString file_path = QString("%1/%2_log.txt").arg(folder_name).arg(time_stamp);
+    main_log_file = new QFile(file_path);
+    if (QFile::exists(file_path)) {
+        qDebug() << "Log dosyası zaten var.";
+        return 2;
+    } else {
+        if (main_log_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
+            qDebug() << "Log dosyasi başarıyla oluşturuldu.";
+            main_log_stream = new QTextStream(main_log_file);
+        } else {
+            qDebug() << "Log dosyasi oluşturulamadi.";
+            return 0;
+        }
+    }
+    return 1;
+}
+
+uint8_t Creator::createCalibrationLogFile(QString folder_name) {
+    QString file_path = QString("%1/calibration_log.txt").arg(folder_name);
+    calibration_log_file = new QFile(file_path);
+    if (QFile::exists(file_path)) {
+        qDebug() << "Kalibrasyon log dosyası zaten var.";
+        return 2;
+    } else {
+        if (calibration_log_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
+            qDebug() << "Kalibrasyon log dosyasi başarıyla oluşturuldu.";
+            calibration_stream = new QTextStream(calibration_log_file);
+        } else {
+            qDebug() << "Kalibrasyon log dosyasi oluşturulamadi.";
+            return 0;
+        }
     }
     return 1;
 }
@@ -94,42 +155,34 @@ uint8_t Creator::createSensorFolder(QString folder_name) {
 }
 
 uint8_t Creator::createSensorLogFolder(QString sensor_folder) {
-    QDateTime now = QDateTime::currentDateTime();
-
-    time_stamp = now.toString("yyyyMMdd_HHmm");
+    time_stamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmm");
     sensor_log_folder = QString("%1/%2/%3_logs").arg(root_folder).arg(sensor_folder).arg(time_stamp);
-
-    QString checkPrefix = now.toString("yyyyMMdd_HH");
-
-    QDir checkDir(root_folder + "/" + sensor_folder);
-
-    QStringList entries = checkDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-
-    for (const QString& entry : entries) {
-        if (entry.startsWith(checkPrefix)) {
-            qDebug() << "Aynı saat içerisinde klasör zaten var:" << entry;
-            return 2;
-        }
-    }
-
-    if (dir.mkpath(sensor_log_folder)) {
-        qDebug() << "Sensör log klasörü oluşturuldu:" << sensor_log_folder;
-        if (createSensorLogFiles(sensor_log_folder)) {
-            qDebug() << "Sensör log klasörü dosyaları oluşturuldu:" << sensor_log_folder;
+    if (dir.exists(sensor_log_folder)) {
+        qDebug() << "Sensör log klasörü zaten var: " << sensor_log_folder;
+        return 2;
+    } else {
+        if (dir.mkpath(sensor_log_folder)) {
+            qDebug() << "Sensör log klasörü oluşturuldu:" << sensor_log_folder;
+            if (createSensorLogFiles(sensor_log_folder)) {
+                qDebug() << "Sensör log klasörü dosyaları oluşturuldu:" << sensor_log_folder;
+            } else {
+                qDebug() << "Sensör log klasörü dosyaları oluşturulamadi:" << sensor_log_folder;
+                return 0;
+            }
         } else {
-            qDebug() << "Sensör log klasörü dosyaları oluşturulamadi:" << sensor_log_folder;
+            qDebug() << "Sensör log klasörü oluşturulamadı:" << sensor_log_folder;
             return 0;
         }
-    } else {
-        qDebug() << "Sensör log klasörü oluşturulamadı:" << sensor_log_folder;
-        return 0;
     }
-
     return 1;
 }
 
 uint8_t Creator::createSensorLogFiles(QString folder_name) {
+    sensor_id_counter++;
+
     QString sensor_id    = folder_name.split("/", Qt::SkipEmptyParts).value(1); // s3104 gibi bir değer döndürecek
+    if (sensor_id == "0") return 1;
+
     QString log_path     = folder_name + "/log.txt";
     QString kal_path     = folder_name + "/kalibrasyon.txt";
     QString kal_end_path = folder_name + "/kalibrasyon_sonu.txt";
@@ -152,7 +205,7 @@ uint8_t Creator::createSensorLogFiles(QString folder_name) {
         s.kal_stream = new QTextStream(kalFile);
         s.kal_end_stream = new QTextStream(kalEndFile);
 
-        sensor_map.insert(sensor_id, s);
+        sensor_map.insert(sensor_id_counter, s);
         qDebug() << sensor_id << ": tüm dosyalar başarıyla oluşturuldu.";
 
     } else {
@@ -168,7 +221,6 @@ uint8_t Creator::createSensorLogFiles(QString folder_name) {
 }
 
 uint8_t Creator::createOm106lFolder() {
-    om106l_folder = QString("%1/om106Logs").arg(root_folder);
     if (dir.exists(om106l_folder)) {
         qDebug() << "Om106Logs klasörü zaten var: " << om106l_folder;
         return 2;
@@ -184,53 +236,56 @@ uint8_t Creator::createOm106lFolder() {
 }
 
 uint8_t Creator::createOm106LogFolder() {
-    QDateTime now = QDateTime::currentDateTime();
-
-    time_stamp = now.toString("yyyyMMdd_HHmm");
+    time_stamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmm");
     om106_log_folder = QString("%1/%2_logs").arg(om106l_folder).arg(time_stamp);
-
-    QString checkPrefix = now.toString("yyyyMMdd_HH");
-
-    QDir checkDir(root_folder + "/om106Logs");
-
-    QStringList entries = checkDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-
-    for (const QString& entry : entries) {
-        qDebug() << entry;
-        if (entry.startsWith(checkPrefix)) {
-            qDebug() << "Aynı saat içerisinde klasör zaten var:" << entry;
-            return 2;
-        }
-    }
-
-    if (dir.mkpath(om106_log_folder)) {
-        qDebug() << "Om106 log klasörü oluşturuldu:" << om106_log_folder;
-        if (createOm106LogFiles(om106_log_folder)) {
-            qDebug() << "Om106 log klasörü dosyaları oluşturuldu:" << om106_log_folder;
+    if (dir.exists(om106_log_folder)) {
+        qDebug() << "Om106 log klasörü zaten var: " << om106_log_folder;
+        return 2;
+    } else {
+        if (dir.mkpath(om106_log_folder)) {
+            qDebug() << "Om106 log klasörü oluşturuldu:" << om106_log_folder;
+            if (createOm106LogFiles(om106_log_folder)) {
+                qDebug() << "Om106 log klasörü dosyaları oluşturuldu:" << om106_log_folder;
+            } else {
+                qDebug() << "Om106 log klasörü dosyaları oluşturulamadi:" << om106_log_folder;
+                return 0;
+            }
         } else {
-            qDebug() << "Om106 log klasörü dosyaları oluşturulamadi:" << om106_log_folder;
+            qDebug() << "Om106 log klasörü oluşturulamadı:" << om106_log_folder;
             return 0;
         }
-    } else {
-        qDebug() << "Om106 log klasörü oluşturulamadı:" << om106_log_folder;
-        return 0;
     }
-
     return 1;
 }
 
 uint8_t Creator::createOm106LogFiles(QString folder_name) {
+    uint8_t status;
+    if (!is_main_log_file_created) {
+        status = createMainLogFile(folder_name);
+        if (status == 1) is_main_log_file_created = 1;
+        else if (status == 0) is_main_log_file_created = 0;
+    }
+
+    if (!is_calibration_file_created) {
+        status = createCalibrationLogFile(folder_name);
+        if (status == 1) is_calibration_file_created = 1;
+        else if (status == 0) is_calibration_file_created = 0;
+    }
+
     for (int i = 0; i < NUM_OF_OM106L_DEVICE; i++) {
         if (om106l_device_status[i]) {
             QString path = QString("%1/kabin-%2_omlogs.txt").arg(folder_name).arg(i + 1);
             QFile* file = new QFile(path);
-
+            Om106Files om;
             if (file->open(QIODevice::ReadWrite)) {
                 if (i == DEVICE_1) {
-                    om106_map.insert(DEVICE_1, file);
+                    om.device_id = DEVICE_1;
                 } else if (i == DEVICE_2) {
-                    om106_map.insert(DEVICE_2, file);
+                    om.device_id = DEVICE_2;
                 }
+                om.om106_log_file = file;
+                om.om106_stream = new QTextStream(file);
+                om106_map.insert(om.device_id, om);
                 qDebug() << "om106L cihaz-" << i + 1 << " dosyası oluşturuldu";
             } else {
                 qDebug() << "om106L cihaz-" << i + 1 << " dosyası oluşturulamadi";
@@ -246,80 +301,5 @@ uint8_t Creator::createOm106LogFiles(QString folder_name) {
 }
 
 int8_t Creator::createFilesFolders() {
-    uint16_t kal_points[5] = {20, 50, 100, 200, 500};
-
-    time_stamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss");
-
-    // Log dosyasını oluştur
-    log_file_path = root_folder + "/log.txt";
-    log_file.setFileName(log_file_path);
-    if (!log_file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-        qDebug() << "Log dosyası oluşturulamadı.";
-    }
-
-    log_stream.setDevice(&log_file);
-
-    for (int i = 0; i < calibration_repeat_count; ++i) {
-        sub_folder = QString("%1/tekrar_%2").arg(root_folder).arg(i + 1);
-        if (dir.mkpath(sub_folder)) {
-            qDebug() << "Alt klasör oluşturuldu:" << sub_folder;
-        } else {
-            qDebug() << "Alt klasör oluşturulamadı:" << sub_folder;
-        }
-        QVector<QFile*> sensors;
-        QVector<QTextStream*> sensor_streams;
-
-        // Sensor dosyaları
-        for (int j = 0; j < active_sensor_count; ++j) {
-            QFile* sensor_file = new QFile(QString("%1/sensor-%2.txt").arg(sub_folder).arg(j + 1));
-            if (sensor_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QTextStream* sensor_stream = new QTextStream(sensor_file);
-
-                sensors.append(sensor_file);
-                sensor_streams.append(sensor_stream);
-                qDebug() << QString("Sensor-%1 dosyası oluşturuldu.").arg(j + 1);
-            } else {
-                delete sensor_file;
-                qDebug() << QString("Sensor-%1 dosyası oluşturulamadı.").arg(j + 1);
-            }
-        }
-        sensor_files.append(sensors);
-        sensor_streams.append(sensor_streams);
-
-        // --- om106log dosyası ---
-        QString om106Path = sub_folder + "/om106log.txt";
-        QFile* om106 = new QFile(om106Path);
-        if (om106->open(QIODevice::ReadWrite | QIODevice::Text)) {
-            QTextStream* omStream = new QTextStream(om106);
-            om106_log_files.append(om106);
-            om106_log_streams.append(omStream);
-        }
-
-        QVector<QFile*> calpoints;
-        QVector<QTextStream*> calpointstreams;
-        getCalibrationPointsArraySize();
-        // Kalibrasyon klasörü
-        kal_folder = sub_folder + "/Kalibrasyon_Noktalari";
-        if (!dir.mkpath(kal_folder)) {
-            qDebug() << "Kalibrasyon klasörü oluşturulamadı:" << kal_folder;
-        } else {
-            for (int k = 0; k < cal_point_array_size; ++k) {
-                QFile* kal_file = new QFile(QString("%1/%2ppb_kalibrasyonu.txt").arg(kal_folder).arg(kal_points[k]));
-                if (kal_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
-                    QTextStream* kal_stream = new QTextStream(kal_file);
-
-                    calpoints.append(kal_file);
-                    calpointstreams.append(kal_stream);
-                    qDebug() << QString("%1 ppb kalibrasyon dosyası oluşturuldu.").arg(kal_points[k]);
-                } else {
-                    delete kal_file;
-                    qDebug() << QString("%1 ppb kalibrasyon dosyası oluşturulamadı.").arg(kal_points[k]);
-                }
-            }
-            kal_files.append(calpoints);
-            kal_streams.append(calpointstreams);
-            cal_point_array_size = 0;
-        }
-    }
     return 1;
 }

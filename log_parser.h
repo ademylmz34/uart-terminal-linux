@@ -21,6 +21,8 @@ class LogParser
             CMD_OM,
             CMD_L,
             CMD_D,
+            CMD_SK,
+            CMD_KL,
             CMD_KN_S,
             CMD_KN_O3,
             CMD_KN_T,
