@@ -32,8 +32,22 @@ enum Command {
     CMD_COMF,
     CMD_COMLF,
     CMD_GCD,
-    CMD_GSN,
+    CMD_GABC,
+    CMD_R,
+    CMD_SC,
     CMD_SM
+};
+
+enum calibration_states {
+    WAIT_STATE,
+    CLEAN_AIR_STATE,
+    SET_ENVIRONMENT_CONDITIONS_STATE,
+    ZERO_CALIBRATION_STATE,
+    SPAN_CALIBRATION_START_STATE,
+    SPAN_CALIBRATION_MID_STATE,
+    SPAN_CALIBRATION_END_STATE,
+    RETURN_TO_ZERO_STATE,
+    REPEAT_CALIBRATION_STATE
 };
 
 struct SensorFiles {
@@ -54,6 +68,8 @@ struct Om106Files {
 };
 
 extern uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
+extern uint8_t sensor_module_status[NUM_OF_SENSOR_BOARD];
+extern uint8_t active_sensor_count;
 
 extern QMap<uint16_t, SensorFiles> sensor_map;
 extern QMap<Om106l_Devices, Om106Files> om106_map;
@@ -69,7 +85,8 @@ extern QTextStream* calibration_stream;
 extern Creator file_folder_creator;
 extern int calibration_repeat_count;
 
-extern int active_sensor_count;
+extern calibration_states calibration_state;
+
 extern int kal_point;
 extern int kal_point_val;
 extern uint8_t cal_repeat_count_data_received;
@@ -122,11 +139,18 @@ class MainWindow : public QMainWindow
         char uart_rx_buffer[RX_BUFFER_LEN];
         uint16_t uart_buffer_index;
         uint8_t data_received_time;
+        uint8_t is_main_folder_created;
         uint8_t is_oml_log_folder_created;
 
         uint8_t uartLineProcess(char*);
+        uint8_t isArrayEmpty(const uint8_t*, size_t);
         uint8_t parseLineEditInput(const QStringList&, QStringList&);
         uint8_t processCommand(Command);
+
+        uint8_t createCalibrationFolders();
+        uint8_t createSensorFolders();
+
+        void startCalibrationProcess();
 
         QStringList getSensorFolderNames();
 

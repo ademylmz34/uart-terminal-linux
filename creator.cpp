@@ -14,7 +14,7 @@ Creator::Creator() {
     cal_point_array_size = 0;
     is_main_log_file_created = 0;
     is_calibration_file_created = 0;
-    root_folder = "O3_Kalibrasyon_Loglari";
+    root_folder = "O3_Kalibrasyon_Loglari-2";
     om106l_folder = QString("%1/om106Logs").arg(root_folder);
 }
 
@@ -94,6 +94,7 @@ uint8_t Creator::createMainFolder() {
     }
     if (dir.mkpath(root_folder)) {
         qDebug() << "Ana klasör oluşturuldu:" << root_folder;
+        createOm106lFolder();
     } else {
         qDebug() << "Ana klasör oluşturulamadı:" << root_folder;
         return 0;
@@ -139,6 +140,7 @@ uint8_t Creator::createCalibrationLogFile(QString folder_name) {
 }
 
 uint8_t Creator::createSensorFolder(QString folder_name) {
+    if (folder_name == "0") return 5;
     sensor_folder = QString("%1/" + folder_name).arg(root_folder);
     if (dir.exists(sensor_folder)) {
         qDebug() << "Sensör klasörü zaten var: " << sensor_folder;
@@ -297,9 +299,5 @@ uint8_t Creator::createOm106LogFiles(QString folder_name) {
             return 0;
         }
     }
-    return 1;
-}
-
-int8_t Creator::createFilesFolders() {
     return 1;
 }

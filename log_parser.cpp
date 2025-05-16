@@ -19,6 +19,7 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     if (strcmp(cmd, "R1") == 0) result.type = CMD_R1;
     else if (strcmp(cmd, "R2") == 0) result.type = CMD_R2;
     else if (strcmp(cmd, "R3") == 0) result.type = CMD_R3;
+    else if (strcmp(cmd, "SMS") == 0) result.type = CMD_SMS;
     else if (strncmp(cmd, "SK", 2) == 0) {
         int s_no;
         if (sscanf(cmd, "SK-%d", &s_no) == 1) {
@@ -183,7 +184,9 @@ int8_t LogParser::parsePwmData(const char* input, PWMData* pwm_data) {
 int8_t LogParser::parseCalibrationData(const char* input)
 {
     char buff[256];
-
+    char bitStr[32];
+    char valStr[8];
+    size_t len;
     switch(current_request) {
         case CAL_REPEAT_COUNT:
             if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
@@ -193,11 +196,27 @@ int8_t LogParser::parseCalibrationData(const char* input)
             }
             break;
         case ACTIVE_SENSOR_COUNT:
-            if (sscanf(input, "Aktif sensor sayisi %d", &active_sensor_count) == 1) {
-                qDebug() << "Active Sensor Count: " << QString::number(active_sensor_count);
+            sscanf(input, "%s %s", bitStr, valStr);  // boşlukla ayır
+
+            len = strlen(bitStr);
+            qDebug() << len;
+            for (uint8_t i = 0; i < len; i++) {
+                if (bitStr[i] == '1')
+                    sensor_module_status[i] = 1;
+                else if (bitStr[i] == '0')
+                    sensor_module_status[i] = 0;
+                else {
+                    printf("Geçersiz karakter: %c\n", bitStr[i]);
+                    return 0;
+                }
+            }
+
+            active_sensor_count = (uint8_t)atoi(valStr);
+            if (active_sensor_count) {
                 active_sensor_count_data_received = 1;
                 return 1;
             }
+
             break;
         case CAL_POINTS:
             if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2) {
@@ -234,7 +253,6 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         command[i++] = *p++;
     }
     command[i] = '\0';
-
     packet->command = parseCommandExtended(command);
     packet->command_str = strdup(command);
 
@@ -256,7 +274,8 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         }
     }
 
-    if (packet->command.type == CMD_D) {
+    if (packet->command.type == CMD_D || packet->command.type == CMD_SMS) {
+        qDebug() << "aa";
         packet->data_str = strdup(p);
         if (!parseCalibrationData(p))
             //qDebug() << "Veri Alma işlemi başarısız";
@@ -338,6 +357,10 @@ int8_t LogParser::processPacket(const Packet* packet) {
     int sensor_no;
     char buff[256];
     char str[50];
+
+    char* bitstring;
+    char* count_str;
+
     if (packet->command.type == CMD_L) return 0;
     if (packet->command.type == CMD_D) return 0;
     if (calibration_completed) return 0;
