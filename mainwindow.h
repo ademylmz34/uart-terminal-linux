@@ -8,11 +8,15 @@
 
 #include "log_parser.h"
 #include "creator.h"
+#include "serial.h"
 
-#define RX_BUFFER_LEN 1024
 #define NUM_OF_CAL_POINTS 10
 #define NUM_OF_OM106L_DEVICE 2
 #define NUM_OF_SENSOR_BOARD 15
+
+class CommandLine;
+class CalibrationBoard;
+class Serial;
 
 enum Request {
     CAL_REPEAT_COUNT,
@@ -22,20 +26,8 @@ enum Request {
 };
 
 enum Om106l_Devices {
-    DEVICE_1,
+    DEVICE_1 = 1,
     DEVICE_2
-};
-
-enum Command {
-    CMD_CSF,
-    CMD_CSLF,
-    CMD_COMF,
-    CMD_COMLF,
-    CMD_GCD,
-    CMD_GABC,
-    CMD_R,
-    CMD_SC,
-    CMD_SM
 };
 
 enum calibration_states {
@@ -75,6 +67,8 @@ extern QMap<uint16_t, SensorFiles> sensor_map;
 extern QMap<Om106l_Devices, Om106Files> om106_map;
 extern QMap<QString, uint8_t> sensor_folder_create_status;
 extern QMap<QString, uint8_t> sensor_log_folder_create_status;
+extern QMap<QString, uint8_t> sensor_module_map;
+
 
 extern QFile* main_log_file;
 extern QTextStream* main_log_stream;
@@ -84,6 +78,8 @@ extern QTextStream* calibration_stream;
 
 extern Creator file_folder_creator;
 extern int calibration_repeat_count;
+
+extern uint8_t is_main_folder_created;
 
 extern calibration_states calibration_state;
 
@@ -99,74 +95,47 @@ extern QString active_sensor_count_command;
 extern QString cal_points_request_command;
 extern Request current_request;
 
+extern QString request_command;
+extern QStringList sensor_numbers;
+extern QString mcu_command;
+
 extern QStringList sensor_ids;
+
+extern QTimer *get_calibration_data_timer;
+extern uint8_t data_received_timeout;
+extern uint8_t is_calibration_folders_created;
 //extern QStringList sensors_folder;
+
+extern Serial *serial;
+extern CommandLine *command_line;
+extern CalibrationBoard *calibration_board;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 QT_END_NAMESPACE
+class CommandLine;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    public:
-        explicit MainWindow(QWidget *parent = nullptr);
-        ~MainWindow();
+public:
+    MainWindow(QWidget *parent = nullptr);
 
-    private slots:
-        void onBtnClearClicked();
+    int getCmbBaudRateValue();
 
-    private:
-        Ui::MainWindow *ui;
-        QSerialPort *serial;
-        QSerialPort *serial_2;
-        QTimer *connection_check_timer;
-        QTimer *connection_check_timer_2;
-        QTimer *time_check;
-        QString selected_port_name;
-        QString selected_port_name_2;
-        QString line;
-        QString request_command;
-        QStringList sensor_numbers;
-        QString mcu_command;
+    QString getLineEditText() const;
+    void setLineEditText(const QString&);
+    void Log2LinePlainText(const QString &);
+    ~MainWindow();
 
-        LogParser* uart_log_parser;
-        LogParser::Packet packet;
+private slots:
+    void onBtnClearClicked();
+private:
+    Ui::MainWindow *ui;
 
-        char uart_rx_buffer[RX_BUFFER_LEN];
-        uint16_t uart_buffer_index;
-        uint8_t data_received_time;
-        uint8_t is_main_folder_created;
-        uint8_t is_oml_log_folder_created;
-
-        uint8_t uartLineProcess(char*);
-        uint8_t isArrayEmpty(const uint8_t*, size_t);
-        uint8_t parseLineEditInput(const QStringList&, QStringList&);
-        uint8_t processCommand(Command);
-
-        uint8_t createCalibrationFolders();
-        uint8_t createSensorFolders();
-
-        void startCalibrationProcess();
-
-        QStringList getSensorFolderNames();
-
-        QString readFullResponse(QSerialPort&, int);
-        void detectOm106Devices();
-        void checkPortConnection(QSerialPort*, const QString&, int);
-        void parseCommand(QString);
-        void getDataFromMCU();
-        void onAppExit();
-        void checkTime();
-        void checkConnectionStatus();
-        void checkConnectionStatus_2();
-        void Log2LinePlainText(QString);
-        void connectSerial();
-        void readSerial();
-        void commandLineProcess();
-        void sendData(QString);
+    void onAppExit();
 };
 #endif // MAINWINDOW_H

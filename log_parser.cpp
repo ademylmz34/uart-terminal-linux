@@ -188,53 +188,53 @@ int8_t LogParser::parseCalibrationData(const char* input)
     char valStr[8];
     size_t len;
     switch(current_request) {
-        case CAL_REPEAT_COUNT:
-            if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
-                qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
-                cal_repeat_count_data_received = 1;
-                return 1;
-            }
-            break;
-        case ACTIVE_SENSOR_COUNT:
-            sscanf(input, "%s %s", bitStr, valStr);  // boşlukla ayır
+    case CAL_REPEAT_COUNT:
+        if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
+            qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
+            cal_repeat_count_data_received = 1;
+            return 1;
+        }
+        break;
+    case ACTIVE_SENSOR_COUNT:
+        sscanf(input, "%s %s", bitStr, valStr);  // boşlukla ayır
 
-            len = strlen(bitStr);
-            qDebug() << len;
-            for (uint8_t i = 0; i < len; i++) {
-                if (bitStr[i] == '1')
-                    sensor_module_status[i] = 1;
-                else if (bitStr[i] == '0')
-                    sensor_module_status[i] = 0;
-                else {
-                    printf("Geçersiz karakter: %c\n", bitStr[i]);
-                    return 0;
-                }
+        len = strlen(bitStr);
+        qDebug() << len;
+        for (uint8_t i = 0; i < len; i++) {
+            if (bitStr[i] == '1')
+                sensor_module_status[i] = 1;
+            else if (bitStr[i] == '0')
+                sensor_module_status[i] = 0;
+            else {
+                printf("Geçersiz karakter: %c\n", bitStr[i]);
+                return 0;
             }
+        }
 
-            active_sensor_count = (uint8_t)atoi(valStr);
-            if (active_sensor_count) {
-                active_sensor_count_data_received = 1;
-                return 1;
-            }
+        active_sensor_count = (uint8_t)atoi(valStr);
+        if (active_sensor_count) {
+            active_sensor_count_data_received = 1;
+            return 1;
+        }
 
-            break;
-        case CAL_POINTS:
-            if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2) {
-                //if (kal_point_val == 0) return;
-                calibration_points[kal_point] = kal_point_val;
-                sprintf(buff, "L KN%d %d", kal_point, kal_point_val);
-                qDebug() << buff;
-                cal_points_data_received = 1;
-                return 1;
-            }
-            break;
+        break;
+    case CAL_POINTS:
+        if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2) {
+            //if (kal_point_val == 0) return;
+            calibration_points[kal_point] = kal_point_val;
+            sprintf(buff, "L KN%d %d", kal_point, kal_point_val);
+            qDebug() << buff;
+            cal_points_data_received = 1;
+            return 1;
+        }
+        break;
 
-        default:
-            if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
-                qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
-                return 1;
-            }
-            break;
+    default:
+        if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
+            qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
+            return 1;
+        }
+        break;
     }
     return 0;
 }
@@ -279,7 +279,7 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         packet->data_str = strdup(p);
         if (!parseCalibrationData(p))
             //qDebug() << "Veri Alma işlemi başarısız";
-        return 0;
+            return 0;
     }
 
     if (packet->command.type == CMD_KL) {
@@ -357,9 +357,6 @@ int8_t LogParser::processPacket(const Packet* packet) {
     int sensor_no;
     char buff[256];
     char str[50];
-
-    char* bitstring;
-    char* count_str;
 
     if (packet->command.type == CMD_L) return 0;
     if (packet->command.type == CMD_D) return 0;

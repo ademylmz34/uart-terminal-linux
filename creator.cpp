@@ -4,11 +4,11 @@
 QMap<uint16_t, SensorFiles> sensor_map;
 QMap<Om106l_Devices, Om106Files> om106_map;
 
-QFile* main_log_file;
-QTextStream* main_log_stream;
+QFile* main_log_file = NULL;
+QTextStream* main_log_stream = NULL;
 
-QFile* calibration_log_file;
-QTextStream* calibration_stream;
+QFile* calibration_log_file = NULL;
+QTextStream* calibration_stream = NULL;
 
 Creator::Creator() {
     cal_point_array_size = 0;
@@ -19,50 +19,52 @@ Creator::Creator() {
 }
 
 Creator::~Creator() {
-    for (auto& s : sensor_map) {
-        if (s.log_file) {
-            if (s.log_file->isOpen()) s.log_file->close();
-            delete s.log_file;
+    if (is_calibration_folders_created) {
+        for (auto& s : sensor_map) {
+            if (s.log_file) {
+                if (s.log_file->isOpen()) s.log_file->close();
+                delete s.log_file;
+            }
+            if (s.kal_log_file) {
+                if (s.kal_log_file->isOpen()) s.kal_log_file->close();
+                delete s.kal_log_file;
+            }
+            if (s.kal_end_log_file) {
+                if (s.kal_end_log_file->isOpen()) s.kal_end_log_file->close();
+                delete s.kal_end_log_file;
+            }
+
+            delete s.log_stream;
+            delete s.kal_stream;
+            delete s.kal_end_stream;
         }
-        if (s.kal_log_file) {
-            if (s.kal_log_file->isOpen()) s.kal_log_file->close();
-            delete s.kal_log_file;
+
+        for (auto&om : om106_map) {
+            if (om.om106_log_file) {
+                if (om.om106_log_file->isOpen()) om.om106_log_file->close();
+                delete om.om106_log_file;
+            }
+            delete om.om106_stream;
         }
-        if (s.kal_end_log_file) {
-            if (s.kal_end_log_file->isOpen()) s.kal_end_log_file->close();
-            delete s.kal_end_log_file;
+
+        if (main_log_file->isOpen()) {
+            main_log_file->close();
         }
 
-        delete s.log_stream;
-        delete s.kal_stream;
-        delete s.kal_end_stream;
-    }
+        if (main_log_file != NULL) delete main_log_file;
+        if (main_log_stream != NULL) delete main_log_stream;
 
-    for (auto&om : om106_map) {
-        if (om.om106_log_file) {
-            if (om.om106_log_file->isOpen()) om.om106_log_file->close();
-            delete om.om106_log_file;
+
+        if (calibration_log_file->isOpen()) {
+            calibration_log_file->close();
         }
-        delete om.om106_stream;
+
+        if (calibration_log_file != NULL) delete calibration_log_file;
+        if (calibration_stream != NULL) delete calibration_stream;
+
+        om106_map.clear();
+        sensor_map.clear();
     }
-
-    if (main_log_file->isOpen()) {
-        main_log_file->close();
-    }
-
-    delete main_log_file;
-    delete main_log_stream;
-
-
-    if (calibration_log_file->isOpen()) {
-        calibration_log_file->close();
-    }
-
-    delete calibration_log_file;
-    delete calibration_stream;
-
-    om106_map.clear();
-    sensor_map.clear();
 }
 
 QStringList Creator::getFolderNames() {
@@ -180,10 +182,7 @@ uint8_t Creator::createSensorLogFolder(QString sensor_folder) {
 }
 
 uint8_t Creator::createSensorLogFiles(QString folder_name) {
-    sensor_id_counter++;
-
     QString sensor_id    = folder_name.split("/", Qt::SkipEmptyParts).value(1); // s3104 gibi bir değer döndürecek
-    if (sensor_id == "0") return 1;
 
     QString log_path     = folder_name + "/log.txt";
     QString kal_path     = folder_name + "/kalibrasyon.txt";
@@ -207,7 +206,7 @@ uint8_t Creator::createSensorLogFiles(QString folder_name) {
         s.kal_stream = new QTextStream(kalFile);
         s.kal_end_stream = new QTextStream(kalEndFile);
 
-        sensor_map.insert(sensor_id_counter, s);
+        sensor_map.insert(sensor_module_map[sensor_id], s);
         qDebug() << sensor_id << ": tüm dosyalar başarıyla oluşturuldu.";
 
     } else {
@@ -273,10 +272,11 @@ uint8_t Creator::createOm106LogFiles(QString folder_name) {
         if (status == 1) is_calibration_file_created = 1;
         else if (status == 0) is_calibration_file_created = 0;
     }
-
-    for (int i = 0; i < NUM_OF_OM106L_DEVICE; i++) {
+    om106l_device_status[DEVICE_1] = 1;
+    om106l_device_status[DEVICE_2] = 1;
+    for (int i = 1; i <= NUM_OF_OM106L_DEVICE; i++) {
         if (om106l_device_status[i]) {
-            QString path = QString("%1/kabin-%2_omlogs.txt").arg(folder_name).arg(i + 1);
+            QString path = QString("%1/kabin-%2_omlogs.txt").arg(folder_name).arg(i);
             QFile* file = new QFile(path);
             Om106Files om;
             if (file->open(QIODevice::ReadWrite)) {

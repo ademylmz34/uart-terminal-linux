@@ -10,15 +10,21 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    calibration_board.cpp \
+    command_line.cpp \
     creator.cpp \
     log_parser.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    serial.cpp
 
 HEADERS += \
+    calibration_board.h \
+    command_line.h \
     creator.h \
     log_parser.h \
-    mainwindow.h
+    mainwindow.h \
+    serial.h
 
 FORMS += \
     mainwindow.ui
