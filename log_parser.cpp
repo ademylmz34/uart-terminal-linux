@@ -40,7 +40,6 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     else if (strcmp(cmd, "KL") == 0) result.type = CMD_KL;
     else if (strncmp(cmd, "KN", 2) == 0) {
         int kn, s;
-
         if (strstr(cmd, "-S")) {
             if (sscanf(cmd, "KN%d-S%d", &kn, &s) == 2) {
                 if (kn >= 0 && kn <= 4 && s >= 1 && s <= 15) {
@@ -292,22 +291,16 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         }
     }
 
-    if (packet->command.type == CMD_D || packet->command.type == CMD_SMS) {
+    if (packet->command.type == CMD_D || packet->command.type == CMD_KL
+        || packet->command.type == CMD_L || packet->command.type == CMD_SMS)
+    {
         //qDebug() << p;
         packet->data_str = strdup(p);
-        if (!parseCalibrationData(p))
-            //qDebug() << "Veri Alma işlemi başarısız";
-            return 0;
-    }
-
-    if (packet->command.type == CMD_KL) {
-        packet->data_str = strdup(p);
-        return 0;
-    }
-
-    if (packet->command.type == CMD_L) {
-        packet->data_str = strdup(p);
-        return 0;
+        if (packet->command.type == CMD_D)
+        {
+            if (!parseCalibrationData(p))
+                return 0;
+        }
     }
 
     if (packet->command.type == CMD_KN_PWM) {
