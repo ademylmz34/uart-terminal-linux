@@ -1,0 +1,41 @@
+#ifndef ENUM_TYPES_H
+#define ENUM_TYPES_H
+
+enum Request {
+    ACTIVE_SENSOR_COUNT,
+    CAL_POINTS,
+    CAL_STATUS,
+    NONE
+};
+
+enum Om106l_Devices {
+    DEVICE_1 = 1,
+    DEVICE_2
+};
+
+enum CalibrationStates {
+    WAIT_STATE,
+    CLEAN_AIR_STATE,
+    SET_ENVIRONMENT_CONDITIONS_STATE,
+    ZERO_CALIBRATION_STATE,
+    SPAN_CALIBRATION_START_STATE,
+    SPAN_CALIBRATION_MID_STATE,
+    SPAN_CALIBRATION_END_STATE,
+    RETURN_TO_ZERO_STATE,
+    REPEAT_CALIBRATION_STATE
+};
+
+enum Command {
+    CMD_CSF,
+    CMD_CSLF,
+    CMD_COMF,
+    CMD_COMLF,
+    CMD_GCD,
+    CMD_GABC,
+    CMD_R,
+    CMD_SC,
+    CMD_SM,
+    CMD_NONE
+};
+
+#endif // ENUM_TYPES_H

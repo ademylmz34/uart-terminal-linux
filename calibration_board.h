@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 #include "serial.h"
+#include "enum_types.h"
 
 #include <QTimer>
 #include <QString>

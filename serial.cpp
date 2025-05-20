@@ -1,24 +1,18 @@
 #include "serial.h"
+//#include "mainwindow.h"
 
 Serial::Serial(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
-
     serial = new QSerialPort();
-    serial_2 = new QSerialPort();
+    //serial_2 = new QSerialPort();
 
-    selected_port_name   = "/dev/om106_1";
+    selected_port_name   = "/dev/ttyUSB0";
     selected_port_name_2 = "/dev/om106_2";
 
     connection_check_timer   = new QTimer(this);
     connection_check_timer_2 = new QTimer(this);
 
-    connect(connection_check_timer, &QTimer::timeout, this, &Serial::checkConnectionStatus);
-    connect(connection_check_timer_2, &QTimer::timeout, this, &Serial::checkConnectionStatus_2);
-
-    connect(serial, &QSerialPort::readyRead, this, &Serial::readSerial);
-
-    //connection_check_timer->start(2000); // Her 2 saniyede bir kontrol et
-    //connection_check_timer_2->start(2000);
+    baud_rate = 115200;
 
     uart_buffer_index = 0;
     uart_log_parser = new LogParser();
@@ -28,7 +22,7 @@ Serial::~Serial()
 {
     delete uart_log_parser;
     delete serial;
-    delete serial_2;
+    //delete serial_2;
 }
 
 void Serial::setMainWindow(MainWindow *mw) {
@@ -50,15 +44,16 @@ uint8_t Serial::uartLineProcess(char* input)
 void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int deviceIndex)
 {
     QFileInfo portInfo(portPath);
-    bool portExists = portInfo.exists() && portInfo.isSymLink();
+    //bool portExists = portInfo.exists() && portInfo.isSymLink();
+    bool portExists = portInfo.exists();
 
     if (!portExists)
     {
         if (port->isOpen())
         {
             port->close();
-            mainWindow->setLineEditText(QString("Port-%1 bağlantı koptu: %2").arg(deviceIndex + 1).arg(portPath));
-            om106l_device_status[deviceIndex] = 0;
+            mainWindow->setLineEditText(QString("Port-%1 bağlantı koptu: %2").arg(deviceIndex).arg(portPath));
+            om106l_device_status[deviceIndex - 1] = 0;
         }
     }
     else
@@ -70,13 +65,14 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
 
             if (port->open(QIODevice::ReadWrite))
             {
-                mainWindow->setLineEditText(QString("Port-%1 bağlantı yeniden kuruldu: %2").arg(deviceIndex + 1).arg(portPath));
-                om106l_device_status[deviceIndex] = 1;
+                mainWindow->setLineEditText(QString("Port-%1 bağlantı yeniden kuruldu: %2").arg(deviceIndex).arg(portPath));
+                om106l_device_status[deviceIndex - 1] = 1;
+                command_line->getActiveBoardCount();
             }
             else
             {
-                mainWindow->setLineEditText(QString("Port-%1 var ama açılamıyor: %2").arg(deviceIndex + 1).arg(portPath));
-                om106l_device_status[deviceIndex] = 0;
+                mainWindow->setLineEditText(QString("Port-%1 var ama açılamıyor: %2").arg(deviceIndex).arg(portPath));
+                om106l_device_status[deviceIndex - 1] = 0;
             }
         }
     }
@@ -85,7 +81,7 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
 
 void Serial::checkConnectionStatus_2()
 {
-    checkPortConnection(serial_2, selected_port_name_2, DEVICE_2);
+    checkPortConnection(serial, selected_port_name, DEVICE_2);
 }
 
 void Serial::checkConnectionStatus()
@@ -178,7 +174,7 @@ void Serial::connectSerial()
 {
     if (!serial->isOpen())
     {
-        serial->setPortName(selected_port_name_2);
+        serial->setPortName(selected_port_name);
         //serial->setBaudRate(ui->cmbBaudRate->itemText(3).toInt());
         serial->setBaudRate(mainWindow->getCmbBaudRateValue());
         serial->setDataBits(QSerialPort::Data8);
@@ -198,31 +194,6 @@ void Serial::connectSerial()
         serial->close();
         mainWindow->setLineEditText("Port-1 kapatildi.");
         om106l_device_status[DEVICE_1] = 0;
-    }
-
-    if (!serial_2->isOpen())
-    {
-        serial_2->setPortName(selected_port_name);
-        //serial->setBaudRate(ui->cmbBaudRate->itemText(3).toInt());
-        serial_2->setBaudRate(mainWindow->getCmbBaudRateValue());
-        serial_2->setDataBits(QSerialPort::Data8);
-        serial_2->setParity(QSerialPort::NoParity);
-        serial_2->setStopBits(QSerialPort::OneStop);
-        serial_2->setFlowControl(QSerialPort::NoFlowControl);
-
-        if (serial_2->open(QIODevice::ReadWrite))
-        {
-            mainWindow->setLineEditText("Port-2 acildi.");
-            om106l_device_status[DEVICE_2] = 1;
-
-        } else {
-            mainWindow->setLineEditText("Port-2 acilamadi.");
-            om106l_device_status[DEVICE_2] = 0;
-        }
-    } else {
-        serial_2->close();
-        mainWindow->setLineEditText("Port-2 kapatildi.");
-        om106l_device_status[DEVICE_2] = 0;
     }
 }
 

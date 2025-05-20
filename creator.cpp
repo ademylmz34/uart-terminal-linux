@@ -14,7 +14,7 @@ Creator::Creator() {
     cal_point_array_size = 0;
     is_main_log_file_created = 0;
     is_calibration_file_created = 0;
-    root_folder = "O3_Kalibrasyon_Loglari-2";
+    root_folder = "O3_Kalibrasyon_Loglari-3";
     om106l_folder = QString("%1/om106Logs").arg(root_folder);
 }
 

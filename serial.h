@@ -1,15 +1,19 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#define RX_BUFFER_LEN 1024
-
 #include "mainwindow.h"
 #include "log_parser.h"
+#include "enum_types.h"
+
+#define RX_BUFFER_LEN 1024
+
+#include "command_line.h"
 
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QTimer>
 
+class CommandLine;
 class MainWindow;
 
 class Serial: public QObject {
@@ -18,10 +22,19 @@ public:
     explicit Serial(QObject *parent = nullptr);
     ~Serial();
 
+    QTimer *connection_check_timer;
+    QTimer *connection_check_timer_2;
+    QSerialPort *serial;
+    QSerialPort *serial_2;
+
     void sendData(QString);
     void setMainWindow(MainWindow*);
     void connectSerial();
     void detectOm106Devices();
+
+    void checkConnectionStatus();
+    void checkConnectionStatus_2();
+    void readSerial();
 private:
     MainWindow *mainWindow;
     LogParser* uart_log_parser;
@@ -30,19 +43,14 @@ private:
     char uart_rx_buffer[RX_BUFFER_LEN];
     uint16_t uart_buffer_index;
 
-    QSerialPort *serial;
-    QSerialPort *serial_2;
+    qint32 baud_rate;
+
     QString selected_port_name;
     QString selected_port_name_2;
-    QTimer *connection_check_timer;
-    QTimer *connection_check_timer_2;
     QString line;
 
     uint8_t uartLineProcess(char*);
     QString readBytes(QSerialPort*);
-    void readSerial();
-    void checkConnectionStatus();
-    void checkConnectionStatus_2();
     void checkPortConnection(QSerialPort*, const QString&, int);
 };
 

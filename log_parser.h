@@ -1,6 +1,8 @@
 #ifndef LOG_PARSER_H
 #define LOG_PARSER_H
 
+#include "enum_types.h"
+
 #include <stdint.h>
 #include "mainwindow.h"
 

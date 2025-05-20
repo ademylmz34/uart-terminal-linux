@@ -22,6 +22,7 @@ HEADERS += \
     calibration_board.h \
     command_line.h \
     creator.h \
+    enum_types.h \
     log_parser.h \
     mainwindow.h \
     serial.h

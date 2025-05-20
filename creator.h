@@ -1,6 +1,8 @@
 #ifndef CREATOR_H
 #define CREATOR_H
 
+#include "enum_types.h"
+
 #include <QString>
 #include <QDir>
 #include <QDateTime>

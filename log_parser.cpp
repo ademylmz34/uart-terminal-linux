@@ -186,56 +186,74 @@ int8_t LogParser::parseCalibrationData(const char* input)
     char buff[256];
     char bitStr[32];
     char valStr[8];
+    float o3_average;
+    int calibration_ppb;
+    int calibration_state;
+    int calibration_duration;
+    int stabilization_timer;
+    int repeat_calibration;
+    int pwm_duty_cycle;
+    int pwm_period;
+
     size_t len;
+
     switch(current_request) {
-    case CAL_REPEAT_COUNT:
-        if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
-            qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
-            cal_repeat_count_data_received = 1;
-            return 1;
-        }
-        break;
-    case ACTIVE_SENSOR_COUNT:
-        sscanf(input, "%s %s", bitStr, valStr);  // boşlukla ayır
+        case ACTIVE_SENSOR_COUNT:
+            sscanf(input, "%s %s", bitStr, valStr);  // boşlukla ayır
 
-        len = strlen(bitStr);
-        qDebug() << len;
-        for (uint8_t i = 0; i < len; i++) {
-            if (bitStr[i] == '1')
-                sensor_module_status[i] = 1;
-            else if (bitStr[i] == '0')
-                sensor_module_status[i] = 0;
-            else {
-                printf("Geçersiz karakter: %c\n", bitStr[i]);
-                return 0;
+            len = strlen(bitStr);
+            qDebug() << len;
+            for (uint8_t i = 0; i < len; i++) {
+                if (bitStr[i] == '1')
+                    sensor_module_status[i] = 1;
+                else if (bitStr[i] == '0')
+                    sensor_module_status[i] = 0;
+                else {
+                    printf("Geçersiz karakter: %c\n", bitStr[i]);
+                    return 0;
+                }
             }
-        }
 
-        active_sensor_count = (uint8_t)atoi(valStr);
-        if (active_sensor_count) {
-            active_sensor_count_data_received = 1;
-            return 1;
-        }
+            active_sensor_count = (uint8_t)atoi(valStr);
+            if (active_sensor_count) {
+                request_data_status[current_request] = 1;
+                return 1;
+            }
 
-        break;
-    case CAL_POINTS:
-        if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2) {
-            //if (kal_point_val == 0) return;
-            calibration_points[kal_point] = kal_point_val;
-            sprintf(buff, "L KN%d %d", kal_point, kal_point_val);
-            qDebug() << buff;
-            cal_points_data_received = 1;
-            return 1;
-        }
-        break;
+            break;
+        case CAL_POINTS:
+            if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2)
+            {
+                //if (kal_point_val == 0) return;
+                calibration_points[kal_point] = kal_point_val;
+                sprintf(buff, "L KN%d %d", kal_point, kal_point_val);
+                qDebug() << buff;
+                request_data_status[current_request] = 1;
+                return 1;
+            }
+            break;
 
-    default:
-        if (sscanf(input, "Yeni kalibrasyon sayisi %d", &calibration_repeat_count) == 1) {
-            qDebug() << "Calibration Repeat Count: " << QString::number(calibration_repeat_count);
-            return 1;
-        }
-        break;
+        case CAL_STATUS:
+            qDebug() << input;
+            if (sscanf(input, "%d %d %d %d %d %f %d %d", &calibration_ppb, &calibration_state, &calibration_duration, &stabilization_timer,
+                       &repeat_calibration, &o3_average, &pwm_duty_cycle, &pwm_period) == 8) {
+                cal_status_t.calibration_ppb = calibration_ppb;
+                cal_status_t.calibration_state = calibration_state;
+                cal_status_t.calibration_duration = calibration_duration;
+                cal_status_t.stabilization_timer = stabilization_timer;
+                cal_status_t.repeat_calibration = repeat_calibration;
+                cal_status_t.o3_average = o3_average;
+                cal_status_t.pwm_duty_cycle = pwm_duty_cycle;
+                cal_status_t.pwm_period = pwm_period;
+
+                request_data_status[current_request] = 1;
+                return 1;
+            }
+            break;
+        default:
+            break;
     }
+
     return 0;
 }
 
@@ -275,7 +293,7 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     }
 
     if (packet->command.type == CMD_D || packet->command.type == CMD_SMS) {
-        qDebug() << "aa";
+        //qDebug() << p;
         packet->data_str = strdup(p);
         if (!parseCalibrationData(p))
             //qDebug() << "Veri Alma işlemi başarısız";

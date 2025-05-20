@@ -14,18 +14,15 @@ uint8_t is_calibration_folders_created;
 CalibrationBoard::CalibrationBoard(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
     get_calibration_data_timer = new QTimer(this);
+
     is_oml_log_folder_created = 0;
     is_calibration_folders_created = 0;
     connect(get_calibration_data_timer, &QTimer::timeout, this, &CalibrationBoard::checkTime);
 
     memset(sensor_module_status, 0, NUM_OF_SENSOR_BOARD);
-    cal_repeat_count_command = "?gpr";
-    active_sensor_count_command = "?gpa";
-    cal_points_request_command = "?gpd";
-    uint8_t temp_values[15] = {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    /*uint8_t temp_values[15] = {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
-    memcpy(sensor_module_status, temp_values, sizeof(sensor_module_status));
-
+    memcpy(sensor_module_status, temp_values, sizeof(sensor_module_status));*/
 }
 
 CalibrationBoard::~CalibrationBoard()
@@ -33,7 +30,8 @@ CalibrationBoard::~CalibrationBoard()
 
 }
 
-void CalibrationBoard::setMainWindow(MainWindow *mw) {
+void CalibrationBoard::setMainWindow(MainWindow *mw)
+{
     mainWindow = mw;
 }
 
@@ -147,7 +145,6 @@ uint8_t CalibrationBoard::createSensorFolders()
     return 1;
 }
 
-
 uint8_t CalibrationBoard::isArrayEmpty(const uint8_t* arr, size_t len)
 {
     static const uint8_t zero_block[32] = {0}; // max karşılaştırma için buffer
@@ -199,55 +196,20 @@ uint8_t CalibrationBoard::parseLineEditInput(const QStringList& inputList, QStri
 
 void CalibrationBoard::getDataFromMCU()
 {
-    switch (current_request) {
-    case CAL_REPEAT_COUNT:
-        if (data_received_timeout == 0) {
-            qDebug() << "Calibration repeat count data couldn't get received";
-            current_request = ACTIVE_SENSOR_COUNT;
-            request_command = active_sensor_count_command;
-        } else if (cal_repeat_count_data_received) {
-            qDebug() << "Calibration repeat count data get received";
-            current_request = ACTIVE_SENSOR_COUNT;
-            data_received_timeout = 10;
-            request_command = active_sensor_count_command;
-        } else {
-            serial->sendData(request_command);
-        }
-        break;
-
-    case ACTIVE_SENSOR_COUNT:
-        if (data_received_timeout == 0) {
-            qDebug() << "Active sensor count data couldn't get received";
-            current_request = NONE;
-            request_command = "";
-        } else if (active_sensor_count_data_received) {
-            qDebug() << "Active sensor count data get received";
-            current_request = NONE;
-            request_command = "";
-            //data_received_time = 10;
-        } else {
-            serial->sendData(request_command);
-        }
-        break;
-
-    case CAL_POINTS:
-        if (data_received_timeout == 0) {
-            qDebug() << "Calibration points data couldn't get received";
-            current_request = NONE;
-            request_command = "";
-        } else if (cal_points_data_received) {
-            qDebug() << "Calibration points data get received";
-            current_request = NONE;
-            request_command = "";
-        } else {
-            serial->sendData(request_command);
-        }
-        break;
-
-    default:
-        get_calibration_data_timer->stop();
-        break;
+    if (data_received_timeout == 0) {
+        qDebug() << "Request data couldn't get received";
+        current_request = NONE;
+        request_command = "";
+    } else if (request_data_status[current_request]) {
+        qDebug() << "Request data get received";
+        current_request = NONE;
+        request_command = "";
+        request_data_status[current_request] = 0;
+    } else {
+        serial->sendData(request_command);
     }
+
+    if (current_request == NONE) get_calibration_data_timer->stop();
 }
 
 void CalibrationBoard::checkTime()

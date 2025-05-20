@@ -3,25 +3,14 @@
 
 #include "mainwindow.h"
 #include "calibration_board.h"
+#include "enum_types.h"
 
 #include <stdint.h>
 
 #include <QString>
 
 class CalibrationBoard;
-
-enum Command {
-    CMD_CSF,
-    CMD_CSLF,
-    CMD_COMF,
-    CMD_COMLF,
-    CMD_GCD,
-    CMD_GABC,
-    CMD_R,
-    CMD_SC,
-    CMD_SM,
-    CMD_NONE
-};
+class MainWindow;
 
 class CommandLine : public QObject {
 
@@ -32,11 +21,14 @@ public:
     ~CommandLine();
 
     void setMainWindow(MainWindow*);
+    void getActiveBoardCount();
+    void getCalStatus();
     void commandLineProcess();
-
+    void startCalibrationRequest(Request, QString);
 private:
     MainWindow *mainWindow = nullptr;
 
+    void getCalibrationData();
     void parseCommand(QString);
     uint8_t processCommand(Command);
 };
