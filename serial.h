@@ -51,6 +51,7 @@ private:
 
     uint8_t uartLineProcess(char*);
     QString readBytes(QSerialPort*);
+    void whenConnectionLost();
     void checkPortConnection(QSerialPort*, const QString&, int);
 };
 

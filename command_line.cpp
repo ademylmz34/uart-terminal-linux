@@ -83,6 +83,7 @@ uint8_t CommandLine::processCommand(Command command_type)
             break;
 
         case CMD_R:
+            serial->sendData(mcu_command);
             break;
 
         case CMD_SM:

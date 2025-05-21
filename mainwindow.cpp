@@ -4,7 +4,19 @@
 #include "command_line.h"
 #include "calibration_board.h"
 
+#include <QCloseEvent>
+
 Creator file_folder_creator;
+
+QDateTime calibration_start_dt;
+QDateTime calibration_end_dt;
+QDateTime calibration_ppb_start_dt;
+QDateTime calibration_ppb_end_dt;
+
+QDateTime current_dt;
+
+int cal_ppb_cal_time;
+
 int calibration_repeat_count;
 int kal_point;
 int kal_point_val;
@@ -24,8 +36,10 @@ QStringList sensor_ids;
 QMap<QString, uint8_t> sensor_folder_create_status;
 QMap<QString, uint8_t> sensor_log_folder_create_status;
 QMap<QString, uint8_t> sensor_module_map;
-QTimer *get_calibration_status_timer;
+QMap<QString, QString> log_folder_names;
 
+QTimer *get_calibration_status_timer;
+QTimer *mcu_uart_connection_status_timer;
 Serial *serial;
 CommandLine *command_line;
 CalibrationBoard *calibration_board;
@@ -78,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     calibration_board->setMainWindow(this);
 
     get_calibration_status_timer = new QTimer(this);
-
+    mcu_uart_connection_status_timer = new QTimer(this);
     // Baudrate seçenekleri
     ui->cmbBaudRate->addItems({"4800", "9600", "19200", "115200"});
 
@@ -90,9 +104,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(serial->connection_check_timer_2, &QTimer::timeout, serial, &Serial::checkConnectionStatus_2);
 
     connect(serial->serial, &QSerialPort::readyRead, serial, &Serial::readSerial);
-    connect(qApp, &QCoreApplication::aboutToQuit, this, &MainWindow::onAppExit);
 
     connect(get_calibration_status_timer, &QTimer::timeout, command_line, &CommandLine::getCalStatus);
+    connect(mcu_uart_connection_status_timer, &QTimer::timeout, this, &MainWindow::sendHeartBeat);
 
     ui->btnSend->setStyleSheet(
         R"(
@@ -114,10 +128,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     serial->connection_check_timer->start(2000); // Her 2 saniyede bir kontrol et
     //serial->connection_check_timer_2->start(2000);
     get_calibration_status_timer->start(20000);
+    mcu_uart_connection_status_timer->start(5000);
 }
 
 MainWindow::~MainWindow()
 {
+    delete get_calibration_status_timer;
+    delete mcu_uart_connection_status_timer;
     delete serial;
     delete command_line;
     delete calibration_board;
@@ -149,9 +166,37 @@ void MainWindow::onBtnClearClicked()
     ui->plainTextEdit->clear();
 }
 
-void MainWindow::onAppExit()
+void MainWindow::sendHeartBeat()
 {
+    serial->sendData("!PING");
+    if (!serial->serial->waitForBytesWritten(500)) {
+        qDebug() << "Veri yazılamadı!";
+    } else {
+        qDebug() << "Veri gönderildi!";
+    }
+}
 
+void MainWindow::aboutToExit()
+{
+    QFile log("crash_log.txt");
+    log.open(QIODevice::Append | QIODevice::Text);
+    QTextStream out(&log);
+    out << "std::terminate çağrıldı. Muhtemelen exception yakalanmadı.\n";
+
+    serial->sendData("?r");
+    if (!serial->serial->waitForBytesWritten(500)) {
+        qDebug() << "Veri yazılamadı!";
+    } else {
+        qDebug() << "Veri gönderildi!";
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    /*
+    qDebug() << "Uygulama kapanıyor, işlemler yapılıyor...";
+    aboutToExit();
+    event->accept();  // Kapanışa izin ver*/
 }
 
 

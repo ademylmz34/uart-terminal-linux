@@ -38,6 +38,7 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     else if (strcmp(cmd, "L") == 0) result.type = CMD_L;
     else if (strcmp(cmd, "D") == 0) result.type = CMD_D;
     else if (strcmp(cmd, "KL") == 0) result.type = CMD_KL;
+    else if (strcmp(cmd, "KS") == 0) result.type = CMD_KS;
     else if (strncmp(cmd, "KN", 2) == 0) {
         int kn, s;
         if (strstr(cmd, "-S")) {
@@ -180,7 +181,7 @@ int8_t LogParser::parsePwmData(const char* input, PWMData* pwm_data) {
     return 0;
 }
 
-int8_t LogParser::parseCalibrationData(const char* input)
+void LogParser::parseCalibrationData(const char* input)
 {
     char buff[256];
     char bitStr[32];
@@ -209,14 +210,12 @@ int8_t LogParser::parseCalibrationData(const char* input)
                     sensor_module_status[i] = 0;
                 else {
                     printf("Geçersiz karakter: %c\n", bitStr[i]);
-                    return 0;
                 }
             }
 
             active_sensor_count = (uint8_t)atoi(valStr);
             if (active_sensor_count) {
                 request_data_status[current_request] = 1;
-                return 1;
             }
 
             break;
@@ -228,7 +227,6 @@ int8_t LogParser::parseCalibrationData(const char* input)
                 sprintf(buff, "L KN%d %d", kal_point, kal_point_val);
                 qDebug() << buff;
                 request_data_status[current_request] = 1;
-                return 1;
             }
             break;
 
@@ -246,14 +244,44 @@ int8_t LogParser::parseCalibrationData(const char* input)
                 cal_status_t.pwm_period = pwm_period;
 
                 request_data_status[current_request] = 1;
-                return 1;
             }
             break;
         default:
             break;
     }
+}
 
-    return 0;
+void LogParser::parseCalibrationTime(const char* input) {
+    int year, month, day, hour, minute, second, cal_ppb;
+    QDate date;
+    QTime time;
+
+    if (sscanf(input, "KalBasSaati %d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second) == 6)
+    {
+        date.setDate(year, month, day);
+        time.setHMS(hour, minute, second);
+        calibration_start_dt = QDateTime(date, time);
+    } else if(sscanf(input, "KalBitisSaati %d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second) == 6)
+    {
+        date.setDate(year, month, day);
+        time.setHMS(hour, minute, second);
+        calibration_end_dt = QDateTime(date, time);
+    } else if(sscanf(input, "Kal%d-BasSaati %d-%d-%d %d:%d:%d", &cal_ppb, &year, &month, &day, &hour, &minute, &second) == 7)
+    {
+        date.setDate(year, month, day);
+        time.setHMS(hour, minute, second);
+        calibration_ppb_start_dt = QDateTime(date, time);
+        cal_ppb_cal_time = cal_ppb;
+    } else if(sscanf(input, "Kal%d-BitisSaati %d-%d-%d %d:%d:%d", &cal_ppb, &year, &month, &day, &hour, &minute, &second) == 7)
+    {
+        date.setDate(year, month, day);
+        time.setHMS(hour, minute, second);
+        calibration_ppb_end_dt = QDateTime(date, time);
+        cal_ppb_cal_time = cal_ppb;
+    } else
+    {
+        qDebug() << "Tarih ve saat ayrıştırılamadı!";
+    }
 }
 
 int8_t LogParser::parseLine(const char* input, Packet* packet) {
@@ -292,15 +320,13 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     }
 
     if (packet->command.type == CMD_D || packet->command.type == CMD_KL
-        || packet->command.type == CMD_L || packet->command.type == CMD_SMS)
+        || packet->command.type == CMD_L || packet->command.type == CMD_KS || packet->command.type == CMD_SMS)
     {
         //qDebug() << p;
         packet->data_str = strdup(p);
-        if (packet->command.type == CMD_D)
-        {
-            if (!parseCalibrationData(p))
-                return 0;
-        }
+        if (packet->command.type == CMD_D || packet->command.type == CMD_SMS) parseCalibrationData(p);
+        else if(packet->command.type == CMD_KS) parseCalibrationTime(p);
+        return 0;
     }
 
     if (packet->command.type == CMD_KN_PWM) {
@@ -403,9 +429,15 @@ int8_t LogParser::processPacket(const Packet* packet) {
         *(sensor_map[packet->command.s_no].log_stream) << buff << "\n";
         break;
 
+    case CMD_KS:
     case CMD_KL:
         sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
         *(calibration_stream) << buff;
+        if (packet->command.type == CMD_KS) {
+            //cal_ppb_cal_time ui->labelCalPpb->setText(QString::number(cal_ppb_cal_time));
+            //QString formatted = calibration_dt.toString("dd.MM.yyyy hh:mm:ss");
+            //calibration_dt ui->labelDateTime->setText(formatted);
+        }
         break;
 
     case CMD_L:

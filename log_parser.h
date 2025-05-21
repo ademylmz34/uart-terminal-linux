@@ -26,6 +26,7 @@ public:
         CMD_SMS,
         CMD_SK,
         CMD_KL,
+        CMD_KS,
         CMD_KN_S,
         CMD_KN_O3,
         CMD_KN_T,
@@ -44,7 +45,7 @@ public:
     // KOMUT ve PARAMETRELER
     typedef struct {
         CommandType type;
-        int8_t th_no;
+        int8_t th_no; // silinecek
         int8_t kn_no;
         int8_t s_no;
         int8_t or_no;
@@ -92,7 +93,8 @@ private:
     int8_t repeat_calibration_index;
     int8_t calibration_completed;
     ParsedCommand parseCommandExtended(const char*);
-    int8_t parseCalibrationData(const char*);
+    void parseCalibrationData(const char*);
+    void parseCalibrationTime(const char*);
     int8_t parseThData(const char*, THData*);
     int8_t parsePwmData(const char*, PWMData*);
     void printCommandInfo(const Packet*);

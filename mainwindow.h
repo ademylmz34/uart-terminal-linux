@@ -49,6 +49,15 @@ struct CalibrationStatus {
 
 extern CalibrationStatus cal_status_t;
 
+extern QDateTime calibration_start_dt;
+extern QDateTime calibration_end_dt;
+extern QDateTime calibration_ppb_start_dt;
+extern QDateTime calibration_ppb_end_dt;
+
+extern QDateTime current_dt;
+
+extern int cal_ppb_cal_time;
+
 extern QMap<Request, QString> request_commands;
 extern QMap<Request, uint8_t> request_data_status;
 extern QMap<CalibrationStates, QString> calibration_state_str;
@@ -62,6 +71,7 @@ extern QMap<Om106l_Devices, Om106Files> om106_map;
 extern QMap<QString, uint8_t> sensor_folder_create_status;
 extern QMap<QString, uint8_t> sensor_log_folder_create_status;
 extern QMap<QString, uint8_t> sensor_module_map;
+extern QMap<QString, QString> log_folder_names;
 
 extern QFile* main_log_file;
 extern QTextStream* main_log_stream;
@@ -91,6 +101,8 @@ extern QStringList sensor_ids;
 
 extern QTimer *get_calibration_data_timer;
 extern QTimer *get_calibration_status_timer;
+extern QTimer *mcu_uart_connection_status_timer;
+
 extern uint8_t data_received_timeout;
 extern uint8_t is_calibration_folders_created;
 //extern QStringList sensors_folder;
@@ -125,6 +137,9 @@ class MainWindow : public QMainWindow
     private:
         Ui::MainWindow *ui;
 
-        void onAppExit();
+        void sendHeartBeat();
+        void aboutToExit();
+    protected:
+        void closeEvent(QCloseEvent *event) override;
 };
 #endif // MAINWINDOW_H

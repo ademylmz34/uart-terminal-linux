@@ -27,7 +27,7 @@ CalibrationBoard::CalibrationBoard(QObject *parent): QObject(parent)  // Ã¼st sÄ
 
 CalibrationBoard::~CalibrationBoard()
 {
-
+    delete get_calibration_data_timer;
 }
 
 void CalibrationBoard::setMainWindow(MainWindow *mw)

@@ -1,5 +1,6 @@
 #include "serial.h"
 //#include "mainwindow.h"
+#include <QMessageBox>
 
 Serial::Serial(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
@@ -20,6 +21,8 @@ Serial::Serial(QObject *parent): QObject(parent)  // üst sınıfa parametre gö
 
 Serial::~Serial()
 {
+    delete connection_check_timer;
+    delete connection_check_timer_2;
     delete uart_log_parser;
     delete serial;
     //delete serial_2;
@@ -54,6 +57,7 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
             port->close();
             mainWindow->setLineEditText(QString("Port-%1 bağlantı koptu: %2").arg(deviceIndex).arg(portPath));
             om106l_device_status[deviceIndex - 1] = 0;
+            if (cal_status_t.calibration_state == WAIT_STATE) whenConnectionLost();
         }
     }
     else
@@ -224,6 +228,37 @@ void Serial::sendData(QString command)
     if (serial->isOpen()) {
         serial->write(command.toUtf8());
         serial->write("\r\n");
+    }
+}
+
+void Serial::whenConnectionLost()
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(mainWindow,
+                                  "Onay",
+                                  "Kalibrasyon sırasında bağlantı koptu, son log dosyalarının silinmesini istiyor musunuz?",
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        qDebug() << "Kullanıcı EVET dedi.";
+        if (!log_folder_names.isEmpty()) {
+            for (const QString &key : log_folder_names.keys()) {
+                QString folderPath = log_folder_names.value(key);
+                QDir dir(folderPath);
+
+                if (dir.exists()) {
+                    bool success = dir.removeRecursively();
+                    qDebug() << key << (success ? "silindi" : "silinemedi") << folderPath;
+                } else {
+                    qDebug() << key << "zaten yok" << folderPath;
+                }
+            }
+        } else {
+            qDebug() << "Log klasörleri zaten oluşturulmamış";
+        }
+    } else {
+        qDebug() << "Kullanıcı HAYIR dedi.";
+        // işlemleri burada yap
     }
 }
 

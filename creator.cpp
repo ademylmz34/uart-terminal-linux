@@ -161,12 +161,14 @@ uint8_t Creator::createSensorFolder(QString folder_name) {
 uint8_t Creator::createSensorLogFolder(QString sensor_folder) {
     time_stamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmm");
     sensor_log_folder = QString("%1/%2/%3_logs").arg(root_folder).arg(sensor_folder).arg(time_stamp);
+
     if (dir.exists(sensor_log_folder)) {
         qDebug() << "Sensör log klasörü zaten var: " << sensor_log_folder;
         return 2;
     } else {
         if (dir.mkpath(sensor_log_folder)) {
             qDebug() << "Sensör log klasörü oluşturuldu:" << sensor_log_folder;
+            log_folder_names.insert(sensor_folder, sensor_log_folder); // used for deleting log files when uart connection lost
             if (createSensorLogFiles(sensor_log_folder)) {
                 qDebug() << "Sensör log klasörü dosyaları oluşturuldu:" << sensor_log_folder;
             } else {
@@ -245,6 +247,7 @@ uint8_t Creator::createOm106LogFolder() {
     } else {
         if (dir.mkpath(om106_log_folder)) {
             qDebug() << "Om106 log klasörü oluşturuldu:" << om106_log_folder;
+            log_folder_names.insert("om106Logs", om106_log_folder); // used for deleting log files when uart connection lost
             if (createOm106LogFiles(om106_log_folder)) {
                 qDebug() << "Om106 log klasörü dosyaları oluşturuldu:" << om106_log_folder;
             } else {
