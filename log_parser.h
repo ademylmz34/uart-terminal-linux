@@ -27,6 +27,7 @@ public:
         CMD_SK,
         CMD_KL,
         CMD_KS,
+        CMD_RST,
         CMD_KN_S,
         CMD_KN_O3,
         CMD_KN_T,

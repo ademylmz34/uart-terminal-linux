@@ -24,7 +24,6 @@ public:
     void startCalibrationProcess();
 private:
     MainWindow *mainWindow = nullptr;
-    uint8_t is_oml_log_folder_created;
 
     uint8_t createCalibrationFolders();
     uint8_t isArrayEmpty(const uint8_t*, size_t);

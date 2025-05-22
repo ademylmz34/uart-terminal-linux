@@ -5,6 +5,7 @@
 #include <csignal>
 
 void handleCrash(int sig) {
+    command_line->messageBox("Uygulama çöktü, son log dosyalarının silinmesini istiyor musunuz?");
     serial->sendData("?r");
     if (!serial->serial->waitForBytesWritten(500)) {
         qDebug() << "Veri yazılamadı!";

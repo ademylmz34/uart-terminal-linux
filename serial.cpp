@@ -1,6 +1,6 @@
 #include "serial.h"
 //#include "mainwindow.h"
-#include <QMessageBox>
+
 
 Serial::Serial(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
@@ -57,7 +57,7 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
             port->close();
             mainWindow->setLineEditText(QString("Port-%1 bağlantı koptu: %2").arg(deviceIndex).arg(portPath));
             om106l_device_status[deviceIndex - 1] = 0;
-            if (cal_status_t.calibration_state == WAIT_STATE) whenConnectionLost();
+            whenConnectionLost();
         }
     }
     else
@@ -65,13 +65,15 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
         if (!port->isOpen())
         {
             port->setPortName(portPath);  // /dev/om106_1
-            port->setBaudRate(mainWindow->getCmbBaudRateValue());
+            port->setBaudRate(BR_115200);
 
             if (port->open(QIODevice::ReadWrite))
             {
                 mainWindow->setLineEditText(QString("Port-%1 bağlantı yeniden kuruldu: %2").arg(deviceIndex).arg(portPath));
                 om106l_device_status[deviceIndex - 1] = 1;
                 command_line->getActiveBoardCount();
+                mainWindow->disableConnectionButton();
+                mainWindow->disableBaudCmb();
             }
             else
             {
@@ -233,32 +235,6 @@ void Serial::sendData(QString command)
 
 void Serial::whenConnectionLost()
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(mainWindow,
-                                  "Onay",
-                                  "Kalibrasyon sırasında bağlantı koptu, son log dosyalarının silinmesini istiyor musunuz?",
-                                  QMessageBox::Yes | QMessageBox::No);
-
-    if (reply == QMessageBox::Yes) {
-        qDebug() << "Kullanıcı EVET dedi.";
-        if (!log_folder_names.isEmpty()) {
-            for (const QString &key : log_folder_names.keys()) {
-                QString folderPath = log_folder_names.value(key);
-                QDir dir(folderPath);
-
-                if (dir.exists()) {
-                    bool success = dir.removeRecursively();
-                    qDebug() << key << (success ? "silindi" : "silinemedi") << folderPath;
-                } else {
-                    qDebug() << key << "zaten yok" << folderPath;
-                }
-            }
-        } else {
-            qDebug() << "Log klasörleri zaten oluşturulmamış";
-        }
-    } else {
-        qDebug() << "Kullanıcı HAYIR dedi.";
-        // işlemleri burada yap
-    }
+    command_line->messageBox("Kalibrasyon sırasında bağlantı koptu, son log dosyalarının silinmesini istiyor musunuz?");
 }
 

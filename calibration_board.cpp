@@ -70,7 +70,6 @@ uint8_t CalibrationBoard::createCalibrationFolders()
 
     }
 
-
     if (!is_oml_log_folder_created) {
         status = file_folder_creator.createOm106LogFolder();
         if (status == 1) {
@@ -204,7 +203,6 @@ void CalibrationBoard::getDataFromMCU()
         qDebug() << "Request data get received";
         current_request = NONE;
         request_command = "";
-        request_data_status[current_request] = 0;
     } else {
         serial->sendData(request_command);
     }

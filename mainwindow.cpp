@@ -43,7 +43,9 @@ QTimer *mcu_uart_connection_status_timer;
 Serial *serial;
 CommandLine *command_line;
 CalibrationBoard *calibration_board;
+
 uint8_t is_main_folder_created;
+uint8_t is_oml_log_folder_created;
 
 CalibrationStatus cal_status_t = { .o3_average = 0, .calibration_ppb = 0, .calibration_state = 0, .calibration_duration = 0,
                                    .stabilization_timer = 0, .repeat_calibration = 0, .pwm_duty_cycle = 0, .pwm_period = 0};
@@ -123,12 +125,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         )"
     );
 
-    cal_status_t.calibration_state = SPAN_CALIBRATION_START_STATE;
+    cal_status_t.calibration_state = WAIT_STATE;
     is_main_folder_created = file_folder_creator.createMainFolder();
-    serial->connection_check_timer->start(2000); // Her 2 saniyede bir kontrol et
+    serial->connection_check_timer->start(100); // Her 100 milisaniyede bir kontrol et
     //serial->connection_check_timer_2->start(2000);
-    get_calibration_status_timer->start(20000);
-    mcu_uart_connection_status_timer->start(5000);
+    get_calibration_status_timer->start(15000);
+    mcu_uart_connection_status_timer->start(2000);
 }
 
 MainWindow::~MainWindow()
@@ -161,6 +163,16 @@ void MainWindow::Log2LinePlainText(const QString &command)
     }
 }
 
+void MainWindow::disableBaudCmb()
+{
+    ui->cmbBaudRate->setEnabled(false);
+}
+
+void MainWindow::disableConnectionButton()
+{
+    ui->btnConnect->setEnabled(false);
+}
+
 void MainWindow::onBtnClearClicked()
 {
     ui->plainTextEdit->clear();
@@ -169,34 +181,30 @@ void MainWindow::onBtnClearClicked()
 void MainWindow::sendHeartBeat()
 {
     serial->sendData("!PING");
-    if (!serial->serial->waitForBytesWritten(500)) {
+    serial->serial->waitForBytesWritten(1000);
+    /*if (!serial->serial->waitForBytesWritten(500)) {
         qDebug() << "Veri yazılamadı!";
     } else {
         qDebug() << "Veri gönderildi!";
-    }
+    }*/
 }
 
 void MainWindow::aboutToExit()
 {
-    QFile log("crash_log.txt");
+    /*QFile log("crash_log.txt");
     log.open(QIODevice::Append | QIODevice::Text);
     QTextStream out(&log);
-    out << "std::terminate çağrıldı. Muhtemelen exception yakalanmadı.\n";
-
+    out << "std::terminate çağrıldı. Muhtemelen exception yakalanmadı.\n"; */
+    command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
     serial->sendData("?r");
-    if (!serial->serial->waitForBytesWritten(500)) {
-        qDebug() << "Veri yazılamadı!";
-    } else {
-        qDebug() << "Veri gönderildi!";
-    }
+    serial->serial->waitForBytesWritten(2000);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    /*
     qDebug() << "Uygulama kapanıyor, işlemler yapılıyor...";
     aboutToExit();
-    event->accept();  // Kapanışa izin ver*/
+    event->accept();  // Kapanışa izin ver
 }
 
 

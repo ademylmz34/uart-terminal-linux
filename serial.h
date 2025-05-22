@@ -6,6 +6,7 @@
 #include "enum_types.h"
 
 #define RX_BUFFER_LEN 1024
+#define BR_115200 115200
 
 #include "command_line.h"
 
@@ -34,6 +35,7 @@ public:
 
     void checkConnectionStatus();
     void checkConnectionStatus_2();
+    void whenConnectionLost();
     void readSerial();
 private:
     MainWindow *mainWindow;
@@ -51,7 +53,6 @@ private:
 
     uint8_t uartLineProcess(char*);
     QString readBytes(QSerialPort*);
-    void whenConnectionLost();
     void checkPortConnection(QSerialPort*, const QString&, int);
 };
 

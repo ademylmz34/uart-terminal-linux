@@ -24,6 +24,7 @@ public:
     void getActiveBoardCount();
     void getCalStatus();
     void commandLineProcess();
+    void messageBox(QString);
     void startCalibrationRequest(Request, QString);
 private:
     MainWindow *mainWindow = nullptr;

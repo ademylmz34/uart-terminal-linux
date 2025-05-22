@@ -83,6 +83,7 @@ extern Creator file_folder_creator;
 extern int calibration_repeat_count;
 
 extern uint8_t is_main_folder_created;
+extern uint8_t is_oml_log_folder_created;
 
 extern int kal_point;
 extern int kal_point_val;
@@ -127,6 +128,8 @@ class MainWindow : public QMainWindow
         int getCmbBaudRateValue();
 
         QString getLineEditText() const;
+        void disableBaudCmb();
+        void disableConnectionButton();
         void setLineEditText(const QString&);
         void Log2LinePlainText(const QString &);
         ~MainWindow();

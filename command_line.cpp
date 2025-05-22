@@ -1,5 +1,5 @@
 #include "command_line.h"
-
+#include <QMessageBox>
 #include <QDebug>
 
 CommandLine::CommandLine(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
@@ -20,6 +20,7 @@ void CommandLine::startCalibrationRequest(Request request, QString request_cmd) 
     current_request = request;
     request_command = request_cmd;
     data_received_timeout = 10;
+    request_data_status[current_request] = 0;
     get_calibration_data_timer->start(1000);
 }
 
@@ -97,6 +98,48 @@ uint8_t CommandLine::processCommand(Command command_type)
             break;
     }
     return 1;
+}
+
+void CommandLine::messageBox(QString message)
+{
+    if (cal_status_t.calibration_state == WAIT_STATE && log_folder_names.isEmpty()) return;
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(mainWindow,
+                                  "Onay",
+                                  message,
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        qDebug() << "Kullanıcı EVET dedi.";
+        if (!log_folder_names.isEmpty()) {
+            for (const QString &key : log_folder_names.keys()) {
+                QString folderPath = log_folder_names.value(key);
+                QDir dir(folderPath);
+
+                if (dir.exists()) {
+                    bool success = dir.removeRecursively();
+                    qDebug() << key << (success ? "silindi" : "silinemedi") << folderPath;
+                } else {
+                    qDebug() << key << "zaten yok" << folderPath;
+                }
+            }
+            is_oml_log_folder_created = 0;
+            is_calibration_folders_created = 0;
+            sensor_log_folder_create_status.clear();
+            log_folder_names.clear();
+        } else {
+            qDebug() << "Log klasörleri zaten oluşturulmamış";
+        }
+    } else if (reply == QMessageBox::No) {
+        qDebug() << "Kullanıcı HAYIR dedi.";
+        // işlemleri burada yap
+    } else {
+        QMessageBox::warning(nullptr, "Zorunlu Seçim", "Lütfen bir seçim yapın.");
+    }
+    get_calibration_status_timer->stop();
+    mcu_uart_connection_status_timer->stop();
+    mainWindow->close();
 }
 
 void CommandLine::commandLineProcess()

@@ -20,6 +20,7 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     else if (strcmp(cmd, "R2") == 0) result.type = CMD_R2;
     else if (strcmp(cmd, "R3") == 0) result.type = CMD_R3;
     else if (strcmp(cmd, "SMS") == 0) result.type = CMD_SMS;
+    else if (strcmp(cmd, "RST") == 0) result.type = CMD_RST;
     else if (strncmp(cmd, "SK", 2) == 0) {
         int s_no;
         if (sscanf(cmd, "SK-%d", &s_no) == 1) {
@@ -202,7 +203,6 @@ void LogParser::parseCalibrationData(const char* input)
             sscanf(input, "%s %s", bitStr, valStr);  // boşlukla ayır
 
             len = strlen(bitStr);
-            qDebug() << len;
             for (uint8_t i = 0; i < len; i++) {
                 if (bitStr[i] == '1')
                     sensor_module_status[i] = 1;
@@ -231,7 +231,6 @@ void LogParser::parseCalibrationData(const char* input)
             break;
 
         case CAL_STATUS:
-            qDebug() << input;
             if (sscanf(input, "%d %d %d %d %d %f %d %d", &calibration_ppb, &calibration_state, &calibration_duration, &stabilization_timer,
                        &repeat_calibration, &o3_average, &pwm_duty_cycle, &pwm_period) == 8) {
                 cal_status_t.calibration_ppb = calibration_ppb;
@@ -309,6 +308,10 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     packet->data_count = 0;
 
     if (*p == '\0') {
+        return 0;
+    }
+
+    if (packet->command.type == CMD_RST) {
         return 0;
     }
 
@@ -412,6 +415,9 @@ int8_t LogParser::processPacket(const Packet* packet) {
         }
         break;
     */
+    case CMD_RST:
+        command_line->messageBox("MCU yeniden başlatıldı, son log dosyalarının silinmesini istiyor musunuz?");
+        break;
     case CMD_SK:
         sprintf(buff, ">%s %s ", packet->date, packet->time);
         for (uint8_t i = 0; i < packet->data_count; i++) {
