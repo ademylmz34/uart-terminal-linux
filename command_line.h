@@ -23,6 +23,8 @@ public:
     void setMainWindow(MainWindow*);
     void getActiveBoardCount();
     void getCalStatus();
+    void getCabinInfo();
+    void getSensorValues();
     void commandLineProcess();
     void messageBox(QString);
     void startCalibrationRequest(Request, QString);

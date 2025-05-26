@@ -2,9 +2,11 @@
 #define ENUM_TYPES_H
 
 enum Request {
-    ACTIVE_SENSOR_COUNT,
-    CAL_POINTS,
-    CAL_STATUS,
+    R_ACTIVE_SENSOR_COUNT,
+    R_CAL_POINTS,
+    R_CABIN_INFO,
+    R_CAL_STATUS,
+    R_SENSOR_VALUES,
     NONE
 };
 

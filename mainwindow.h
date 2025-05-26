@@ -5,6 +5,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QTimer>
+#include <QLabel>
 
 #include "log_parser.h"
 #include "creator.h"
@@ -47,6 +48,31 @@ struct CalibrationStatus {
     uint16_t pwm_period;
 };
 
+struct CalibrationValLabels {
+    QLabel* cal_point;
+    QLabel* cal_point_start_time;
+    QLabel* cal_duration;
+    QLabel* cal_stabilization;
+    QLabel* cal_point_end_time;
+    QLabel* cal_status;
+    QLabel* cal_o3_average;
+    QLabel* cal_pwm_cyle_period;
+};
+
+struct MainWindowHeaderValLabels {
+    QLabel* cabin_info;
+    QLabel* calibration_start_date;
+    QLabel* calibration_repeat_val;
+    QLabel* cabin_temp_val;
+    QLabel* cabin_o3_val;
+    QLabel* current_date_time;
+};
+
+extern CalibrationValLabels cal_val_labels;
+extern MainWindowHeaderValLabels main_window_header_labels;
+
+extern QMap<uint8_t, QFrame*> sensor_frames;
+
 extern CalibrationStatus cal_status_t;
 
 extern QDateTime calibration_start_dt;
@@ -57,10 +83,17 @@ extern QDateTime calibration_ppb_end_dt;
 extern QDateTime current_dt;
 
 extern int cal_ppb_cal_time;
+extern int cabin_no;
 
 extern QMap<Request, QString> request_commands;
 extern QMap<Request, uint8_t> request_data_status;
 extern QMap<CalibrationStates, QString> calibration_state_str;
+
+extern QMap<uint8_t, QLabel*> temp_labels;
+extern QMap<uint8_t, QLabel*> hum_labels;
+extern QMap<uint8_t, QLabel*> r1_labels;
+extern QMap<uint8_t, QLabel*> r2_labels;
+extern QMap<uint8_t, QLabel*> r3_labels;
 
 extern uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
 extern uint8_t sensor_module_status[NUM_OF_SENSOR_BOARD];
@@ -102,7 +135,7 @@ extern QStringList sensor_ids;
 
 extern QTimer *get_calibration_data_timer;
 extern QTimer *get_calibration_status_timer;
-extern QTimer *mcu_uart_connection_status_timer;
+extern QTimer *get_sensor_values_timer;
 
 extern uint8_t data_received_timeout;
 extern uint8_t is_calibration_folders_created;
@@ -139,7 +172,9 @@ class MainWindow : public QMainWindow
 
     private:
         Ui::MainWindow *ui;
+        QTimer* current_date_time_timer;
 
+        void setLabels();
         void sendHeartBeat();
         void aboutToExit();
     protected:

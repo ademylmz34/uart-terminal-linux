@@ -24,9 +24,13 @@ void CommandLine::startCalibrationRequest(Request request, QString request_cmd) 
     get_calibration_data_timer->start(1000);
 }
 
-void CommandLine::getActiveBoardCount() { startCalibrationRequest(ACTIVE_SENSOR_COUNT, request_commands[ACTIVE_SENSOR_COUNT]); }
+void CommandLine::getActiveBoardCount() { startCalibrationRequest(R_ACTIVE_SENSOR_COUNT, request_commands[R_ACTIVE_SENSOR_COUNT]); }
 
-void CommandLine::getCalStatus() { startCalibrationRequest(CAL_STATUS, request_commands[CAL_STATUS]); }
+void CommandLine::getCalStatus() { startCalibrationRequest(R_CAL_STATUS, request_commands[R_CAL_STATUS]); }
+
+void CommandLine::getCabinInfo() { startCalibrationRequest(R_CABIN_INFO, request_commands[R_CABIN_INFO]); }
+
+void CommandLine::getSensorValues() { startCalibrationRequest(R_SENSOR_VALUES, request_commands[R_SENSOR_VALUES]); }
 
 void CommandLine::parseCommand(QString command)
 {
@@ -138,8 +142,6 @@ void CommandLine::messageBox(QString message)
         QMessageBox::warning(nullptr, "Zorunlu Seçim", "Lütfen bir seçim yapın.");
     }
     get_calibration_status_timer->stop();
-    mcu_uart_connection_status_timer->stop();
-    mainWindow->close();
 }
 
 void CommandLine::commandLineProcess()

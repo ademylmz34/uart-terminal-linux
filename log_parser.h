@@ -94,6 +94,7 @@ private:
     int8_t repeat_calibration_index;
     int8_t calibration_completed;
     ParsedCommand parseCommandExtended(const char*);
+    CalibrationStates getCalibrationState(int);
     void parseCalibrationData(const char*);
     void parseCalibrationTime(const char*);
     int8_t parseThData(const char*, THData*);

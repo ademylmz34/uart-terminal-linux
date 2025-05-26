@@ -182,11 +182,28 @@ int8_t LogParser::parsePwmData(const char* input, PWMData* pwm_data) {
     return 0;
 }
 
+CalibrationStates LogParser::getCalibrationState(int calibration_state_int)
+{
+    switch (calibration_state_int)
+    {
+        case 0: return WAIT_STATE; break;
+        case 1: return CLEAN_AIR_STATE; break;
+        case 2: return SET_ENVIRONMENT_CONDITIONS_STATE; break;
+        case 3: return ZERO_CALIBRATION_STATE; break;
+        case 4: return SPAN_CALIBRATION_START_STATE; break;
+        case 5: return SPAN_CALIBRATION_MID_STATE; break;
+        case 6: return SPAN_CALIBRATION_END_STATE; break;
+        case 7: return RETURN_TO_ZERO_STATE; break;
+        case 8: return REPEAT_CALIBRATION_STATE; break;
+    }
+}
+
 void LogParser::parseCalibrationData(const char* input)
 {
     char buff[256];
     char bitStr[32];
     char valStr[8];
+
     float o3_average;
     int calibration_ppb;
     int calibration_state;
@@ -199,16 +216,18 @@ void LogParser::parseCalibrationData(const char* input)
     size_t len;
 
     switch(current_request) {
-        case ACTIVE_SENSOR_COUNT:
+        case R_ACTIVE_SENSOR_COUNT:
             sscanf(input, "%s %s", bitStr, valStr);  // boşlukla ayır
 
             len = strlen(bitStr);
             for (uint8_t i = 0; i < len; i++) {
-                if (bitStr[i] == '1')
+                if (bitStr[i] == '1') {
                     sensor_module_status[i] = 1;
-                else if (bitStr[i] == '0')
+                    sensor_frames[i + 1]->setStyleSheet("background-color: rgb(38, 162, 105);");
+                } else if (bitStr[i] == '0') {
                     sensor_module_status[i] = 0;
-                else {
+                    sensor_frames[i + 1]->setStyleSheet("background-color: rgb(165, 29, 45);");
+                } else {
                     printf("Geçersiz karakter: %c\n", bitStr[i]);
                 }
             }
@@ -219,7 +238,7 @@ void LogParser::parseCalibrationData(const char* input)
             }
 
             break;
-        case CAL_POINTS:
+        case R_CAL_POINTS:
             if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2)
             {
                 //if (kal_point_val == 0) return;
@@ -230,7 +249,17 @@ void LogParser::parseCalibrationData(const char* input)
             }
             break;
 
-        case CAL_STATUS:
+        case R_CABIN_INFO:
+            if (sscanf(input, "Kabin-%d", &cabin_no) == 1)
+            {
+                qDebug() << cabin_no;
+                if (cabin_no == 1) main_window_header_labels.cabin_info->setText("Kabin-1 Kalibrasyon");
+                else if (cabin_no == 2) main_window_header_labels.cabin_info->setText("Kabin-2 Kalibrasyon");
+                request_data_status[current_request] = 1;
+            }
+            break;
+
+        case R_CAL_STATUS:
             if (sscanf(input, "%d %d %d %d %d %f %d %d", &calibration_ppb, &calibration_state, &calibration_duration, &stabilization_timer,
                        &repeat_calibration, &o3_average, &pwm_duty_cycle, &pwm_period) == 8) {
                 cal_status_t.calibration_ppb = calibration_ppb;
@@ -242,8 +271,20 @@ void LogParser::parseCalibrationData(const char* input)
                 cal_status_t.pwm_duty_cycle = pwm_duty_cycle;
                 cal_status_t.pwm_period = pwm_period;
 
+                cal_val_labels.cal_point->setText(QString("%1 PPB").arg(QString::number(calibration_points[calibration_ppb])));
+                cal_val_labels.cal_duration->setText(QString("%1 dakika").arg(QString::number(calibration_duration)));
+                cal_val_labels.cal_stabilization->setText(QString::number(stabilization_timer));
+                cal_val_labels.cal_status->setText(calibration_state_str[getCalibrationState(calibration_state)]);
+                cal_val_labels.cal_o3_average->setText(QString("%1 PPB").arg(QString::number(o3_average)));
+                cal_val_labels.cal_pwm_cyle_period->setText(QString("%1/%2 msec").arg(QString::number(pwm_duty_cycle)).arg(QString::number(pwm_period)));
+
+                main_window_header_labels.calibration_repeat_val->setText(QString::number(repeat_calibration));
+
                 request_data_status[current_request] = 1;
             }
+            break;
+
+        case R_SENSOR_VALUES:
             break;
         default:
             break;
@@ -260,6 +301,7 @@ void LogParser::parseCalibrationTime(const char* input) {
         date.setDate(year, month, day);
         time.setHMS(hour, minute, second);
         calibration_start_dt = QDateTime(date, time);
+        main_window_header_labels.calibration_start_date->setText(calibration_start_dt.toString("hh:mm"));
     } else if(sscanf(input, "KalBitisSaati %d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second) == 6)
     {
         date.setDate(year, month, day);
@@ -271,12 +313,14 @@ void LogParser::parseCalibrationTime(const char* input) {
         time.setHMS(hour, minute, second);
         calibration_ppb_start_dt = QDateTime(date, time);
         cal_ppb_cal_time = cal_ppb;
+        cal_val_labels.cal_point_start_time->setText(calibration_ppb_start_dt.toString("hh:mm"));
     } else if(sscanf(input, "Kal%d-BitisSaati %d-%d-%d %d:%d:%d", &cal_ppb, &year, &month, &day, &hour, &minute, &second) == 7)
     {
         date.setDate(year, month, day);
         time.setHMS(hour, minute, second);
         calibration_ppb_end_dt = QDateTime(date, time);
         cal_ppb_cal_time = cal_ppb;
+        cal_val_labels.cal_point_end_time->setText(calibration_ppb_end_dt.toString("hh:mm"));
     } else
     {
         qDebug() << "Tarih ve saat ayrıştırılamadı!";
@@ -420,19 +464,28 @@ int8_t LogParser::processPacket(const Packet* packet) {
         break;
     case CMD_SK:
         sprintf(buff, ">%s %s ", packet->date, packet->time);
-        for (uint8_t i = 0; i < packet->data_count; i++) {
+        for (uint8_t i = 0; i < packet->data_count; i++) {            
             if (
                 strcmp(packet->data[i].key, "OM") == 0 ||
                 strcmp(packet->data[i].key, "T") == 0  ||
                 strcmp(packet->data[i].key, "H") == 0
-                ) {
+            )
+            {
+                if (strcmp(packet->data[i].key, "T") == 0) temp_labels[packet->command.s_no]->setText(QString("%1 °C").arg(QString::number(packet->data[i].value, 'f', 2)));
+                else if (strcmp(packet->data[i].key, "H") == 0) hum_labels[packet->command.s_no]->setText(QString("%1 %").arg(QString::number(packet->data[i].value, 'f', 2)));
+
                 sprintf(str, "%.2f ", packet->data[i].value);
-            } else {
+            } else
+            {
+                if (strcmp(packet->data[i].key, "R1") == 0) r1_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
+                else if (strcmp(packet->data[i].key, "R2") == 0) r2_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
+                else if (strcmp(packet->data[i].key, "R3") == 0) r3_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
+
                 sprintf(str, "%.0f ", packet->data[i].value);
             }
             strcat(buff, str);
         }
-        *(sensor_map[packet->command.s_no].log_stream) << buff << "\n";
+        //*(sensor_map[packet->command.s_no].log_stream) << buff << "\n";
         break;
 
     case CMD_KS:
@@ -470,10 +523,10 @@ int8_t LogParser::processPacket(const Packet* packet) {
             }
         }
         if (packet->command.type == CMD_KN_S) {
-            *(sensor_map[packet->command.s_no].kal_stream) << buff << "\n";
+            //*(sensor_map[packet->command.s_no].kal_stream) << buff << "\n";
         }
         else if (packet->command.type == CMD_OM) {
-            *(om106_map[DEVICE_1].om106_stream) << buff << "\n"; // log'un hangi om106l cihazından geldiğini bilmem lazım
+            //*(om106_map[DEVICE_1].om106_stream) << buff << "\n"; // log'un hangi om106l cihazından geldiğini bilmem lazım
         }
         break;
 

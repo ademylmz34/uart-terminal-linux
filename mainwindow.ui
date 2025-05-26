@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>766</width>
-    <height>644</height>
+    <width>1787</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -32,29 +32,26 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <widget class="QFrame" name="frame_2">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QFrame" name="frame">
       <property name="frameShape">
-       <enum>QFrame::Shape::StyledPanel</enum>
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QFrame" name="frame_4">
+        <widget class="QFrame" name="frame_23">
          <property name="minimumSize">
           <size>
            <width>0</width>
            <height>60</height>
           </size>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>80</height>
-          </size>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(153, 193, 241);</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::Shape::StyledPanel</enum>
@@ -62,215 +59,3776 @@
          <property name="frameShadow">
           <enum>QFrame::Shadow::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QFrame" name="frame">
+           <widget class="QLabel" name="CabinInfolbl">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(85, 170, 255);</string>
+             <string notr="true">color: rgb(165, 29, 45);</string>
             </property>
-            <property name="frameShape">
-             <enum>QFrame::Shape::StyledPanel</enum>
+            <property name="text">
+             <string>KABİN - 1 Kalibrasyon </string>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Shadow::Raised</enum>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_111">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <bold>true</bold>
+             </font>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QLabel" name="lblConnectStat">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color: rgb(255, 255, 255);</string>
-               </property>
-               <property name="text">
-                <string>UART TERMINAL</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="lblPort">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color: rgb(255, 255, 255);</string>
-               </property>
-               <property name="text">
-                <string>Port:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="cmbPort">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(0, 0, 0);</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="lblBaudRate">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color: rgb(255, 255, 255);</string>
-               </property>
-               <property name="text">
-                <string>Baudrate:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="cmbBaudRate">
-               <property name="font">
-                <font>
-                 <pointsize>14</pointsize>
-                 <stylestrategy>PreferDefault</stylestrategy>
-                 <hintingpreference>PreferDefaultHinting</hintingpreference>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(0, 0, 0);</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btnConnect">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color:rgb(255, 0, 0);
-background-color: rgb(255, 255, 255);</string>
-               </property>
-               <property name="text">
-                <string>Connect</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btnClear">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color:rgb(255, 0, 0);
-background-color: rgb(255, 255, 255);</string>
-               </property>
-               <property name="text">
-                <string>Temizle</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <property name="text">
+             <string>Kalibrasyon Başlama Saati:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="calStartDatelbl">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>16:45</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_114">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Kalibrasyon Tekrarı:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="calRepeatVallbl">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_115">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Kabin Sıcaklık:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="cabinTemplbl">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>24 C</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_173">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Kabin Ozon Değeri:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="cabinO3lbl">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>50 ppb</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="currentdateTimelbl">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>2025-05-23 15:44</string>
+            </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QPlainTextEdit" name="plainTextEdit">
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(38, 162, 105);</string>
+        <widget class="QFrame" name="frame_2">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
          </property>
-         <property name="readOnly">
-          <bool>true</bool>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
          </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="frame_3">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>60</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Shape::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Shadow::Raised</enum>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLineEdit" name="lineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string notr="true"/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-border-radius: 0px;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnSend">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-           <fontweight>ExtraBold</fontweight>
-          </font>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-border-radius: 0px; 
-
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QFrame" name="frame_11">
+            <property name="frameShape">
+             <enum>QFrame::Shape::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QFrame" name="frame_3">
+               <property name="minimumSize">
+                <size>
+                 <width>1150</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>1500</width>
+                 <height>1000</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QFrame" name="frame_6">
+                  <property name="minimumSize">
+                   <size>
+                    <width>750</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>851</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(222, 221, 218);</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::Shape::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Shadow::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout">
+                   <item>
+                    <widget class="QFrame" name="frame_4">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>203</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(154, 153, 150);</string>
+                     </property>
+                     <property name="frameShape">
+                      <enum>QFrame::Shape::StyledPanel</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Shadow::Raised</enum>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_6">
+                      <item>
+                       <widget class="QFrame" name="sensor1Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(87, 227, 137);
+background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_2">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor1T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor1H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_5">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_11">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor1R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_13">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor1R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_15">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor1R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor2Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);
 </string>
-         </property>
-         <property name="text">
-          <string>↵</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_17">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_18">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor2T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor2H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_21">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_22">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor2R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_24">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor2R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_26">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor2R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor3Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_28">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_29">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor3T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor3H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_32">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_33">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor3R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_35">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor3R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_37">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor3R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor4Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_39">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 4</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_40">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor4T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor4H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_43">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_44">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor4R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_46">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor4R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_48">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor4R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor5Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_50">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 5</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_51">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor5T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor5H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_54">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_55">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor5R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>199584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_57">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor5R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_59">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor5R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>false</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QFrame" name="frame_5">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>202</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(154, 153, 150);</string>
+                     </property>
+                     <property name="frameShape">
+                      <enum>QFrame::Shape::StyledPanel</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Shadow::Raised</enum>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_7">
+                      <item>
+                       <widget class="QFrame" name="sensor6Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(87, 227, 137);
+background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_72">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 6</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_73">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor6T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor6H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_76">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_77">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor6R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_79">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor6R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_81">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor6R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor7Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_116">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 7</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_117">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor7T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor7H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_120">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_121">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor7R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_123">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor7R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_125">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor7R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor8Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_83">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 8</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_84">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor8T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor8H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_87">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_88">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor8R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_90">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor8R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_92">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor8R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor9Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_94">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>71</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 9</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_95">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor9T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor9H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_98">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_99">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor9R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_101">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor9R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_103">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor9R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor10Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_127">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>81</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 10</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_128">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor10T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor10H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_131">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_132">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor10R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_134">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor10R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_136">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor10R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QFrame" name="frame_7">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>203</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(154, 153, 150);</string>
+                     </property>
+                     <property name="frameShape">
+                      <enum>QFrame::Shape::StyledPanel</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Shadow::Raised</enum>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_8">
+                      <item>
+                       <widget class="QFrame" name="sensor11Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(87, 227, 137);
+background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_138">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>81</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 11</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_139">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor11T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor11H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_142">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_143">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor11R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_145">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor11R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_147">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor11R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor12Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_182">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>81</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 12</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_183">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor12T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor12H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_186">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_187">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor12R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_189">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor12R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_191">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor12R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor13Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_149">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>81</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 13</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_150">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor13T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor13H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_153">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_154">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor13R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_156">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor13R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_158">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor13R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor14Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_160">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>81</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 14</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_161">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor14T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor14H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_164">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_165">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor14R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_167">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor14R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_169">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor14R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="sensor15Frame">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(38, 162, 105);</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Shape::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Shadow::Raised</enum>
+                        </property>
+                        <widget class="QLabel" name="label_193">
+                         <property name="geometry">
+                          <rect>
+                           <x>30</x>
+                           <y>0</y>
+                           <width>81</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>SENSOR 15</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_194">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Sıcaklık:</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor15T">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>30</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>25 C</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor15H">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>70 %</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_197">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>60</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>Nem</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_198">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R1</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor15R1">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>90</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>19584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_200">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R2</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor15R2">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>120</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>36584</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="label_202">
+                         <property name="geometry">
+                          <rect>
+                           <x>10</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>R3</string>
+                         </property>
+                        </widget>
+                        <widget class="QLabel" name="sensor15R3">
+                         <property name="geometry">
+                          <rect>
+                           <x>70</x>
+                           <y>150</y>
+                           <width>61</width>
+                           <height>18</height>
+                          </rect>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>49584</string>
+                         </property>
+                        </widget>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_8">
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(222, 221, 218);</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::Shape::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Shadow::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_2">
+                   <item>
+                    <widget class="QFrame" name="frame_9">
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(94, 92, 100);</string>
+                     </property>
+                     <property name="frameShape">
+                      <enum>QFrame::Shape::StyledPanel</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Shadow::Raised</enum>
+                     </property>
+                     <widget class="QLabel" name="label_61">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>160</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Kalibrasyon Durumu:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calStatuslbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>160</y>
+                        <width>121</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>WAIT_STATE</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calPointlbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>10</y>
+                        <width>121</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>200 PPB</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_64">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>10</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Kalibrasyon Noktası:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calPointStartTimelbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>40</y>
+                        <width>121</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>16:45</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_66">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>40</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Başlama Saati:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="o3Averagelbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>190</y>
+                        <width>111</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>42.86</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_68">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>190</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>O3 Ortalaması:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_70">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>220</y>
+                        <width>171</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>PWM Çevrim/Periyot:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_105">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>70</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Kalibrasyon Süresi:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calDurationlbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>70</y>
+                        <width>121</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>180 dakika</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calPointEndTimelbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>130</y>
+                        <width>101</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>16:45</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_107">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>130</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Bitiş Saati:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calStabilizationTimerlbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>100</y>
+                        <width>121</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>120</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_109">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>100</y>
+                        <width>181</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Stabilizasyon timer:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="pwmCyclePeriodlbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>220</y>
+                        <width>31</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>80</string>
+                      </property>
+                     </widget>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPlainTextEdit" name="plainTextEdit_2">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>350</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(192, 28, 40);</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_13">
+               <property name="minimumSize">
+                <size>
+                 <width>550</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
+                <item>
+                 <widget class="QFrame" name="frame_24">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(85, 170, 255);</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::Shape::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Shadow::Raised</enum>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <item>
+                    <widget class="QLabel" name="lblPort">
+                     <property name="font">
+                      <font>
+                       <pointsize>16</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);</string>
+                     </property>
+                     <property name="text">
+                      <string>Port:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="cmbPort">
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="lblBaudRate">
+                     <property name="font">
+                      <font>
+                       <pointsize>16</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);</string>
+                     </property>
+                     <property name="text">
+                      <string>Baudrate:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="cmbBaudRate">
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnConnect">
+                     <property name="font">
+                      <font>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">color:rgb(255, 0, 0);
+background-color: rgb(255, 255, 255);</string>
+                     </property>
+                     <property name="text">
+                      <string>Connect</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnClear">
+                     <property name="font">
+                      <font>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">color:rgb(255, 0, 0);
+background-color: rgb(255, 255, 255);</string>
+                     </property>
+                     <property name="text">
+                      <string>Temizle</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPlainTextEdit" name="plainTextEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(38, 162, 105);</string>
+                  </property>
+                  <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                  </property>
+                  <property name="horizontalScrollBarPolicy">
+                   <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::TextInteractionFlag::TextSelectableByKeyboard|Qt::TextInteractionFlag::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="lineEdit">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
