@@ -10,6 +10,8 @@ QTextStream* main_log_stream = NULL;
 QFile* calibration_log_file = NULL;
 QTextStream* calibration_stream = NULL;
 
+uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
+
 Creator::Creator() {
     cal_point_array_size = 0;
     is_main_log_file_created = 0;

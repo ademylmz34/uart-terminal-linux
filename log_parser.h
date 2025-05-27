@@ -8,10 +8,37 @@
 
 #define MAX_KEY_LEN 32
 
-class LogParser
+class MainWindow;
+
+struct CalibrationStatus {
+    float o3_average;
+    uint16_t calibration_ppb;
+    uint16_t calibration_state;
+    uint16_t calibration_duration;
+    uint16_t stabilization_timer;
+    uint16_t repeat_calibration;
+    uint16_t pwm_duty_cycle;
+    uint16_t pwm_period;
+};
+extern CalibrationStatus cal_status_t;
+
+extern QDateTime calibration_start_dt;
+extern QDateTime calibration_end_dt;
+extern QDateTime calibration_ppb_start_dt;
+extern QDateTime calibration_ppb_end_dt;
+
+extern int cal_ppb_cal_time;
+extern int cabin_no;
+extern int kal_point;
+extern int kal_point_val;
+
+extern int calibration_repeat_count;
+
+class LogParser : public QObject
 {
+    Q_OBJECT
 public:
-    LogParser();
+    explicit LogParser(QObject *parent = nullptr);
     ~LogParser();
 
     typedef enum {
@@ -58,13 +85,6 @@ public:
         float value;
     } KeyValue;
 
-    // TH VERİSİ (Sıcaklık, Nem)
-    typedef struct {
-        float temperature;
-        char temp_unit[8];
-        float humidity;
-    } THData;
-
     // PWM Verisi
     typedef struct {
         uint16_t duty;
@@ -80,24 +100,25 @@ public:
         KeyValue* data;
         char* data_str;
         uint8_t data_count;
-        uint8_t is_th_data;
-        uint8_t is_pwm_data;
-        THData th_data;
         PWMData pwm_data;
     } Packet;
 
+    Packet packet;
+    void setMainWindow(MainWindow*);
     int8_t parseLine(const char*, Packet*);
-    int8_t processPacket(const Packet*);
+    int8_t processPacket(Packet*);
     void freePacket(Packet*);
 
 private:
+    MainWindow* mainWindow;
+
     int8_t repeat_calibration_index;
     int8_t calibration_completed;
     ParsedCommand parseCommandExtended(const char*);
     CalibrationStates getCalibrationState(int);
+    void parseLineData(KeyValue*, const char*, uint8_t &) ;
     void parseCalibrationData(const char*);
     void parseCalibrationTime(const char*);
-    int8_t parseThData(const char*, THData*);
     int8_t parsePwmData(const char*, PWMData*);
     void printCommandInfo(const Packet*);
 };

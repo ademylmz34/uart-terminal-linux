@@ -1,29 +1,19 @@
 #include "serial.h"
-//#include "mainwindow.h"
+#include "mainwindow.h"
 
 
 Serial::Serial(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
     serial = new QSerialPort();
-    //serial_2 = new QSerialPort();
-
     selected_port_name   = "/dev/ttyUSB0";
-    selected_port_name_2 = "/dev/om106_2";
-
     connection_check_timer   = new QTimer(this);
-    connection_check_timer_2 = new QTimer(this);
-
     baud_rate = 115200;
-
     uart_buffer_index = 0;
-    uart_log_parser = new LogParser();
 }
 
 Serial::~Serial()
 {
     delete connection_check_timer;
-    delete connection_check_timer_2;
-    delete uart_log_parser;
     delete serial;
     //delete serial_2;
 }
@@ -35,9 +25,9 @@ void Serial::setMainWindow(MainWindow *mw) {
 uint8_t Serial::uartLineProcess(char* input)
 {
     if (main_log_stream != NULL) *(main_log_stream) << input;
-    if (uart_log_parser->parseLine(input, &packet) == 0) {
-        uart_log_parser->processPacket(&packet);
-        uart_log_parser->freePacket(&packet);
+    if (uart_log_parser->parseLine(input, &uart_log_parser->packet) == 0) {
+        uart_log_parser->processPacket(&uart_log_parser->packet);
+        uart_log_parser->freePacket(&uart_log_parser->packet);
     } else {
         printf("Hatali satir atlandi.\n");
     }
@@ -71,7 +61,7 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
             {
                 mainWindow->setLineEditText(QString("Port-%1 bağlantı yeniden kuruldu: %2").arg(deviceIndex).arg(portPath));
                 om106l_device_status[deviceIndex - 1] = 1;
-                command_line->getActiveBoardCount();
+                command_line->getFirstData();
                 mainWindow->disableConnectionButton();
                 mainWindow->disableBaudCmb();
             }
@@ -84,97 +74,10 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
     }
 }
 
-
-void Serial::checkConnectionStatus_2()
-{
-    checkPortConnection(serial, selected_port_name, DEVICE_2);
-}
-
 void Serial::checkConnectionStatus()
 {
     checkPortConnection(serial, selected_port_name, DEVICE_1);
 }
-
-QString Serial::readBytes(QSerialPort* serial_port)
-{
-    char ch;
-    QString response;
-    while (serial_port->bytesAvailable())
-    {
-        serial_port->read(&ch, 1);
-
-        if (ch == '\n')
-        {
-            uart_rx_buffer[uart_buffer_index] = '\0';
-            response = QString::fromUtf8(uart_rx_buffer);
-            mainWindow->setLineEditText(line);
-            uart_buffer_index = 0;
-            memset(uart_rx_buffer, 0, RX_BUFFER_LEN);
-        } else {
-            if (uart_buffer_index < RX_BUFFER_LEN - 1)
-                uart_rx_buffer[uart_buffer_index++] = ch;
-        }
-    }
-    return response;
-}
-
-void Serial::detectOm106Devices()
-{
-    QMap<QString, QString> detectedPorts;
-
-    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
-    {
-        QSerialPort temp;
-        temp.setPort(info);
-        temp.setBaudRate(115200);  // Gerekirse kullanıcıdan al
-        temp.setDataBits(QSerialPort::Data8);
-        temp.setParity(QSerialPort::NoParity);
-        temp.setStopBits(QSerialPort::OneStop);
-        temp.setFlowControl(QSerialPort::NoFlowControl);
-
-        if (temp.open(QIODevice::ReadWrite))
-        {
-            temp.write("?gid\r\n");
-            if (temp.waitForBytesWritten(400))
-            {
-                qDebug() << "written: " << info.portName();
-                if (temp.waitForReadyRead(800))
-                {
-                    QByteArray response = temp.readAll().trimmed();
-                    QString answer = QString::fromUtf8(response);
-                    qDebug() << answer;
-                    if (answer.contains("om106l_1"))
-                        detectedPorts["om106l_1"] = info.portName();
-                    else if (answer.contains("om106l_2"))
-                        detectedPorts["om106l_2"] = info.portName();
-                }
-            }
-            temp.close();
-        }
-    }
-
-    // Elde ettiğimiz portları şimdi kalıcı serial objelerine set edelim
-    if (detectedPorts.contains("om106l_1")) {
-        serial->setPortName(detectedPorts["om106l_1"]);
-        serial->setBaudRate(115200);
-        serial->open(QIODevice::ReadWrite);
-        mainWindow->setLineEditText("om106l_1 bağlı: " + detectedPorts["om106l_1"]);
-        om106l_device_status[DEVICE_1] = 1;
-    } else {
-        om106l_device_status[DEVICE_1] = 0;
-    }
-
-    if (detectedPorts.contains("om106l_2")) {
-        serial_2->setPortName(detectedPorts["om106l_2"]);
-        serial_2->setBaudRate(mainWindow->getCmbBaudRateValue());
-        serial_2->open(QIODevice::ReadWrite);
-        mainWindow->setLineEditText("om106l_2 bağlı: " + detectedPorts["om106l_2"]);
-        om106l_device_status[DEVICE_2] = 1;
-    } else {
-        om106l_device_status[DEVICE_2] = 0;
-    }
-}
-
 
 void Serial::connectSerial()
 {
@@ -213,8 +116,8 @@ void Serial::readSerial()
         if (ch == '\n')
         {
             uart_rx_buffer[uart_buffer_index] = '\0';
-            QString line = QString::fromUtf8(uart_rx_buffer);
-            mainWindow->setLineEditText(line);
+            line = QString::fromUtf8(uart_rx_buffer);
+            if (log_status) mainWindow->setLineEditText(line);
             uartLineProcess(uart_rx_buffer);
             uart_buffer_index = 0;
             memset(uart_rx_buffer, 0, RX_BUFFER_LEN);

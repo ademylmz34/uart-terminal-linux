@@ -10,6 +10,10 @@ QString mcu_command;
 QTimer *get_calibration_data_timer;
 uint8_t data_received_timeout;
 uint8_t is_calibration_folders_created;
+QStringList sensor_ids;
+
+QMap<QString, uint8_t> sensor_folder_create_status;
+QMap<QString, uint8_t> sensor_log_folder_create_status;
 
 CalibrationBoard::CalibrationBoard(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
@@ -195,16 +199,56 @@ uint8_t CalibrationBoard::parseLineEditInput(const QStringList& inputList, QStri
 
 void CalibrationBoard::getDataFromMCU()
 {
-    if (data_received_timeout == 0) {
-        qDebug() << "Request data couldn't get received";
-        current_request = NONE;
-        request_command = "";
-    } else if (request_data_status[current_request]) {
-        qDebug() << "Request data get received";
-        current_request = NONE;
-        request_command = "";
-    } else {
-        serial->sendData(request_command);
+    switch (current_request) {
+        case R_ACTIVE_SENSOR_COUNT:
+            if (data_received_timeout == 0 || request_data_status[current_request]) {
+                if (request_data_status[current_request]) qDebug() << "Request data asc operation completed.";
+                else qDebug() << "Request data asc couldn't get received.";
+                current_request = R_CABIN_INFO;
+                request_command = request_commands[current_request];
+                data_received_timeout = 10;
+                log_status = 0;
+                request_data_status[current_request] = 0;
+            } else {
+                serial->sendData(request_command);
+            }
+            break;
+        case R_CABIN_INFO:
+            if (data_received_timeout == 0 || request_data_status[current_request]) {
+                if (request_data_status[current_request]) qDebug() << "Request data ci operation completed.";
+                else qDebug() << "Request data ci couldn't get received.";
+                current_request = R_SENSOR_VALUES;
+                request_command = request_commands[current_request];
+                data_received_timeout = 10;
+                log_status = 0;
+                request_data_status[current_request] = 0;
+            } else {
+                serial->sendData(request_command);
+            }
+            break;
+        case R_SENSOR_VALUES:
+            if (data_received_timeout == 0 || request_data_status[current_request]) {
+                if (request_data_status[current_request]) qDebug() << "Request data sv operation completed.";
+                else qDebug() << "Request data sv couldn't get received.";
+                current_request = R_CAL_STATUS;
+                request_command = request_commands[current_request];
+                data_received_timeout = 10;
+                log_status = 0;
+                request_data_status[current_request] = 0;
+            } else {
+                serial->sendData(request_command);
+            }
+            break;
+        case R_CAL_STATUS:
+            if (data_received_timeout == 0 || request_data_status[current_request]) {
+                if (request_data_status[current_request]) qDebug() << "Request data cs operation completed.";
+                else qDebug() << "Request data cs couldn't get received.";
+                current_request = NONE;
+                request_command = "";
+            } else {
+                serial->sendData(request_command);
+            }
+            break;
     }
 
     if (current_request == NONE) get_calibration_data_timer->stop();

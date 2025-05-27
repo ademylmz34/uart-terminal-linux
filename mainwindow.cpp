@@ -8,49 +8,29 @@
 
 Creator file_folder_creator;
 
-QDateTime calibration_start_dt;
-QDateTime calibration_end_dt;
-QDateTime calibration_ppb_start_dt;
-QDateTime calibration_ppb_end_dt;
-
 QDateTime current_dt;
-
-int cal_ppb_cal_time;
-
-int calibration_repeat_count;
-int kal_point;
-int kal_point_val;
-int cabin_no;
 
 uint8_t sensor_module_status[NUM_OF_SENSOR_BOARD];
 uint8_t active_sensor_count;
-
-uint8_t cal_repeat_count_data_received;
-uint8_t active_sensor_count_data_received;
-uint8_t cal_points_data_received;
-uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE] = {0};
+uint8_t log_status;
 
 uint16_t calibration_points[NUM_OF_CAL_POINTS] = {20, 50, 100, 200, 500, 0, 0, 0, 0, 0};
 Request current_request;
 
-QStringList sensor_ids;
-QMap<QString, uint8_t> sensor_folder_create_status;
-QMap<QString, uint8_t> sensor_log_folder_create_status;
 QMap<QString, uint8_t> sensor_module_map;
 QMap<QString, QString> log_folder_names;
 
 QTimer *get_calibration_status_timer;
-QTimer *get_sensor_values_timer;
 
 Serial *serial;
 CommandLine *command_line;
 CalibrationBoard *calibration_board;
+LogParser *uart_log_parser;
+
+QString line;
 
 uint8_t is_main_folder_created;
 uint8_t is_oml_log_folder_created;
-
-CalibrationStatus cal_status_t = { .o3_average = 0, .calibration_ppb = 0, .calibration_state = 0, .calibration_duration = 0,
-                                   .stabilization_timer = 0, .repeat_calibration = 0, .pwm_duty_cycle = 0, .pwm_period = 0};
 
 QMap<Request, QString> request_commands = {
     { R_ACTIVE_SENSOR_COUNT, "?gpa" },
@@ -103,32 +83,31 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
             break;
         ui->cmbPort->addItem(info.portName());
     }
-
     serial = new Serial(this);
     serial->setMainWindow(this);
     command_line = new CommandLine(this);
     command_line->setMainWindow(this);
     calibration_board = new CalibrationBoard(this);
     calibration_board->setMainWindow(this);
+    uart_log_parser = new LogParser(this);
+    uart_log_parser->setMainWindow(this);
 
     get_calibration_status_timer = new QTimer(this);
     current_date_time_timer = new QTimer(this);
-    get_sensor_values_timer = new QTimer(this);
 
     // Baudrate seçenekleri
     ui->cmbBaudRate->addItems({"4800", "9600", "19200", "115200"});
 
     connect(ui->btnConnect, &QPushButton::clicked, serial, &Serial::connectSerial);
+    connect(ui->btnClear, &QPushButton::clicked, this, &MainWindow::onBtnClearClicked);
     //connect(ui->btnSend, &QPushButton::clicked, command_line, &CommandLine::commandLineProcess);
     connect(ui->lineEdit, &QLineEdit::returnPressed, command_line, &CommandLine::commandLineProcess);
 
     connect(serial->connection_check_timer, &QTimer::timeout, serial, &Serial::checkConnectionStatus);
-    connect(serial->connection_check_timer_2, &QTimer::timeout, serial, &Serial::checkConnectionStatus_2);
 
     connect(serial->serial, &QSerialPort::readyRead, serial, &Serial::readSerial);
 
-    connect(get_calibration_status_timer, &QTimer::timeout, command_line, &CommandLine::getCalStatus);
-    connect(get_sensor_values_timer, &QTimer::timeout, command_line, &CommandLine::getSensorValues);
+    connect(get_calibration_status_timer, &QTimer::timeout, command_line, &CommandLine::getPeriodicData);
 
     QDateTime now = QDateTime::currentDateTime();
     QString zaman = now.toString("dd.MM.yyyy hh:mm");
@@ -139,24 +118,23 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         QString zaman = now.toString("dd.MM.yyyy hh:mm");
         main_window_header_labels.current_date_time->setText(zaman);
     });
-
+    log_status = 0;
     cal_status_t.calibration_state = WAIT_STATE;
     is_main_folder_created = file_folder_creator.createMainFolder();
     serial->connection_check_timer->start(100); // Her 100 milisaniyede bir kontrol et
-    //serial->connection_check_timer_2->start(2000);
+
     get_calibration_status_timer->start(18000);
     current_date_time_timer->start(60000);
-    //get_sensor_values_timer->start(10000);
 }
 
 MainWindow::~MainWindow()
 {
     delete get_calibration_status_timer;
     delete current_date_time_timer;
-    delete get_sensor_values_timer;
     delete serial;
     delete command_line;
     delete calibration_board;
+    delete uart_log_parser;
     delete ui;
 }
 

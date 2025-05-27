@@ -11,6 +11,36 @@
 
 #include <stdint.h>
 
+#define NUM_OF_OM106L_DEVICE 2
+
+struct SensorFiles {
+    QString sensor_id;
+    QFile* log_file;
+    QFile* kal_log_file;
+    QFile* kal_end_log_file;
+
+    QTextStream* log_stream;
+    QTextStream* kal_stream;
+    QTextStream* kal_end_stream;
+};
+
+struct Om106Files {
+    Om106l_Devices device_id;
+    QFile* om106_log_file;
+    QTextStream* om106_stream;
+};
+
+extern QMap<uint16_t, SensorFiles> sensor_map;
+extern QMap<Om106l_Devices, Om106Files> om106_map;
+
+extern QFile* main_log_file;
+extern QTextStream* main_log_stream;
+
+extern QFile* calibration_log_file;
+extern QTextStream* calibration_stream;
+
+extern uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
+
 class Creator {
 public:
     Creator();

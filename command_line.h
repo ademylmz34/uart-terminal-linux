@@ -21,10 +21,8 @@ public:
     ~CommandLine();
 
     void setMainWindow(MainWindow*);
-    void getActiveBoardCount();
-    void getCalStatus();
-    void getCabinInfo();
-    void getSensorValues();
+    void getFirstData();
+    void getPeriodicData();
     void commandLineProcess();
     void messageBox(QString);
     void startCalibrationRequest(Request, QString);

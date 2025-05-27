@@ -3,7 +3,22 @@
 #include <stdint.h>
 #include <string.h>
 
-LogParser::LogParser()
+int kal_point;
+int kal_point_val;
+int cal_ppb_cal_time;
+int cabin_no;
+
+int calibration_repeat_count;
+
+QDateTime calibration_start_dt;
+QDateTime calibration_end_dt;
+QDateTime calibration_ppb_start_dt;
+QDateTime calibration_ppb_end_dt;
+
+CalibrationStatus cal_status_t = { .o3_average = 0, .calibration_ppb = 0, .calibration_state = 0, .calibration_duration = 0,
+                                  .stabilization_timer = 0, .repeat_calibration = 0, .pwm_duty_cycle = 0, .pwm_period = 0};
+
+LogParser::LogParser(QObject *parent): QObject(parent)
 {
     repeat_calibration_index = 0;
     calibration_completed = 0;
@@ -11,6 +26,10 @@ LogParser::LogParser()
 
 LogParser::~LogParser()
 {
+}
+
+void LogParser::setMainWindow(MainWindow *mw) {
+    mainWindow = mw;
 }
 
 LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
@@ -144,30 +163,6 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
         }
     }
     return result;
-}
-
-int8_t LogParser::parseThData(const char* input, THData* th_data) {
-    float temp_value = 0.0f;
-    char unit[8];
-    char humidity_str[16];
-
-    int parsed = sscanf(input, "%f %7s %15s", &temp_value, unit, humidity_str);
-    if (parsed != 3) {
-        return -1;
-    }
-
-    th_data->temperature = temp_value;
-    strncpy(th_data->temp_unit, unit, sizeof(th_data->temp_unit) - 1);
-    th_data->temp_unit[sizeof(th_data->temp_unit) - 1] = '\0';
-
-    size_t len = strlen(humidity_str);
-    if (humidity_str[len - 1] == '%') {
-        humidity_str[len - 1] = '\0';
-    }
-
-    th_data->humidity = atof(humidity_str);
-
-    return 0;
 }
 
 int8_t LogParser::parsePwmData(const char* input, PWMData* pwm_data) {
@@ -327,6 +322,42 @@ void LogParser::parseCalibrationTime(const char* input) {
     }
 }
 
+void LogParser::parseLineData(KeyValue* data, const char* line, uint8_t &data_count) {
+    while (*line) {
+        char key[32];
+        int n = 0;
+        while (*line && !isspace(*line) && n < (int)(sizeof(key) - 1)) {
+            key[n++] = *line++;
+        }
+        key[n] = '\0';
+
+        while (isspace(*line)) line++;
+
+        if (strchr(key, ':')) {
+            char* colon = strchr(key, ':');
+            *colon = '\0';
+            strncpy(data[data_count].key, key, sizeof(data[data_count].key) - 1);
+
+            char* endptr;
+            float val = strtof(line, &endptr);
+            data[data_count].value = (line == endptr) ? 0.0f : val;
+            data_count++;
+
+            line = endptr;
+            while (isspace(*line)) line++;
+        }
+        else {
+            char* endptr;
+            float val = strtof(key, &endptr);
+            if (key != endptr) {
+                snprintf(data[data_count].key, sizeof(data[data_count].key), "s%d", data_count);
+                data[data_count].value = val;
+                data_count++;
+            }
+        }
+    }
+}
+
 int8_t LogParser::parseLine(const char* input, Packet* packet) {
     if (input[0] != '>') {
         return -1;
@@ -346,8 +377,6 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
 
     if (*p == ' ') p++;
 
-    packet->is_th_data = 0;
-    packet->is_pwm_data = 0;
     packet->data = NULL;
     packet->data_count = 0;
 
@@ -355,76 +384,25 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         return 0;
     }
 
+
     if (packet->command.type == CMD_RST) {
         return 0;
     }
 
-    if (packet->command.type == CMD_TH) {
-        if (parseThData(p, &packet->th_data) == 0) {
-            packet->is_th_data = 1;
-            return 0;
-        }
-    }
-
-    if (packet->command.type == CMD_D || packet->command.type == CMD_KL
+    if (packet->command.type == CMD_D || packet->command.type == CMD_KL || packet->command.type == CMD_KN_PWM
         || packet->command.type == CMD_L || packet->command.type == CMD_KS || packet->command.type == CMD_SMS)
     {
-        //qDebug() << p;
         packet->data_str = strdup(p);
-        if (packet->command.type == CMD_D || packet->command.type == CMD_SMS) parseCalibrationData(p);
-        else if(packet->command.type == CMD_KS) parseCalibrationTime(p);
         return 0;
-    }
-
-    if (packet->command.type == CMD_KN_PWM) {
-        if (parsePwmData(p, &packet->pwm_data) == 0) {
-            packet->is_pwm_data = 1;
-            return 0;
-        } else {
-            return -1;
-        }
     }
 
     packet->data = (KeyValue*)malloc(20 * sizeof(KeyValue));
     if (!packet->data) {
         return -3;
-    }
-
+    } 
     packet->data_count = 0;
-    while (*p) {
-        char key[32];
-        int n = 0;
-        while (*p && !isspace(*p) && n < (int)(sizeof(key) - 1)) {
-            key[n++] = *p++;
-        }
-        key[n] = '\0';
 
-        while (isspace(*p)) p++;
-
-        if (strchr(key, ':')) {
-            char* colon = strchr(key, ':');
-            *colon = '\0';
-            strncpy(packet->data[packet->data_count].key, key, sizeof(packet->data[packet->data_count].key) - 1);
-
-            char* endptr;
-            float val = strtof(p, &endptr);
-            packet->data[packet->data_count].value = (p == endptr) ? 0.0f : val;
-            packet->data_count++;
-
-            p = endptr;
-            while (isspace(*p)) p++;
-        }
-        else {
-            char* endptr;
-            float val = strtof(key, &endptr);
-            if (key != endptr) {
-                snprintf(packet->data[packet->data_count].key, sizeof(packet->data[packet->data_count].key), "s%d", packet->data_count);
-                packet->data[packet->data_count].value = val;
-                packet->data_count++;
-            }
-        }
-    }
-
+    parseLineData(packet->data, p, packet->data_count);
     return 0;
 }
 
@@ -437,13 +415,13 @@ void LogParser::printCommandInfo(const Packet* packet) {
     printf("******************************\n");
 }
 
-int8_t LogParser::processPacket(const Packet* packet) {
+int8_t LogParser::processPacket(Packet* packet) {
     int sensor_no;
     char buff[256];
     char str[50];
 
-    if (packet->command.type == CMD_L) return 0;
-    if (packet->command.type == CMD_D) return 0;
+    //if (packet->command.type == CMD_L) return 0;
+    //if (packet->command.type == CMD_D) return 0;
     if (calibration_completed) return 0;
 
     switch (packet->command.type) {
@@ -485,6 +463,7 @@ int8_t LogParser::processPacket(const Packet* packet) {
             }
             strcat(buff, str);
         }
+        request_data_status[current_request] = 1;
         //*(sensor_map[packet->command.s_no].log_stream) << buff << "\n";
         break;
 
@@ -493,6 +472,7 @@ int8_t LogParser::processPacket(const Packet* packet) {
         sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
         *(calibration_stream) << buff;
         if (packet->command.type == CMD_KS) {
+            parseCalibrationTime(packet->data_str);
             //cal_ppb_cal_time ui->labelCalPpb->setText(QString::number(cal_ppb_cal_time));
             //QString formatted = calibration_dt.toString("dd.MM.yyyy hh:mm:ss");
             //calibration_dt ui->labelDateTime->setText(formatted);
@@ -500,9 +480,12 @@ int8_t LogParser::processPacket(const Packet* packet) {
         break;
 
     case CMD_L:
+        break;
     case CMD_D:
+    case CMD_SMS:
         sprintf(buff, ">%s %s %s %s\n", packet->date, packet->time, packet->command_str, packet->data_str);
-        *(main_log_stream) << buff;
+        parseCalibrationData(packet->data_str);
+        //*(main_log_stream) << buff;
         break;
     case CMD_TH:
         //sprintf(buff, ">%s %s %s %.2f %s %.1f%%\n", packet->date, packet->time, packet->command_str, packet->th_data.temperature, packet->th_data.temp_unit, packet->th_data.humidity);
@@ -538,7 +521,8 @@ int8_t LogParser::processPacket(const Packet* packet) {
     case CMD_KN_CP:
     case CMD_KN_FR:
     case CMD_KN_PV:
-        if (packet->is_pwm_data) {
+        if (packet->command.type == CMD_KN_PWM) {
+            parsePwmData(packet->data_str, &packet->pwm_data);
             sprintf(buff, ">%s %s %s %d/%dmsec\n", packet->date, packet->time, packet->command_str, packet->pwm_data.duty, packet->pwm_data.period);
         } else {
             if (sscanf(packet->data[0].key, "s%d", &sensor_no) == 1) {

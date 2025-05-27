@@ -11,6 +11,19 @@
 
 class MainWindow;
 
+extern QString request_command;
+extern QStringList sensor_numbers;
+extern QString mcu_command;
+
+extern QTimer *get_calibration_data_timer;
+extern uint8_t data_received_timeout;
+extern uint8_t is_calibration_folders_created;
+
+extern QStringList sensor_ids;
+
+extern QMap<QString, uint8_t> sensor_folder_create_status;
+extern QMap<QString, uint8_t> sensor_log_folder_create_status;
+
 class CalibrationBoard : public QObject {
 
     Q_OBJECT

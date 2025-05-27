@@ -1,8 +1,8 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#include "mainwindow.h"
 #include "log_parser.h"
+#include "mainwindow.h"
 #include "enum_types.h"
 
 #define RX_BUFFER_LEN 1024
@@ -16,6 +16,7 @@
 
 class CommandLine;
 class MainWindow;
+class LogParser;
 
 class Serial: public QObject {
     Q_OBJECT
@@ -24,9 +25,7 @@ public:
     ~Serial();
 
     QTimer *connection_check_timer;
-    QTimer *connection_check_timer_2;
     QSerialPort *serial;
-    QSerialPort *serial_2;
 
     void sendData(QString);
     void setMainWindow(MainWindow*);
@@ -34,13 +33,10 @@ public:
     void detectOm106Devices();
 
     void checkConnectionStatus();
-    void checkConnectionStatus_2();
     void whenConnectionLost();
     void readSerial();
 private:
     MainWindow *mainWindow;
-    LogParser* uart_log_parser;
-    LogParser::Packet packet;
 
     char uart_rx_buffer[RX_BUFFER_LEN];
     uint16_t uart_buffer_index;
@@ -48,7 +44,6 @@ private:
     qint32 baud_rate;
 
     QString selected_port_name;
-    QString selected_port_name_2;
     QString line;
 
     uint8_t uartLineProcess(char*);

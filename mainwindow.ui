@@ -339,7 +339,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor1H">
@@ -355,7 +355,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_5">
@@ -403,7 +403,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_13">
@@ -435,7 +435,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_15">
@@ -467,7 +467,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -534,7 +534,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor2H">
@@ -550,7 +550,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_21">
@@ -598,7 +598,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_24">
@@ -630,7 +630,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_26">
@@ -662,7 +662,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -728,7 +728,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor3H">
@@ -744,7 +744,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_32">
@@ -792,7 +792,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_35">
@@ -824,7 +824,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_37">
@@ -856,7 +856,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -922,7 +922,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor4H">
@@ -938,7 +938,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_43">
@@ -986,7 +986,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_46">
@@ -1018,7 +1018,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_48">
@@ -1050,7 +1050,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -1121,7 +1121,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor5H">
@@ -1142,7 +1142,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_54">
@@ -1195,7 +1195,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>199584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_57">
@@ -1232,7 +1232,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_59">
@@ -1269,7 +1269,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -1357,7 +1357,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor6H">
@@ -1373,7 +1373,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_76">
@@ -1421,7 +1421,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_79">
@@ -1453,7 +1453,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_81">
@@ -1485,7 +1485,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -1551,7 +1551,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor7H">
@@ -1567,7 +1567,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_120">
@@ -1615,7 +1615,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_123">
@@ -1647,7 +1647,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_125">
@@ -1679,7 +1679,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -1745,7 +1745,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor8H">
@@ -1761,7 +1761,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_87">
@@ -1809,7 +1809,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_90">
@@ -1841,7 +1841,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_92">
@@ -1873,7 +1873,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -1939,7 +1939,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor9H">
@@ -1955,7 +1955,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_98">
@@ -2003,7 +2003,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_101">
@@ -2035,7 +2035,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_103">
@@ -2067,7 +2067,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -2133,7 +2133,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor10H">
@@ -2149,7 +2149,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_131">
@@ -2197,7 +2197,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_134">
@@ -2229,7 +2229,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_136">
@@ -2261,7 +2261,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -2349,7 +2349,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor11H">
@@ -2365,7 +2365,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_142">
@@ -2413,7 +2413,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_145">
@@ -2445,7 +2445,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_147">
@@ -2477,7 +2477,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -2543,7 +2543,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor12H">
@@ -2559,7 +2559,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_186">
@@ -2607,7 +2607,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_189">
@@ -2639,7 +2639,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_191">
@@ -2671,7 +2671,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -2737,7 +2737,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor13H">
@@ -2753,7 +2753,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_153">
@@ -2801,7 +2801,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_156">
@@ -2833,7 +2833,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_158">
@@ -2865,7 +2865,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -2931,7 +2931,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor14H">
@@ -2947,7 +2947,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_164">
@@ -2995,7 +2995,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_167">
@@ -3027,7 +3027,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_169">
@@ -3059,7 +3059,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
@@ -3125,7 +3125,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>25 C</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="sensor15H">
@@ -3141,7 +3141,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>70 %</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_197">
@@ -3189,7 +3189,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>19584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_200">
@@ -3221,7 +3221,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>36584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_202">
@@ -3253,7 +3253,7 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>49584</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </widget>
