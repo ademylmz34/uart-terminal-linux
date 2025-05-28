@@ -32,12 +32,15 @@ public:
     explicit CalibrationBoard(QObject *parent = nullptr);
     ~CalibrationBoard();
 
+    uint8_t readLogDirectoryPaths();
     uint8_t createSensorFolders();
     void setMainWindow(MainWindow*);
     void startCalibrationProcess();
+    void clearLogDirectoryPathsFile();
 private:
     MainWindow *mainWindow = nullptr;
 
+    uint8_t writeLogDirectoryPaths(const QMap<QString, QString>&);
     uint8_t createCalibrationFolders();
     uint8_t isArrayEmpty(const uint8_t*, size_t);
     uint8_t parseLineEditInput(const QStringList&, QStringList&);

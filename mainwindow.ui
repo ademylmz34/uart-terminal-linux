@@ -3293,55 +3293,11 @@ background-color: rgb(38, 162, 105);</string>
                      <property name="frameShadow">
                       <enum>QFrame::Shadow::Raised</enum>
                      </property>
-                     <widget class="QLabel" name="label_61">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>160</y>
-                        <width>161</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: rgb(255, 255, 255);</string>
-                      </property>
-                      <property name="text">
-                       <string>Kalibrasyon Durumu:</string>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="calStatuslbl">
-                      <property name="geometry">
-                       <rect>
-                        <x>200</x>
-                        <y>160</y>
-                        <width>121</width>
-                        <height>18</height>
-                       </rect>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>16</pointsize>
-                        <italic>true</italic>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: rgb(255, 255, 255);</string>
-                      </property>
-                      <property name="text">
-                       <string>WAIT_STATE</string>
-                      </property>
-                     </widget>
                      <widget class="QLabel" name="calPointlbl">
                       <property name="geometry">
                        <rect>
                         <x>200</x>
-                        <y>10</y>
+                        <y>50</y>
                         <width>121</width>
                         <height>18</height>
                        </rect>
@@ -3363,7 +3319,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>10</y>
+                        <y>50</y>
                         <width>161</width>
                         <height>20</height>
                        </rect>
@@ -3385,7 +3341,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>200</x>
-                        <y>40</y>
+                        <y>110</y>
                         <width>121</width>
                         <height>18</height>
                        </rect>
@@ -3407,7 +3363,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>40</y>
+                        <y>110</y>
                         <width>161</width>
                         <height>20</height>
                        </rect>
@@ -3429,7 +3385,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>200</x>
-                        <y>190</y>
+                        <y>80</y>
                         <width>111</width>
                         <height>18</height>
                        </rect>
@@ -3451,7 +3407,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>190</y>
+                        <y>80</y>
                         <width>161</width>
                         <height>20</height>
                        </rect>
@@ -3469,77 +3425,11 @@ background-color: rgb(38, 162, 105);</string>
                        <string>O3 Ortalaması:</string>
                       </property>
                      </widget>
-                     <widget class="QLabel" name="label_70">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>220</y>
-                        <width>171</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: rgb(255, 255, 255);</string>
-                      </property>
-                      <property name="text">
-                       <string>PWM Çevrim/Periyot:</string>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="label_105">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>70</y>
-                        <width>161</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: rgb(255, 255, 255);</string>
-                      </property>
-                      <property name="text">
-                       <string>Kalibrasyon Süresi:</string>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="calDurationlbl">
-                      <property name="geometry">
-                       <rect>
-                        <x>200</x>
-                        <y>70</y>
-                        <width>121</width>
-                        <height>18</height>
-                       </rect>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>16</pointsize>
-                        <italic>true</italic>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: rgb(255, 255, 255);</string>
-                      </property>
-                      <property name="text">
-                       <string>180 dakika</string>
-                      </property>
-                     </widget>
                      <widget class="QLabel" name="calPointEndTimelbl">
                       <property name="geometry">
                        <rect>
                         <x>200</x>
-                        <y>130</y>
+                        <y>140</y>
                         <width>101</width>
                         <height>18</height>
                        </rect>
@@ -3561,7 +3451,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>130</y>
+                        <y>140</y>
                         <width>161</width>
                         <height>20</height>
                        </rect>
@@ -3579,35 +3469,39 @@ background-color: rgb(38, 162, 105);</string>
                        <string>Bitiş Saati:</string>
                       </property>
                      </widget>
-                     <widget class="QLabel" name="calStabilizationTimerlbl">
+                     <widget class="QLabel" name="calStatuslbl">
                       <property name="geometry">
                        <rect>
-                        <x>200</x>
-                        <y>100</y>
-                        <width>121</width>
-                        <height>18</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>351</width>
+                        <height>21</height>
                        </rect>
                       </property>
                       <property name="font">
                        <font>
-                        <pointsize>16</pointsize>
+                        <pointsize>14</pointsize>
                         <italic>true</italic>
+                        <bold>false</bold>
                        </font>
                       </property>
                       <property name="styleSheet">
                        <string notr="true">color: rgb(255, 255, 255);</string>
                       </property>
                       <property name="text">
-                       <string>120</string>
+                       <string>SET ENVIRONMENT CONDITIONS STATE</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignmentFlag::AlignCenter</set>
                       </property>
                      </widget>
-                     <widget class="QLabel" name="label_109">
+                     <widget class="QLabel" name="label_108">
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>100</y>
+                        <y>260</y>
                         <width>181</width>
-                        <height>20</height>
+                        <height>31</height>
                        </rect>
                       </property>
                       <property name="font">
@@ -3620,16 +3514,16 @@ background-color: rgb(38, 162, 105);</string>
                        <string notr="true">color: rgb(255, 255, 255);</string>
                       </property>
                       <property name="text">
-                       <string>Stabilizasyon timer:</string>
+                       <string>Bir sonraki kalibrasyon</string>
                       </property>
                      </widget>
-                     <widget class="QLabel" name="pwmCyclePeriodlbl">
+                     <widget class="QLabel" name="nextCalStartDurationlbl">
                       <property name="geometry">
                        <rect>
-                        <x>200</x>
-                        <y>220</y>
-                        <width>31</width>
-                        <height>18</height>
+                        <x>210</x>
+                        <y>279</y>
+                        <width>121</width>
+                        <height>21</height>
                        </rect>
                       </property>
                       <property name="font">
@@ -3642,32 +3536,341 @@ background-color: rgb(38, 162, 105);</string>
                        <string notr="true">color: rgb(255, 255, 255);</string>
                       </property>
                       <property name="text">
-                       <string>80</string>
+                       <string>0</string>
                       </property>
                      </widget>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPlainTextEdit" name="plainTextEdit_2">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>350</height>
-                      </size>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(192, 28, 40);</string>
-                     </property>
+                     <widget class="QLabel" name="label_109">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>290</y>
+                        <width>151</width>
+                        <height>31</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>başlama süresi:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_110">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>340</y>
+                        <width>181</width>
+                        <height>31</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Kalibrasyon hassasiyeti:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calSensitivitylbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>210</x>
+                        <y>340</y>
+                        <width>121</width>
+                        <height>21</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>0</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_112">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>410</y>
+                        <width>181</width>
+                        <height>31</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Konsantrasyonu:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_113">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>380</y>
+                        <width>181</width>
+                        <height>31</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Sıfır Kalibrasyon</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="zeroCalConclbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>210</x>
+                        <y>390</y>
+                        <width>121</width>
+                        <height>21</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>0</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_118">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>460</y>
+                        <width>181</width>
+                        <height>31</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Stabilizasyon süresi:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="stabilizationDurationlbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>210</x>
+                        <y>460</y>
+                        <width>121</width>
+                        <height>21</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>0</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calTemplbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>210</x>
+                        <y>510</y>
+                        <width>121</width>
+                        <height>21</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>0</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_119">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>510</y>
+                        <width>181</width>
+                        <height>31</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Kalibrasyon Sıcaklık:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="cleanAirDurationlbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>210</x>
+                        <y>560</y>
+                        <width>121</width>
+                        <height>21</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>0</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_122">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>560</y>
+                        <width>181</width>
+                        <height>31</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Hava Temizleme Süresi:</string>
+                      </property>
+                     </widget>
+                     <widget class="Line" name="line">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>320</y>
+                        <width>311</width>
+                        <height>16</height>
+                       </rect>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Orientation::Horizontal</enum>
+                      </property>
+                     </widget>
+                     <widget class="Line" name="line_2">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>370</y>
+                        <width>311</width>
+                        <height>16</height>
+                       </rect>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Orientation::Horizontal</enum>
+                      </property>
+                     </widget>
+                     <widget class="Line" name="line_3">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>440</y>
+                        <width>311</width>
+                        <height>16</height>
+                       </rect>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Orientation::Horizontal</enum>
+                      </property>
+                     </widget>
+                     <widget class="Line" name="line_4">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>490</y>
+                        <width>311</width>
+                        <height>16</height>
+                       </rect>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Orientation::Horizontal</enum>
+                      </property>
+                     </widget>
+                     <widget class="Line" name="line_5">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>540</y>
+                        <width>311</width>
+                        <height>16</height>
+                       </rect>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Orientation::Horizontal</enum>
+                      </property>
+                     </widget>
                     </widget>
                    </item>
                   </layout>

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "calibration_board.h"
+#include "log_parser.h"
 
 #include <QDebug>
 
@@ -39,6 +40,39 @@ void CalibrationBoard::setMainWindow(MainWindow *mw)
     mainWindow = mw;
 }
 
+uint8_t CalibrationBoard::writeLogDirectoryPaths(const QMap<QString, QString>& log_folder_names)
+{
+    QTextStream out(log_directory_paths_file);
+    for (auto folder = log_folder_names.begin(); folder != log_folder_names.end(); ++folder) {
+        out << folder.key() << "=" << folder.value() << "\n";
+    }
+    return 0;
+}
+
+uint8_t CalibrationBoard::readLogDirectoryPaths()
+{
+    QTextStream in(log_directory_paths_file);
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if (line.contains('=')) {
+            QStringList parts = line.split('=');
+            if (parts.size() == 2) {
+                log_folder_names.insert(parts[0], parts[1]);
+            }
+        }
+    }
+    if (log_folder_names.isEmpty()) return 0;
+    command_line->messageBox("Yarım kalmış kalibrasyon için log klasörleri bulundu, silmek için evet butonuna tıklayın.");
+    clearLogDirectoryPathsFile();
+    return 1;
+}
+
+void CalibrationBoard::clearLogDirectoryPathsFile()
+{
+    log_directory_paths_file->close();
+    log_directory_paths_file->open(QIODevice::WriteOnly | QIODevice::Text);
+}
+
 void CalibrationBoard::startCalibrationProcess()
 {
     uint8_t status = createCalibrationFolders();
@@ -47,12 +81,15 @@ void CalibrationBoard::startCalibrationProcess()
         mainWindow->setLineEditText("log klasörleri ve dosyalari olusturuldu, kalibrasyon basladi");
         //serial->sendData(mcu_command);
     } else if (status == 2) {
-        mainWindow->setLineEditText("log klasörleri ve dosyalari zaten oluşturulmuştu, Uygulama çalışırken yalnızca bir kez oluşturulabilir.");
+        mainWindow->setLineEditText("Kalibrasyon işlemi devam ederken log klasörleri oluşturamazsınız.");
     }
 }
 
 uint8_t CalibrationBoard::createCalibrationFolders()
 {
+    if (cal_status_t.calibration_state != WAIT_STATE) return 2;
+    if (log_directory_paths_file == NULL) file_folder_creator.createLogDirectoryPathsFile();
+
     QStringList sensors_folders;
     uint8_t status;
     sensors_folders = getSensorFolderNames();
@@ -69,9 +106,8 @@ uint8_t CalibrationBoard::createCalibrationFolders()
                 sensor_log_folder_create_status[sensor_id] = 0;
             }
         } else {
-            mainWindow->setLineEditText("Uygulama çalışırken yalnızca bir kez sensör log klasörü oluşturulabilir.");
+            mainWindow->setLineEditText("Sensör Log klasörü zaten oluşturuldu.");
         }
-
     }
 
     if (!is_oml_log_folder_created) {
@@ -86,11 +122,12 @@ uint8_t CalibrationBoard::createCalibrationFolders()
             is_oml_log_folder_created = 0;
         }
     } else {
-        mainWindow->setLineEditText("Uygulama çalışırken yalnızca bir kez om106 log klasörü oluşturulabilir.");
+        mainWindow->setLineEditText("Om106 log klasörü zaten oluşturuldu.");
         status = 2;
     }
 
     if (status == 2) return 2;
+    writeLogDirectoryPaths(log_folder_names);
     return 1;
 }
 
@@ -139,10 +176,7 @@ uint8_t CalibrationBoard::createSensorFolders()
                     sensor_folder_create_status.insert(sensor_id, 0);
                 }
             }
-        } else {
-            mainWindow->setLineEditText("?!csf komutu ile sensör numaralarını girmeniz gerekmektedir.");
-            return 0;
-        }
+        } else return 0;
     }
     if (status == 2) return 2;
     return 1;
@@ -165,6 +199,8 @@ uint8_t CalibrationBoard::isArrayEmpty(const uint8_t* arr, size_t len)
 
 uint8_t CalibrationBoard::parseLineEditInput(const QStringList& inputList, QStringList& outputList)
 {
+    QSet<QString> seenIds;
+
     outputList.clear();
 
     // 15 değer var mı?
@@ -184,6 +220,14 @@ uint8_t CalibrationBoard::parseLineEditInput(const QStringList& inputList, QStri
         if (!regex.match(part).hasMatch() && part != "0") {
             mainWindow->setLineEditText("Geçersiz format:" + part);
             return 0;
+        }
+        if (part != "0") {
+            if (seenIds.contains(part)) {
+                mainWindow->setLineEditText("Aynı sensör ID birden fazla kez girildi: " + part);
+                sensor_module_map.clear();
+                return 0;
+            }
+            seenIds.insert(part);  // İlk kez görülüyorsa kaydet
         }
         if (sensor_module_status[counter]) {
             sensor_module_map.insert(part, counter + 1);
@@ -207,7 +251,6 @@ void CalibrationBoard::getDataFromMCU()
                 current_request = R_CABIN_INFO;
                 request_command = request_commands[current_request];
                 data_received_timeout = 10;
-                log_status = 0;
                 request_data_status[current_request] = 0;
             } else {
                 serial->sendData(request_command);
@@ -220,7 +263,6 @@ void CalibrationBoard::getDataFromMCU()
                 current_request = R_SENSOR_VALUES;
                 request_command = request_commands[current_request];
                 data_received_timeout = 10;
-                log_status = 0;
                 request_data_status[current_request] = 0;
             } else {
                 serial->sendData(request_command);
@@ -233,7 +275,6 @@ void CalibrationBoard::getDataFromMCU()
                 current_request = R_CAL_STATUS;
                 request_command = request_commands[current_request];
                 data_received_timeout = 10;
-                log_status = 0;
                 request_data_status[current_request] = 0;
             } else {
                 serial->sendData(request_command);
@@ -265,4 +306,3 @@ void CalibrationBoard::checkTime()
         getDataFromMCU();
     }
 }
-

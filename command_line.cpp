@@ -20,7 +20,6 @@ void CommandLine::startCalibrationRequest(Request request, QString request_cmd) 
     current_request = request;
     request_command = request_cmd;
     data_received_timeout = 10;
-    log_status = 0;
     request_data_status[current_request] = 0;
     get_calibration_data_timer->start(1000);
 }
@@ -129,6 +128,7 @@ void CommandLine::messageBox(QString message)
             is_calibration_folders_created = 0;
             sensor_log_folder_create_status.clear();
             log_folder_names.clear();
+            calibration_board->clearLogDirectoryPathsFile();
         } else {
             qDebug() << "Log klasörleri zaten oluşturulmamış";
         }
@@ -143,7 +143,6 @@ void CommandLine::messageBox(QString message)
 
 void CommandLine::commandLineProcess()
 {
-    log_status = 1;
     QString command_cl = mainWindow->getLineEditText();
     mainWindow->Log2LinePlainText(command_cl);
     parseCommand(command_cl);

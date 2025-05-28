@@ -14,11 +14,13 @@ struct CalibrationStatus {
     float o3_average;
     uint16_t calibration_ppb;
     uint16_t calibration_state;
-    uint16_t calibration_duration;
-    uint16_t stabilization_timer;
     uint16_t repeat_calibration;
-    uint16_t pwm_duty_cycle;
-    uint16_t pwm_period;
+    uint16_t next_calibration_start_duration;
+    uint16_t calibration_sensitivity;
+    uint16_t zero_cal_conc;
+    uint16_t stabilization_duration;
+    uint16_t calibration_temp;
+    uint16_t clean_air_duration;
 };
 extern CalibrationStatus cal_status_t;
 

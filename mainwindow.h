@@ -23,12 +23,16 @@ class LogParser;
 struct CalibrationValLabels {
     QLabel* cal_point;
     QLabel* cal_point_start_time;
-    QLabel* cal_duration;
-    QLabel* cal_stabilization;
+    QLabel* cal_next_cal_start_duration;
+    QLabel* cal_sensitivity;
     QLabel* cal_point_end_time;
     QLabel* cal_status;
     QLabel* cal_o3_average;
-    QLabel* cal_pwm_cyle_period;
+    QLabel* cal_zero_cal_conc;
+    QLabel* cal_start_from_zero_checked;
+    QLabel* cal_stabilization_duration;
+    QLabel* cal_const_cal_temp;
+    QLabel* cal_clean_air_duration;
 };
 
 struct MainWindowHeaderValLabels {
@@ -59,8 +63,6 @@ extern QMap<uint8_t, QLabel*> r3_labels;
 
 extern uint8_t sensor_module_status[NUM_OF_SENSOR_BOARD];
 extern uint8_t active_sensor_count;
-
-extern uint8_t log_status;
 
 extern QMap<QString, uint8_t> sensor_module_map;
 extern QMap<QString, QString> log_folder_names;

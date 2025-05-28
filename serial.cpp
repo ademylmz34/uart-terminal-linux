@@ -116,8 +116,8 @@ void Serial::readSerial()
         if (ch == '\n')
         {
             uart_rx_buffer[uart_buffer_index] = '\0';
-            line = QString::fromUtf8(uart_rx_buffer);
-            if (log_status) mainWindow->setLineEditText(line);
+            //line = QString::fromUtf8(uart_rx_buffer);
+            //if (log_status) mainWindow->setLineEditText(line);
             uartLineProcess(uart_rx_buffer);
             uart_buffer_index = 0;
             memset(uart_rx_buffer, 0, RX_BUFFER_LEN);

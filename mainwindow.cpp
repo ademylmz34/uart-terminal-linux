@@ -12,7 +12,6 @@ QDateTime current_dt;
 
 uint8_t sensor_module_status[NUM_OF_SENSOR_BOARD];
 uint8_t active_sensor_count;
-uint8_t log_status;
 
 uint16_t calibration_points[NUM_OF_CAL_POINTS] = {20, 50, 100, 200, 500, 0, 0, 0, 0, 0};
 Request current_request;
@@ -57,7 +56,8 @@ QMap<CalibrationStates, QString> calibration_state_str = {
     { SPAN_CALIBRATION_MID_STATE, "SPAN CALIBRATION MID STATE" },
     { SPAN_CALIBRATION_END_STATE, "SPAN CALIBRATION END STATE" },
     { RETURN_TO_ZERO_STATE, "RETURN TO ZERO STATE"},
-    { REPEAT_CALIBRATION_STATE, "REPEAT CALIBRATION STATE"}
+    { REPEAT_CALIBRATION_STATE, "REPEAT CALIBRATION STATE"},
+    { END_STATE, "END STATE"}
 };
 
 QMap<uint8_t, QLabel*> temp_labels;
@@ -118,9 +118,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         QString zaman = now.toString("dd.MM.yyyy hh:mm");
         main_window_header_labels.current_date_time->setText(zaman);
     });
-    log_status = 0;
+
     cal_status_t.calibration_state = WAIT_STATE;
     is_main_folder_created = file_folder_creator.createMainFolder();
+    calibration_board->readLogDirectoryPaths();
     serial->connection_check_timer->start(100); // Her 100 milisaniyede bir kontrol et
 
     get_calibration_status_timer->start(18000);
@@ -185,12 +186,15 @@ void MainWindow::setLabels() {
     }
     cal_val_labels.cal_point = ui->calPointlbl;
     cal_val_labels.cal_point_start_time = ui->calPointStartTimelbl;
-    cal_val_labels.cal_duration = ui->calDurationlbl;
-    cal_val_labels.cal_stabilization = ui->calStabilizationTimerlbl;
+    cal_val_labels.cal_next_cal_start_duration = ui->nextCalStartDurationlbl;
+    cal_val_labels.cal_clean_air_duration = ui->cleanAirDurationlbl;
+    cal_val_labels.cal_const_cal_temp = ui->calTemplbl;
+    cal_val_labels.cal_sensitivity = ui->calSensitivitylbl;
+    cal_val_labels.cal_stabilization_duration = ui->stabilizationDurationlbl;
+    cal_val_labels.cal_zero_cal_conc = ui->zeroCalConclbl;
     cal_val_labels.cal_point_end_time = ui->calPointEndTimelbl;
     cal_val_labels.cal_status = ui->calStatuslbl;
     cal_val_labels.cal_o3_average = ui->o3Averagelbl;
-    cal_val_labels.cal_pwm_cyle_period = ui->pwmCyclePeriodlbl;
 
     main_window_header_labels.cabin_info = ui->CabinInfolbl;
     main_window_header_labels.calibration_start_date = ui->calStartDatelbl;

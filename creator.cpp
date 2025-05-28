@@ -10,6 +10,8 @@ QTextStream* main_log_stream = NULL;
 QFile* calibration_log_file = NULL;
 QTextStream* calibration_stream = NULL;
 
+QFile* log_directory_paths_file = NULL;
+
 uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
 
 Creator::Creator() {
@@ -18,10 +20,19 @@ Creator::Creator() {
     is_calibration_file_created = 0;
     root_folder = "O3_Kalibrasyon_Loglari-3";
     om106l_folder = QString("%1/om106Logs").arg(root_folder);
+    createLogDirectoryPathsFile();
 }
 
 Creator::~Creator() {
+    freeFiles();
+}
+
+void Creator::freeFiles() {
     if (is_calibration_folders_created) {
+        is_oml_log_folder_created = 0;
+        is_calibration_folders_created = 0;
+        is_main_log_file_created = 0;
+        is_calibration_file_created = 0;
         for (auto& s : sensor_map) {
             if (s.log_file) {
                 if (s.log_file->isOpen()) s.log_file->close();
@@ -64,8 +75,16 @@ Creator::~Creator() {
         if (calibration_log_file != NULL) delete calibration_log_file;
         if (calibration_stream != NULL) delete calibration_stream;
 
+        if (log_directory_paths_file->isOpen()) {
+            log_directory_paths_file->close();
+        }
+
+        if (log_directory_paths_file != NULL) delete log_directory_paths_file;
+
         om106_map.clear();
         sensor_map.clear();
+        log_folder_names.clear();
+        sensor_log_folder_create_status.clear();
     }
 }
 
@@ -89,6 +108,24 @@ int8_t Creator::getCalibrationPointsArraySize() {
         cal_point_array_size++;
     }
     return cal_point_array_size;
+}
+
+uint8_t Creator::createLogDirectoryPathsFile() {
+    QString file_path = QString("%1/log_directory_paths.txt").arg(root_folder);
+    log_directory_paths_file = new QFile(file_path);
+    if (QFile::exists(file_path)) {
+        if (log_directory_paths_file->open(QIODevice::ReadWrite | QIODevice::Text))
+            qDebug() << "Log dizinleri dosyası zaten var, dosya açıldı.";
+        return 2;
+    } else {
+        if (log_directory_paths_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
+            qDebug() << "Log dizinleri dosyasi başarıyla oluşturuldu.";
+        } else {
+            qDebug() << "Log dizinleri dosyasi oluşturulamadi.";
+            return 0;
+        }
+    }
+    return 1;
 }
 
 uint8_t Creator::createMainFolder() {

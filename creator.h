@@ -38,6 +38,7 @@ extern QTextStream* main_log_stream;
 
 extern QFile* calibration_log_file;
 extern QTextStream* calibration_stream;
+extern QFile* log_directory_paths_file;
 
 extern uint8_t om106l_device_status[NUM_OF_OM106L_DEVICE];
 
@@ -67,6 +68,8 @@ public:
     uint8_t createSensorLogFolder(QString);
     uint8_t createOm106lFolder();
     uint8_t createOm106LogFolder();
+    uint8_t createLogDirectoryPathsFile();
+    void freeFiles();
 
 private:
     uint8_t createCalibrationLogFile(QString);

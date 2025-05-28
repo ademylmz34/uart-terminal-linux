@@ -15,8 +15,9 @@ QDateTime calibration_end_dt;
 QDateTime calibration_ppb_start_dt;
 QDateTime calibration_ppb_end_dt;
 
-CalibrationStatus cal_status_t = { .o3_average = 0, .calibration_ppb = 0, .calibration_state = 0, .calibration_duration = 0,
-                                  .stabilization_timer = 0, .repeat_calibration = 0, .pwm_duty_cycle = 0, .pwm_period = 0};
+CalibrationStatus cal_status_t = { .o3_average = 0, .calibration_ppb = 0, .calibration_state = 0, .repeat_calibration = 0,
+                                  .next_calibration_start_duration = 0, .calibration_sensitivity = 0, .zero_cal_conc = 0,
+                                  .stabilization_duration = 0, .calibration_temp = 0, .clean_air_duration = 0};
 
 LogParser::LogParser(QObject *parent): QObject(parent)
 {
@@ -202,11 +203,13 @@ void LogParser::parseCalibrationData(const char* input)
     float o3_average;
     int calibration_ppb;
     int calibration_state;
-    int calibration_duration;
-    int stabilization_timer;
     int repeat_calibration;
-    int pwm_duty_cycle;
-    int pwm_period;
+    int next_calibration_start_duration;
+    int calibration_sensitivity;
+    int zero_cal_conc;
+    int stabilization_duration;
+    int calibration_temp;
+    int clean_air_duration;
 
     size_t len;
 
@@ -247,7 +250,6 @@ void LogParser::parseCalibrationData(const char* input)
         case R_CABIN_INFO:
             if (sscanf(input, "Kabin-%d", &cabin_no) == 1)
             {
-                qDebug() << cabin_no;
                 if (cabin_no == 1) main_window_header_labels.cabin_info->setText("Kabin-1 Kalibrasyon");
                 else if (cabin_no == 2) main_window_header_labels.cabin_info->setText("Kabin-2 Kalibrasyon");
                 request_data_status[current_request] = 1;
@@ -255,25 +257,56 @@ void LogParser::parseCalibrationData(const char* input)
             break;
 
         case R_CAL_STATUS:
-            if (sscanf(input, "%d %d %d %d %d %f %d %d", &calibration_ppb, &calibration_state, &calibration_duration, &stabilization_timer,
-                       &repeat_calibration, &o3_average, &pwm_duty_cycle, &pwm_period) == 8) {
-                cal_status_t.calibration_ppb = calibration_ppb;
-                cal_status_t.calibration_state = calibration_state;
-                cal_status_t.calibration_duration = calibration_duration;
-                cal_status_t.stabilization_timer = stabilization_timer;
-                cal_status_t.repeat_calibration = repeat_calibration;
-                cal_status_t.o3_average = o3_average;
-                cal_status_t.pwm_duty_cycle = pwm_duty_cycle;
-                cal_status_t.pwm_period = pwm_period;
-
-                cal_val_labels.cal_point->setText(QString("%1 PPB").arg(QString::number(calibration_points[calibration_ppb])));
-                cal_val_labels.cal_duration->setText(QString("%1 dakika").arg(QString::number(calibration_duration)));
-                cal_val_labels.cal_stabilization->setText(QString::number(stabilization_timer));
-                cal_val_labels.cal_status->setText(calibration_state_str[getCalibrationState(calibration_state)]);
-                cal_val_labels.cal_o3_average->setText(QString("%1 PPB").arg(QString::number(o3_average)));
-                cal_val_labels.cal_pwm_cyle_period->setText(QString("%1/%2 msec").arg(QString::number(pwm_duty_cycle)).arg(QString::number(pwm_period)));
-
-                main_window_header_labels.calibration_repeat_val->setText(QString::number(repeat_calibration));
+            if (sscanf(input, "%d %d %d %f %d %d %d %d %d %d", &calibration_ppb, &calibration_state, &repeat_calibration, &o3_average,
+                       &next_calibration_start_duration, &calibration_sensitivity, &zero_cal_conc, &stabilization_duration,
+                       &calibration_temp, &clean_air_duration) == 10
+                ) {
+                if (cal_status_t.calibration_ppb != calibration_ppb) {
+                    cal_status_t.calibration_ppb = calibration_ppb;
+                    cal_val_labels.cal_point->setText(QString("%1 PPB").arg(QString::number(calibration_points[calibration_ppb])));
+                }
+                if (cal_status_t.calibration_state != calibration_state) {
+                    cal_status_t.calibration_state = calibration_state;
+                    cal_val_labels.cal_status->setText(calibration_state_str[getCalibrationState(calibration_state)]);
+                    if (calibration_state == END_STATE) {
+                        calibration_board->clearLogDirectoryPathsFile();
+                        file_folder_creator.freeFiles();
+                        cal_status_t.calibration_state = WAIT_STATE;
+                        mainWindow->setLineEditText("KALİBRASYON TAMAMLANDI!!!");
+                    }
+                }
+                if (cal_status_t.repeat_calibration != repeat_calibration) {
+                    cal_status_t.repeat_calibration = repeat_calibration;
+                    main_window_header_labels.calibration_repeat_val->setText(QString::number(repeat_calibration));
+                }
+                if (cal_status_t.o3_average != o3_average) {
+                    cal_status_t.o3_average = o3_average;
+                    cal_val_labels.cal_o3_average->setText(QString("%1 PPB").arg(QString::number(o3_average)));
+                }
+                if (cal_status_t.next_calibration_start_duration != next_calibration_start_duration) {
+                    cal_status_t.next_calibration_start_duration = next_calibration_start_duration;
+                    cal_val_labels.cal_next_cal_start_duration->setText(QString::number(next_calibration_start_duration));
+                }
+                if (cal_status_t.calibration_sensitivity != calibration_sensitivity) {
+                    cal_status_t.calibration_sensitivity = calibration_sensitivity;
+                    cal_val_labels.cal_sensitivity->setText(QString::number(calibration_sensitivity));
+                }
+                if (cal_status_t.zero_cal_conc != zero_cal_conc) {
+                    cal_status_t.zero_cal_conc = zero_cal_conc;
+                    cal_val_labels.cal_zero_cal_conc->setText(QString::number(zero_cal_conc));
+                }
+                if (cal_status_t.stabilization_duration != stabilization_duration) {
+                    cal_status_t.stabilization_duration = stabilization_duration;
+                    cal_val_labels.cal_stabilization_duration->setText(QString::number(stabilization_duration));
+                }
+                if (cal_status_t.calibration_temp != calibration_temp) {
+                    cal_status_t.calibration_temp = calibration_temp;
+                    cal_val_labels.cal_const_cal_temp->setText(QString::number(calibration_temp));
+                }
+                if (cal_status_t.clean_air_duration != clean_air_duration) {
+                    cal_status_t.clean_air_duration = clean_air_duration;
+                    cal_val_labels.cal_clean_air_duration->setText(QString::number(clean_air_duration));
+                }
 
                 request_data_status[current_request] = 1;
             }
@@ -363,6 +396,8 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         return -1;
     }
 
+    line = QString::fromUtf8(input);
+
     sscanf(input, ">%10s %8s", packet->date, packet->time);
     const char* p = input + 21;
 
@@ -375,6 +410,8 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     packet->command = parseCommandExtended(command);
     packet->command_str = strdup(command);
 
+    if (packet->command.type != CMD_D && packet->command.type != CMD_SK && packet->command.type != CMD_OM && packet->command.type != CMD_SMS) mainWindow->setLineEditText(line);
+
     if (*p == ' ') p++;
 
     packet->data = NULL;
@@ -383,7 +420,6 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     if (*p == '\0') {
         return 0;
     }
-
 
     if (packet->command.type == CMD_RST) {
         return 0;
