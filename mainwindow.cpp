@@ -15,6 +15,7 @@ uint8_t active_sensor_count;
 
 uint16_t calibration_points[NUM_OF_CAL_POINTS] = {20, 50, 100, 200, 500, 0, 0, 0, 0, 0};
 Request current_request;
+Request serial_no_request;
 
 QMap<QString, uint8_t> sensor_module_map;
 QMap<QString, QString> log_folder_names;
@@ -36,7 +37,8 @@ QMap<Request, QString> request_commands = {
     { R_CAL_POINTS, "?gpd" },
     { R_CAL_STATUS, "?gpk"},
     { R_CABIN_INFO, "?gpi"},
-    { R_SENSOR_VALUES, "?gps"}
+    { R_SENSOR_VALUES, "?gps"},
+    { R_SENSOR_ID, "?gpc"}
 };
 
 QMap<Request, uint8_t> request_data_status = {
@@ -44,7 +46,8 @@ QMap<Request, uint8_t> request_data_status = {
     { R_CAL_POINTS, 0 },
     { R_CAL_STATUS, 0 },
     { R_CABIN_INFO, 0},
-    { R_SENSOR_VALUES, 0}
+    { R_SENSOR_VALUES, 0},
+    { R_SENSOR_ID, 0}
 };
 
 QMap<CalibrationStates, QString> calibration_state_str = {
@@ -60,6 +63,7 @@ QMap<CalibrationStates, QString> calibration_state_str = {
     { END_STATE, "END STATE"}
 };
 
+QMap<uint8_t, QLabel*> header_labels;
 QMap<uint8_t, QLabel*> temp_labels;
 QMap<uint8_t, QLabel*> hum_labels;
 QMap<uint8_t, QLabel*> r1_labels;
@@ -70,6 +74,8 @@ CalibrationValLabels cal_val_labels;
 MainWindowHeaderValLabels main_window_header_labels;
 
 QMap<uint8_t, QFrame*> sensor_frames;
+QMap<uint16_t, uint32_t> sensors_serial_no;
+QMap<uint8_t, uint8_t> sensors_eeprom_is_data_exist;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -145,6 +151,9 @@ void MainWindow::setLabels() {
         QString frame_name = QString("sensor%1Frame").arg(i);
         QFrame *frame = findChild<QFrame*>(frame_name);
 
+        QString header_name = QString("sensor%1Headerlbl").arg(i);
+        QLabel *header_label = findChild<QLabel*>(header_name);
+
         QString temp_name = QString("sensor%1T").arg(i);
         QLabel *temp_label = findChild<QLabel*>(temp_name);
 
@@ -162,6 +171,10 @@ void MainWindow::setLabels() {
 
         if (frame) {
             sensor_frames.insert(i, frame);
+        }
+
+        if (header_label) {
+            header_labels.insert(i, header_label);
         }
 
         if (temp_label) {

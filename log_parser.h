@@ -53,6 +53,7 @@ public:
         CMD_L,
         CMD_D,
         CMD_SMS,
+        CMD_SN,
         CMD_SK,
         CMD_KL,
         CMD_KS,
@@ -105,6 +106,8 @@ public:
         PWMData pwm_data;
     } Packet;
 
+    uint8_t received_serial_no_count;
+
     Packet packet;
     void setMainWindow(MainWindow*);
     int8_t parseLine(const char*, Packet*);
@@ -120,6 +123,7 @@ private:
     CalibrationStates getCalibrationState(int);
     void parseLineData(KeyValue*, const char*, uint8_t &) ;
     void parseCalibrationData(const char*);
+    void parseSerialNoData(const char*);
     void parseCalibrationTime(const char*);
     int8_t parsePwmData(const char*, PWMData*);
     void printCommandInfo(const Packet*);

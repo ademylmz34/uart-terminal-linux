@@ -5,13 +5,18 @@
 #include <QDebug>
 
 QString request_command;
-QStringList sensor_numbers;
+QString serial_no_request_command;
+
 QString mcu_command;
+QStringList sensor_numbers;
+QStringList sensor_ids;
 
 QTimer *get_calibration_data_timer;
+QTimer *get_sensors_serial_no_timer;
+
 uint8_t data_received_timeout;
+uint8_t serial_no_data_received_timeout;
 uint8_t is_calibration_folders_created;
-QStringList sensor_ids;
 
 QMap<QString, uint8_t> sensor_folder_create_status;
 QMap<QString, uint8_t> sensor_log_folder_create_status;
@@ -19,10 +24,13 @@ QMap<QString, uint8_t> sensor_log_folder_create_status;
 CalibrationBoard::CalibrationBoard(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
     get_calibration_data_timer = new QTimer(this);
+    get_sensors_serial_no_timer = new QTimer(this);
+
+    connect(get_calibration_data_timer, &QTimer::timeout, this, &CalibrationBoard::getCalibrationData);
+    connect(get_sensors_serial_no_timer, &QTimer::timeout, this, &CalibrationBoard::getSensorSerialNoData);
 
     is_oml_log_folder_created = 0;
     is_calibration_folders_created = 0;
-    connect(get_calibration_data_timer, &QTimer::timeout, this, &CalibrationBoard::checkTime);
 
     memset(sensor_module_status, 0, NUM_OF_SENSOR_BOARD);
     /*uint8_t temp_values[15] = {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -33,6 +41,7 @@ CalibrationBoard::CalibrationBoard(QObject *parent): QObject(parent)  // üst s�
 CalibrationBoard::~CalibrationBoard()
 {
     delete get_calibration_data_timer;
+    delete get_sensors_serial_no_timer;
 }
 
 void CalibrationBoard::setMainWindow(MainWindow *mw)
@@ -256,10 +265,34 @@ void CalibrationBoard::getDataFromMCU()
                 serial->sendData(request_command);
             }
             break;
+        case R_SENSOR_ID:
+            if (data_received_timeout == 0 || request_data_status[current_request]) {
+                if (request_data_status[current_request]) qDebug() << "Request data sid operation completed.";
+                else qDebug() << "Request data sid couldn't get received.";
+                current_request = R_CABIN_INFO;
+                request_command = request_commands[current_request];
+                data_received_timeout = 10;
+                request_data_status[current_request] = 0;
+            } else {
+                serial->sendData(request_command);
+            }
+            break;
         case R_CABIN_INFO:
             if (data_received_timeout == 0 || request_data_status[current_request]) {
                 if (request_data_status[current_request]) qDebug() << "Request data ci operation completed.";
                 else qDebug() << "Request data ci couldn't get received.";
+                current_request = R_CAL_POINTS;
+                request_command = request_commands[current_request];
+                data_received_timeout = 10;
+                request_data_status[current_request] = 0;
+            } else {
+                serial->sendData(request_command);
+            }
+            break;
+        case R_CAL_POINTS:
+            if (data_received_timeout == 0 || request_data_status[current_request]) {
+                if (request_data_status[current_request]) qDebug() << "Request data cp operation completed.";
+                else qDebug() << "Request data cp couldn't get received.";
                 current_request = R_SENSOR_VALUES;
                 request_command = request_commands[current_request];
                 data_received_timeout = 10;
@@ -295,7 +328,21 @@ void CalibrationBoard::getDataFromMCU()
     if (current_request == NONE) get_calibration_data_timer->stop();
 }
 
-void CalibrationBoard::checkTime()
+void CalibrationBoard::getSerialNoDataFromMCU()
+{
+    if (request_data_status[serial_no_request]) {
+        if (request_data_status[serial_no_request]) qDebug() << "Serial No data get received.";
+        else qDebug() << "Serial No data couldn't get received.";
+        serial_no_request = NONE;
+        serial_no_request_command = "";
+    } else {
+        serial->sendData(serial_no_request_command);
+    }
+
+    if (serial_no_request == NONE) get_sensors_serial_no_timer->stop();
+}
+
+void CalibrationBoard::getCalibrationData()
 {
     if (data_received_timeout) {
         data_received_timeout--;
@@ -304,5 +351,17 @@ void CalibrationBoard::checkTime()
     }
     if (current_request != NONE) {
         getDataFromMCU();
+    }
+}
+
+void CalibrationBoard::getSensorSerialNoData()
+{
+    if (serial_no_data_received_timeout) {
+        serial_no_data_received_timeout--;
+    } else if (serial_no_data_received_timeout == 0) {
+        serial_no_data_received_timeout = 10;
+    }
+    if (serial_no_request != NONE) {
+        getSerialNoDataFromMCU();
     }
 }

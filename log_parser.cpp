@@ -23,6 +23,7 @@ LogParser::LogParser(QObject *parent): QObject(parent)
 {
     repeat_calibration_index = 0;
     calibration_completed = 0;
+    received_serial_no_count = 1;
 }
 
 LogParser::~LogParser()
@@ -41,6 +42,7 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     else if (strcmp(cmd, "R3") == 0) result.type = CMD_R3;
     else if (strcmp(cmd, "SMS") == 0) result.type = CMD_SMS;
     else if (strcmp(cmd, "RST") == 0) result.type = CMD_RST;
+    else if (strncmp(cmd, "SN", 2) == 0) result.type = CMD_SN;
     else if (strncmp(cmd, "SK", 2) == 0) {
         int s_no;
         if (sscanf(cmd, "SK-%d", &s_no) == 1) {
@@ -192,6 +194,7 @@ CalibrationStates LogParser::getCalibrationState(int calibration_state_int)
         case 7: return RETURN_TO_ZERO_STATE; break;
         case 8: return REPEAT_CALIBRATION_STATE; break;
     }
+    return WAIT_STATE;
 }
 
 void LogParser::parseCalibrationData(const char* input)
@@ -210,6 +213,9 @@ void LogParser::parseCalibrationData(const char* input)
     int stabilization_duration;
     int calibration_temp;
     int clean_air_duration;
+
+    int sensor_no;
+    int serial_no;
 
     size_t len;
 
@@ -234,7 +240,24 @@ void LogParser::parseCalibrationData(const char* input)
             if (active_sensor_count) {
                 request_data_status[current_request] = 1;
             }
-
+            break;
+        case R_SENSOR_ID:
+            if (sscanf(input, "s%d: %d", &sensor_no, &serial_no) == 2) {
+                if (received_serial_no_count++ == active_sensor_count) {
+                    request_data_status[current_request] = 1;
+                    received_serial_no_count = 1;
+                }
+                header_labels[sensor_no]->setText(QString("s%1").arg(QString::number(serial_no)));
+                sensors_serial_no.insert(sensor_no, serial_no);
+                sensors_eeprom_is_data_exist.insert(sensor_no, 1);
+            } else if (sscanf(input, "s%d bilgileri bos", &sensor_no) == 1) {
+                if (received_serial_no_count++ == active_sensor_count) {
+                    request_data_status[current_request] = 1;
+                    received_serial_no_count = 1;
+                }
+                sensors_eeprom_is_data_exist.insert(sensor_no, 0);
+                header_labels[sensor_no]->setText("Veri Yok");
+            }
             break;
         case R_CAL_POINTS:
             if (sscanf(input, "KN%d %d", &kal_point, &kal_point_val) == 2)
@@ -316,6 +339,27 @@ void LogParser::parseCalibrationData(const char* input)
             break;
         default:
             break;
+    }
+}
+
+void LogParser::parseSerialNoData(const char* input) {
+    int sensor_no, serial_no;
+
+    if (sscanf(input, "s%d: %d", &sensor_no, &serial_no) == 2) {
+        if (received_serial_no_count++ == active_sensor_count) {
+            request_data_status[serial_no_request] = 1;
+            received_serial_no_count = 1;
+        }
+        header_labels[sensor_no]->setText(QString("s%1").arg(QString::number(serial_no)));
+        sensors_serial_no.insert(sensor_no, serial_no);
+        sensors_eeprom_is_data_exist.insert(sensor_no, 1);
+    } else if (sscanf(input, "s%d bilgileri bos", &sensor_no) == 1) {
+        if (received_serial_no_count++ == active_sensor_count) {
+            request_data_status[serial_no_request] = 1;
+            received_serial_no_count = 1;
+        }
+        sensors_eeprom_is_data_exist.insert(sensor_no, 0);
+        header_labels[sensor_no]->setText("Veri Yok");
     }
 }
 
@@ -409,8 +453,8 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     command[i] = '\0';
     packet->command = parseCommandExtended(command);
     packet->command_str = strdup(command);
-
-    if (packet->command.type != CMD_D && packet->command.type != CMD_SK && packet->command.type != CMD_OM && packet->command.type != CMD_SMS) mainWindow->setLineEditText(line);
+    //mainWindow->setLineEditText(line);
+    if (packet->command.type != CMD_D && packet->command.type != CMD_SN && packet->command.type != CMD_SK && packet->command.type != CMD_OM && packet->command.type != CMD_SMS) mainWindow->setLineEditText(line);
 
     if (*p == ' ') p++;
 
@@ -426,7 +470,7 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     }
 
     if (packet->command.type == CMD_D || packet->command.type == CMD_KL || packet->command.type == CMD_KN_PWM
-        || packet->command.type == CMD_L || packet->command.type == CMD_KS || packet->command.type == CMD_SMS)
+        || packet->command.type == CMD_L || packet->command.type == CMD_KS || packet->command.type == CMD_SMS || packet->command.type == CMD_SN)
     {
         packet->data_str = strdup(p);
         return 0;
@@ -476,9 +520,13 @@ int8_t LogParser::processPacket(Packet* packet) {
     case CMD_RST:
         command_line->messageBox("MCU yeniden başlatıldı, son log dosyalarının silinmesini istiyor musunuz?");
         break;
+    case CMD_SN:
+        sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
+        parseSerialNoData(packet->data_str);
+        break;
     case CMD_SK:
         sprintf(buff, ">%s %s ", packet->date, packet->time);
-        for (uint8_t i = 0; i < packet->data_count; i++) {            
+        for (uint8_t i = 0; i < packet->data_count; i++) {
             if (
                 strcmp(packet->data[i].key, "OM") == 0 ||
                 strcmp(packet->data[i].key, "T") == 0  ||

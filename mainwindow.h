@@ -48,6 +48,8 @@ extern CalibrationValLabels cal_val_labels;
 extern MainWindowHeaderValLabels main_window_header_labels;
 
 extern QMap<uint8_t, QFrame*> sensor_frames;
+extern QMap<uint16_t, uint32_t> sensors_serial_no;
+extern QMap<uint8_t, uint8_t> sensors_eeprom_is_data_exist;
 
 extern QDateTime current_dt;
 
@@ -55,6 +57,7 @@ extern QMap<Request, QString> request_commands;
 extern QMap<Request, uint8_t> request_data_status;
 extern QMap<CalibrationStates, QString> calibration_state_str;
 
+extern QMap<uint8_t, QLabel*> header_labels;
 extern QMap<uint8_t, QLabel*> temp_labels;
 extern QMap<uint8_t, QLabel*> hum_labels;
 extern QMap<uint8_t, QLabel*> r1_labels;
@@ -74,6 +77,7 @@ extern uint8_t is_oml_log_folder_created;
 
 extern uint16_t calibration_points[NUM_OF_CAL_POINTS];
 extern Request current_request;
+extern Request serial_no_request;
 
 extern QString line;
 

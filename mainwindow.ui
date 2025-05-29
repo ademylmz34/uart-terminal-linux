@@ -289,17 +289,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label">
+                        <widget class="QLabel" name="sensor1Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -307,7 +308,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 1</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_2">
@@ -484,17 +488,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_17">
+                        <widget class="QLabel" name="sensor2Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -502,7 +507,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 2</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_18">
@@ -678,17 +686,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_28">
+                        <widget class="QLabel" name="sensor3Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -696,7 +705,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 3</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_29">
@@ -872,17 +884,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_39">
+                        <widget class="QLabel" name="sensor4Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -890,7 +903,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 4</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_40">
@@ -1066,17 +1082,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_50">
+                        <widget class="QLabel" name="sensor5Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1084,7 +1101,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 5</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_51">
@@ -1307,17 +1327,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_72">
+                        <widget class="QLabel" name="sensor6Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1325,7 +1346,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 6</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_73">
@@ -1501,17 +1525,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_116">
+                        <widget class="QLabel" name="sensor7Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1519,7 +1544,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 7</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_117">
@@ -1695,17 +1723,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_83">
+                        <widget class="QLabel" name="sensor8Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1713,7 +1742,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 8</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_84">
@@ -1889,17 +1921,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_94">
+                        <widget class="QLabel" name="sensor9Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>71</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1907,7 +1940,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 9</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_95">
@@ -2083,17 +2119,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_127">
+                        <widget class="QLabel" name="sensor10Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>81</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2101,7 +2138,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 10</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_128">
@@ -2299,17 +2339,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_138">
+                        <widget class="QLabel" name="sensor11Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>81</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2317,7 +2358,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 11</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_139">
@@ -2493,17 +2537,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_182">
+                        <widget class="QLabel" name="sensor12Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>81</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2511,7 +2556,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 12</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_183">
@@ -2687,17 +2735,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_149">
+                        <widget class="QLabel" name="sensor13Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>81</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2705,7 +2754,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 13</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_150">
@@ -2881,17 +2933,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_160">
+                        <widget class="QLabel" name="sensor14Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>81</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2899,7 +2952,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 14</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_161">
@@ -3075,17 +3131,18 @@ background-color: rgb(38, 162, 105);</string>
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <widget class="QLabel" name="label_193">
+                        <widget class="QLabel" name="sensor15Headerlbl">
                          <property name="geometry">
                           <rect>
-                           <x>30</x>
+                           <x>0</x>
                            <y>0</y>
-                           <width>81</width>
-                           <height>18</height>
+                           <width>136</width>
+                           <height>20</height>
                           </rect>
                          </property>
                          <property name="font">
                           <font>
+                           <pointsize>14</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -3093,7 +3150,10 @@ background-color: rgb(38, 162, 105);</string>
                           <string notr="true">color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
-                          <string>SENSOR 15</string>
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignCenter</set>
                          </property>
                         </widget>
                         <widget class="QLabel" name="label_194">

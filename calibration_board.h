@@ -12,11 +12,15 @@
 class MainWindow;
 
 extern QString request_command;
+extern QString serial_no_request_command;
 extern QStringList sensor_numbers;
 extern QString mcu_command;
 
 extern QTimer *get_calibration_data_timer;
+extern QTimer *get_sensors_serial_no_timer;
+
 extern uint8_t data_received_timeout;
+extern uint8_t serial_no_data_received_timeout;
 extern uint8_t is_calibration_folders_created;
 
 extern QStringList sensor_ids;
@@ -37,6 +41,7 @@ public:
     void setMainWindow(MainWindow*);
     void startCalibrationProcess();
     void clearLogDirectoryPathsFile();
+    void getSerialNoDataFromMCU();
 private:
     MainWindow *mainWindow = nullptr;
 
@@ -46,7 +51,9 @@ private:
     uint8_t parseLineEditInput(const QStringList&, QStringList&);
     QStringList getSensorFolderNames();
 
-    void checkTime();
+    void getCalibrationData();
+    void getSensorSerialNoData();
+
     void getDataFromMCU();
 };
 

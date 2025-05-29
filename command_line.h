@@ -23,9 +23,11 @@ public:
     void setMainWindow(MainWindow*);
     void getFirstData();
     void getPeriodicData();
+    void getSerialNoData();
     void commandLineProcess();
     void messageBox(QString);
     void startCalibrationRequest(Request, QString);
+    void startSerialNoDataRequest(Request, QString);
 private:
     MainWindow *mainWindow = nullptr;
 

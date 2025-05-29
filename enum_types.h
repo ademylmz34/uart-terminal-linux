@@ -5,6 +5,7 @@ enum Request {
     R_ACTIVE_SENSOR_COUNT,
     R_CAL_POINTS,
     R_CABIN_INFO,
+    R_SENSOR_ID,
     R_CAL_STATUS,
     R_SENSOR_VALUES,
     NONE
@@ -38,6 +39,8 @@ enum Command {
     CMD_R,
     CMD_SC,
     CMD_SM,
+    CMD_SPN,
+    CMD_SPNC,
     CMD_NONE
 };
 

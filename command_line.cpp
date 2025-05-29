@@ -24,9 +24,20 @@ void CommandLine::startCalibrationRequest(Request request, QString request_cmd) 
     get_calibration_data_timer->start(1000);
 }
 
+void CommandLine::startSerialNoDataRequest(Request request, QString request_cmd) {
+    serial_no_request = request;
+    serial_no_request_command = request_cmd;
+    serial_no_data_received_timeout = 10;
+    request_data_status[serial_no_request] = 0;
+    calibration_board->getSerialNoDataFromMCU();
+    //get_sensors_serial_no_timer->start(1000);
+}
+
 void CommandLine::getFirstData() { startCalibrationRequest(R_ACTIVE_SENSOR_COUNT, request_commands[R_ACTIVE_SENSOR_COUNT]); }
 
 void CommandLine::getPeriodicData() { startCalibrationRequest(R_SENSOR_VALUES, request_commands[R_SENSOR_VALUES]); }
+
+void CommandLine::getSerialNoData() { startSerialNoDataRequest(R_SENSOR_ID, request_commands[R_SENSOR_ID]); }
 
 void CommandLine::parseCommand(QString command)
 {
@@ -35,26 +46,30 @@ void CommandLine::parseCommand(QString command)
     command = command.trimmed();
     type = CMD_NONE;
 
-    if (command.startsWith("?")) mcu_command = command;
+    if (command.startsWith("?")) {
+        mcu_command = command;
 
-    if (command == "?r") type = CMD_R;
-    else if (command == "?sc") type = CMD_SC;
-    else if (command.startsWith("?") && command.isLower()) type = CMD_SM;
+        if (command == "?r") type = CMD_R;
+        else if (command == "?sc") type = CMD_SC;
+        else if (command == "?spn") type = CMD_SPN;
+        else if (command == "?spnc") type = CMD_SPNC;
+        else if (command.startsWith("?") && command.isLower()) type = CMD_SM;
 
-    if (command.startsWith("!")) command_str = command.mid(1);
+    } else if (command.startsWith("!")) {
+        command_str = command.mid(1);
 
-    if (command_str.startsWith("csf")) {
-        sensor_numbers = command_str.split(" ", Qt::SkipEmptyParts);
-        qDebug() << sensor_numbers.size();
-        if (sensor_numbers.size() == 1) {
-            mainWindow->setLineEditText("Sensör numaralarini giriniz.");
-            return;
-        }
-        sensor_numbers.removeFirst();
-        type = CMD_CSF;
-    } else if (command_str == "gcd") type = CMD_GCD;
-    else if (command_str == "gabc") type = CMD_GABC;
-
+        if (command_str.startsWith("csf")) {
+            sensor_numbers = command_str.split(" ", Qt::SkipEmptyParts);
+            qDebug() << sensor_numbers.size();
+            if (sensor_numbers.size() == 1) {
+                mainWindow->setLineEditText("Sensör numaralarini giriniz.");
+                return;
+            }
+            sensor_numbers.removeFirst();
+            type = CMD_CSF;
+        } else if (command_str == "gcd") type = CMD_GCD;
+        else if (command_str == "gabc") type = CMD_GABC;
+    }
     processCommand(type);
 }
 
@@ -88,6 +103,14 @@ uint8_t CommandLine::processCommand(Command command_type)
             break;
 
         case CMD_SM:
+            serial->sendData(mcu_command);
+            break;
+
+        case CMD_SPN:
+            serial->sendData(mcu_command);
+            break;
+
+        case CMD_SPNC:
             serial->sendData(mcu_command);
             break;
 
