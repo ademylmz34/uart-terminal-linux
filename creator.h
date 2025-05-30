@@ -53,6 +53,7 @@ public:
     QString sensor_log_folder;
     QString om106l_folder;
     QString om106_log_folder;
+    QString log_directory_file_path;
     QDir dir;
 
     uint8_t cal_point_array_size;
@@ -62,7 +63,7 @@ public:
     QStringList getFolderNames();
 
     int8_t getCalibrationPointsArraySize();
-
+    uint8_t changeFolderName(QString, QString);
     uint8_t createMainFolder();
     uint8_t createSensorFolder(QString);
     uint8_t createSensorLogFolder(QString);

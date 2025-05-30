@@ -8,7 +8,7 @@ QString request_command;
 QString serial_no_request_command;
 
 QString mcu_command;
-QStringList sensor_numbers;
+QStringList command_line_parameters;
 QStringList sensor_ids;
 
 QTimer *get_calibration_data_timer;
@@ -162,6 +162,16 @@ QStringList CalibrationBoard::getSensorFolderNames()
     return sensors_folders;
 }
 
+QString CalibrationBoard::findSensorFolderNameByValue(int sensor_no)
+{
+    //getSensorFolderNames();
+    for (auto it = sensor_module_map.constBegin(); it != sensor_module_map.constEnd(); ++it) {
+        if (it.value() == sensor_no)
+            return it.key();
+    }
+    return "";
+}
+
 
 uint8_t CalibrationBoard::createSensorFolders()
 {
@@ -170,7 +180,6 @@ uint8_t CalibrationBoard::createSensorFolders()
         mainWindow->setLineEditText("Sensör modülleri dizisi boş, önce !gabc ile kalibrasyon kartından verileri alınız."); //get active board count -> gabc
         return 0;
     } else {
-        parseLineEditInput(sensor_numbers, sensor_ids);
         if (!sensor_ids.isEmpty()) {
             for (const QString& sensor_id: sensor_ids) {
                 status = file_folder_creator.createSensorFolder(sensor_id);
@@ -185,7 +194,10 @@ uint8_t CalibrationBoard::createSensorFolders()
                     sensor_folder_create_status.insert(sensor_id, 0);
                 }
             }
-        } else return 0;
+        } else {
+            mainWindow->setLineEditText("sensor ids bos");
+            return 0;
+        }
     }
     if (status == 2) return 2;
     return 1;
@@ -203,50 +215,6 @@ uint8_t CalibrationBoard::isArrayEmpty(const uint8_t* arr, size_t len)
             return 0;
         }
     }
-    return 1;
-}
-
-uint8_t CalibrationBoard::parseLineEditInput(const QStringList& inputList, QStringList& outputList)
-{
-    QSet<QString> seenIds;
-
-    outputList.clear();
-
-    // 15 değer var mı?
-    if (inputList.size() != NUM_OF_SENSOR_BOARD) {
-        mainWindow->setLineEditText("Geçersiz giriş: 15 adet sXXXX formatında değer yok.");
-        return 0;
-    }
-
-    // Her bir değeri kontrol et
-    uint8_t counter = 0;
-    QRegularExpression regex("^s\\d{4}$");
-    for (const QString& part : inputList) {
-        if ((sensor_module_status[counter] == 0 && part != "0") || (sensor_module_status[counter] == 1 && part == "0")) {
-            mainWindow->setLineEditText("Sensör kartındaki slotlara göre değerleri giriniz.");
-            return 0;
-        }
-        if (!regex.match(part).hasMatch() && part != "0") {
-            mainWindow->setLineEditText("Geçersiz format:" + part);
-            return 0;
-        }
-        if (part != "0") {
-            if (seenIds.contains(part)) {
-                mainWindow->setLineEditText("Aynı sensör ID birden fazla kez girildi: " + part);
-                sensor_module_map.clear();
-                return 0;
-            }
-            seenIds.insert(part);  // İlk kez görülüyorsa kaydet
-        }
-        if (sensor_module_status[counter]) {
-            sensor_module_map.insert(part, counter + 1);
-        }
-        counter++;
-    }
-
-    outputList = inputList;
-
-    qDebug() << "Giriş geçerli.";
     return 1;
 }
 
@@ -281,7 +249,7 @@ void CalibrationBoard::getDataFromMCU()
             if (data_received_timeout == 0 || request_data_status[current_request]) {
                 if (request_data_status[current_request]) qDebug() << "Request data ci operation completed.";
                 else qDebug() << "Request data ci couldn't get received.";
-                current_request = R_CAL_POINTS;
+                current_request = R_SENSOR_VALUES;
                 request_command = request_commands[current_request];
                 data_received_timeout = 10;
                 request_data_status[current_request] = 0;
@@ -289,7 +257,7 @@ void CalibrationBoard::getDataFromMCU()
                 serial->sendData(request_command);
             }
             break;
-        case R_CAL_POINTS:
+        /*case R_CAL_POINTS:
             if (data_received_timeout == 0 || request_data_status[current_request]) {
                 if (request_data_status[current_request]) qDebug() << "Request data cp operation completed.";
                 else qDebug() << "Request data cp couldn't get received.";
@@ -300,7 +268,7 @@ void CalibrationBoard::getDataFromMCU()
             } else {
                 serial->sendData(request_command);
             }
-            break;
+            break;*/
         case R_SENSOR_VALUES:
             if (data_received_timeout == 0 || request_data_status[current_request]) {
                 if (request_data_status[current_request]) qDebug() << "Request data sv operation completed.";

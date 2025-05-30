@@ -12,8 +12,9 @@ QDateTime current_dt;
 
 uint8_t sensor_module_status[NUM_OF_SENSOR_BOARD];
 uint8_t active_sensor_count;
+uint8_t serial_no_changed;
 
-uint16_t calibration_points[NUM_OF_CAL_POINTS] = {20, 50, 100, 200, 500, 0, 0, 0, 0, 0};
+int calibration_points[NUM_OF_CAL_POINTS] = {20, 50, 100, 200, 500, 0, 0, 0, 0, 0};
 Request current_request;
 Request serial_no_request;
 

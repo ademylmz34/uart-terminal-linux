@@ -34,6 +34,8 @@ private:
     void getCalibrationData();
     void parseCommand(QString);
     uint8_t processCommand(Command);
+    uint8_t parseLineCommandInput(Command command_type);
+
 };
 
 #endif // COMMAND_LINE_H

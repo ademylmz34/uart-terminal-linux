@@ -286,7 +286,7 @@ void LogParser::parseCalibrationData(const char* input)
                 ) {
                 if (cal_status_t.calibration_ppb != calibration_ppb) {
                     cal_status_t.calibration_ppb = calibration_ppb;
-                    cal_val_labels.cal_point->setText(QString("%1 PPB").arg(QString::number(calibration_points[calibration_ppb])));
+                    cal_val_labels.cal_point->setText(QString("%1 PPB").arg(QString::number(calibration_ppb)));
                 }
                 if (cal_status_t.calibration_state != calibration_state) {
                     cal_status_t.calibration_state = calibration_state;
@@ -350,6 +350,15 @@ void LogParser::parseSerialNoData(const char* input) {
             request_data_status[serial_no_request] = 1;
             received_serial_no_count = 1;
         }
+        if (serial_no != 0) {
+            QString serial_no_str = QString("s%1").arg(QString::number(serial_no));
+
+            qDebug() << "serial_no: " << serial_no << " sensor_no: " << sensor_no;
+            sensor_module_map.insert(serial_no_str,  static_cast<uint8_t>(sensor_no));
+            sensor_ids.append(serial_no_str);
+            //qDebug() << "val: " << sensor_module_map[QString("s%1").arg(QString::number(serial_no))];
+
+        }
         header_labels[sensor_no]->setText(QString("s%1").arg(QString::number(serial_no)));
         sensors_serial_no.insert(sensor_no, serial_no);
         sensors_eeprom_is_data_exist.insert(sensor_no, 1);
@@ -357,9 +366,35 @@ void LogParser::parseSerialNoData(const char* input) {
         if (received_serial_no_count++ == active_sensor_count) {
             request_data_status[serial_no_request] = 1;
             received_serial_no_count = 1;
-        }
+        }//?spn s3104 0 s3105 0 s3106 s3107 s3108 s3109 s3110 s3111 s3112 s3113 s3114 s3115 s3116
         sensors_eeprom_is_data_exist.insert(sensor_no, 0);
         header_labels[sensor_no]->setText("Veri Yok");
+    } else if (sscanf(input, "Sensor-%d seri numarasi EEPROM'a yazilamadi: %d", &sensor_no, &serial_no) == 2) {
+        mainWindow->setLineEditText(QString("Sensor-%1 seri numarasi %2 EEPROM'a yazilamadi.").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+    } else if (sscanf(input, "Sensor-%d seri numarasi EEPROM'a yazildi: %d", &sensor_no, &serial_no) == 2) {
+        mainWindow->setLineEditText(QString("Sensor-%1 seri numarasi %2 EEPROM'a yazildi.").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+        QString serial_no_str = QString("s%1").arg(QString::number(serial_no));
+        if (sensor_module_map[serial_no_str] == NULL) {
+            sensor_module_map.insert(QString("s%1").arg(QString::number(serial_no)),  sensor_no);
+            sensor_ids.append(QString("s%1").arg(QString::number(serial_no)));
+        }
+    } else if (sscanf(input, "Sensor-%d seri numarasi degistirilemedi: %d", &sensor_no, &serial_no) == 2) {
+        mainWindow->setLineEditText(QString("Sensor-%1 seri numarasi %2 degistirilemedi.").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+        serial_no_changed = false;
+    } else if (sscanf(input, "Sensor-%d seri numarasi degistirildi: %d", &sensor_no, &serial_no) == 2) {
+        mainWindow->setLineEditText(QString("Sensor-%1 seri numarasi %2 degistirildi.").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+        QString older_folder_name = calibration_board->findSensorFolderNameByValue(sensor_no);
+        QString new_folder_name = QString("s%1").arg(QString::number(serial_no));
+        qDebug() << "older_folder_name: " << older_folder_name;
+        if (older_folder_name == "") {
+            if (file_folder_creator.createSensorFolder(new_folder_name) == 1) mainWindow->setLineEditText(QString("Sensor-%1 klasörü olusturuldu: %2").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+        }
+        else {
+            sensor_module_map.remove(older_folder_name);
+            if (file_folder_creator.changeFolderName(older_folder_name, new_folder_name)) mainWindow->setLineEditText(QString("Sensor-%1 klasör ismi degistirildi: %2").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+            else mainWindow->setLineEditText(QString("Sensor-%1 klasör ismi degistirilemedi: %2").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+        }
+        serial_no_changed = true;
     }
 }
 

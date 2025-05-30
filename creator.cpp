@@ -18,9 +18,11 @@ Creator::Creator() {
     cal_point_array_size = 0;
     is_main_log_file_created = 0;
     is_calibration_file_created = 0;
-    root_folder = "O3_Kalibrasyon_Loglari-3";
+    root_folder = "O3_Kalibrasyon_Loglari-5";
     om106l_folder = QString("%1/om106Logs").arg(root_folder);
-    createLogDirectoryPathsFile();
+    log_directory_file_path = QString("%1/log_directory_paths.txt").arg(root_folder);
+    log_directory_paths_file = new QFile(log_directory_file_path);
+    if (QFile::exists(log_directory_file_path)) log_directory_paths_file->open(QIODevice::ReadWrite | QIODevice::Text);
 }
 
 Creator::~Creator() {
@@ -100,6 +102,15 @@ QStringList Creator::getFolderNames() {
     return klasorListesi;
 }
 
+uint8_t Creator::changeFolderName(QString older_folder_name, QString new_folder_name) {
+    QDir dir;
+    QString older_folder_path = QString("%1/%2").arg(root_folder).arg(older_folder_name);
+    QString new_folder_path = QString("%1/%2").arg(root_folder).arg(new_folder_name);
+    qDebug() << older_folder_path << ", " << new_folder_path;
+    if (!dir.rename(older_folder_path, new_folder_path)) return false;
+    return true;
+}
+
 int8_t Creator::getCalibrationPointsArraySize() {
     uint8_t i;
     size_t number_of_elements = sizeof(calibration_points) / sizeof(calibration_points[0]);
@@ -111,19 +122,11 @@ int8_t Creator::getCalibrationPointsArraySize() {
 }
 
 uint8_t Creator::createLogDirectoryPathsFile() {
-    QString file_path = QString("%1/log_directory_paths.txt").arg(root_folder);
-    log_directory_paths_file = new QFile(file_path);
-    if (QFile::exists(file_path)) {
-        if (log_directory_paths_file->open(QIODevice::ReadWrite | QIODevice::Text))
-            qDebug() << "Log dizinleri dosyası zaten var, dosya açıldı.";
-        return 2;
+    if (log_directory_paths_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
+        qDebug() << "Log dizinleri dosyasi başarıyla oluşturuldu.";
     } else {
-        if (log_directory_paths_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
-            qDebug() << "Log dizinleri dosyasi başarıyla oluşturuldu.";
-        } else {
-            qDebug() << "Log dizinleri dosyasi oluşturulamadi.";
-            return 0;
-        }
+        qDebug() << "Log dizinleri dosyasi oluşturulamadi.";
+        return 0;
     }
     return 1;
 }
@@ -136,6 +139,7 @@ uint8_t Creator::createMainFolder() {
     if (dir.mkpath(root_folder)) {
         qDebug() << "Ana klasör oluşturuldu:" << root_folder;
         createOm106lFolder();
+        createLogDirectoryPathsFile();
     } else {
         qDebug() << "Ana klasör oluşturulamadı:" << root_folder;
         return 0;

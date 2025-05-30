@@ -13,7 +13,7 @@ class MainWindow;
 
 extern QString request_command;
 extern QString serial_no_request_command;
-extern QStringList sensor_numbers;
+extern QStringList command_line_parameters;
 extern QString mcu_command;
 
 extern QTimer *get_calibration_data_timer;
@@ -29,31 +29,29 @@ extern QMap<QString, uint8_t> sensor_folder_create_status;
 extern QMap<QString, uint8_t> sensor_log_folder_create_status;
 
 class CalibrationBoard : public QObject {
-
     Q_OBJECT
 
 public:
     explicit CalibrationBoard(QObject *parent = nullptr);
     ~CalibrationBoard();
 
+    QString findSensorFolderNameByValue(int);
     uint8_t readLogDirectoryPaths();
     uint8_t createSensorFolders();
     void setMainWindow(MainWindow*);
     void startCalibrationProcess();
     void clearLogDirectoryPathsFile();
-    void getSerialNoDataFromMCU();
 private:
     MainWindow *mainWindow = nullptr;
 
     uint8_t writeLogDirectoryPaths(const QMap<QString, QString>&);
     uint8_t createCalibrationFolders();
     uint8_t isArrayEmpty(const uint8_t*, size_t);
-    uint8_t parseLineEditInput(const QStringList&, QStringList&);
     QStringList getSensorFolderNames();
 
     void getCalibrationData();
     void getSensorSerialNoData();
-
+    void getSerialNoDataFromMCU();
     void getDataFromMCU();
 };
 

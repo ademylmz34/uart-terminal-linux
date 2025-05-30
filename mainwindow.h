@@ -74,8 +74,9 @@ extern Creator file_folder_creator;
 
 extern uint8_t is_main_folder_created;
 extern uint8_t is_oml_log_folder_created;
+extern uint8_t serial_no_changed;
 
-extern uint16_t calibration_points[NUM_OF_CAL_POINTS];
+extern int calibration_points[NUM_OF_CAL_POINTS];
 extern Request current_request;
 extern Request serial_no_request;
 
