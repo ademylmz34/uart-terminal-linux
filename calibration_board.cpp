@@ -143,9 +143,12 @@ uint8_t CalibrationBoard::createCalibrationFolders()
 QStringList CalibrationBoard::getSensorFolderNames()
 {
     uint8_t  sensor_counter = 0;
+    uint8_t sensor_no;
+    uint16_t serial_no;
     QRegularExpression regex("^s\\d{1,9}$");
     QStringList folder_names;
     QStringList sensors_folders;
+    QString serial_no_str;
 
     folder_names = file_folder_creator.getFolderNames();
     for (const QString& folder_name: folder_names) {
@@ -159,6 +162,19 @@ QStringList CalibrationBoard::getSensorFolderNames()
             if (!sensor_ids.contains(folder_name)) sensor_ids.append(folder_name);
         }
         sensor_counter++;
+    }
+
+    for (auto it = sensors_serial_no.constBegin(); it != sensors_serial_no.constEnd(); ++it) {
+        sensor_no = it.key();
+        serial_no = it.value();
+        if (serial_no == 0) continue;
+        serial_no_str = QString("s%1").arg(QString::number(serial_no));
+        if (!sensor_folder_create_status.contains(serial_no_str)) {
+            if (file_folder_creator.createSensorFolder(serial_no_str) == 1) {
+                mainWindow->setLineEditText(QString("Sensor-%1 klasörü olusturuldu: %2").arg(QString::number(sensor_no)).arg(serial_no_str));
+                sensor_folder_create_status.insert(serial_no_str, 1);
+            }
+        }
     }
     return sensors_folders;
 }
