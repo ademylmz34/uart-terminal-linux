@@ -170,7 +170,7 @@ uint8_t CommandLine::processCommand(Command command_type)
 {
     uint8_t status;
     switch (command_type) {
-        case CMD_CSF:
+        /*case CMD_CSF:
             status = calibration_board->createSensorFolders();
             if (status == 1) {
                 mainWindow->setLineEditText("Sensör klasörleri başarıyla oluşturuldu.");
@@ -178,7 +178,7 @@ uint8_t CommandLine::processCommand(Command command_type)
                 mainWindow->setLineEditText("Sensör klasörleri zaten var.");
             }
             break;
-
+        */
         case CMD_GCD:
             //getCalibrationData();
             break;

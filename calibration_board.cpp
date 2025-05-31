@@ -142,8 +142,8 @@ uint8_t CalibrationBoard::createCalibrationFolders()
 
 QStringList CalibrationBoard::getSensorFolderNames()
 {
-    uint8_t  sensor_counter;
-    QRegularExpression regex("^s\\d{4}$");
+    uint8_t  sensor_counter = 0;
+    QRegularExpression regex("^s\\d{1,9}$");
     QStringList folder_names;
     QStringList sensors_folders;
 
@@ -151,11 +151,12 @@ QStringList CalibrationBoard::getSensorFolderNames()
     for (const QString& folder_name: folder_names) {
         if (regex.match(folder_name).hasMatch()) {
             sensors_folders << folder_name;
-            if (sensor_module_status[sensor_counter]) {
-                sensor_module_map.insert(folder_name,  sensor_counter + 1);
-            } else  {
-                sensor_module_map.insert(folder_name,  sensor_counter + 2);
+            if (!sensor_folder_create_status.contains(folder_name)) sensor_folder_create_status.insert(folder_name, 1);
+            if (!sensor_module_map.contains(folder_name)) {
+                if (sensor_module_status[sensor_counter]) sensor_module_map.insert(folder_name,  sensor_counter + 1);
+                else sensor_module_map.insert(folder_name,  sensor_counter + 2);
             }
+            if (!sensor_ids.contains(folder_name)) sensor_ids.append(folder_name);
         }
         sensor_counter++;
     }
@@ -186,6 +187,7 @@ uint8_t CalibrationBoard::createSensorFolders()
                 if (status == 1) {
                     mainWindow->setLineEditText(sensor_id + " klasörü oluşturuldu.");
                     sensor_folder_create_status.insert(sensor_id, 1);
+                    sensor_ids = getSensorFolderNames();
                 } else if (status == 2) {
                     mainWindow->setLineEditText(sensor_id + " klasörü zaten var.");
                     sensor_folder_create_status.insert(sensor_id, 1);
@@ -301,6 +303,8 @@ void CalibrationBoard::getSerialNoDataFromMCU()
     if (request_data_status[serial_no_request]) {
         if (request_data_status[serial_no_request]) qDebug() << "Serial No data get received.";
         else qDebug() << "Serial No data couldn't get received.";
+        getSensorFolderNames();
+        if (sensor_folder_create_status.size())
         serial_no_request = NONE;
         serial_no_request_command = "";
     } else {
