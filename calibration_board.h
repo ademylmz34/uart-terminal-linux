@@ -41,13 +41,13 @@ public:
     void setMainWindow(MainWindow*);
     void startCalibrationProcess();
     void clearLogDirectoryPathsFile();
+    void getSensorFolderNames();
 private:
     MainWindow *mainWindow = nullptr;
 
     uint8_t writeLogDirectoryPaths(const QMap<QString, QString>&);
     uint8_t createCalibrationFolders();
     uint8_t isArrayEmpty(const uint8_t*, size_t);
-    QStringList getSensorFolderNames();
 
     void getCalibrationData();
     void getSensorSerialNoData();

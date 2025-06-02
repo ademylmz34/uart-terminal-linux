@@ -84,7 +84,14 @@ void CalibrationBoard::clearLogDirectoryPathsFile()
 
 void CalibrationBoard::startCalibrationProcess()
 {
-    uint8_t status = createCalibrationFolders();
+    uint8_t status;
+    if (sensors_serial_no.isEmpty())
+    {
+        mainWindow->setLineEditText("sensörler takılı değil veya seri numaralari girilmemiş.");
+        return;
+    }
+
+    status = createCalibrationFolders();
     if (status == 1) {
         is_calibration_folders_created = 1;
         mainWindow->setLineEditText("log klasörleri ve dosyalari olusturuldu, kalibrasyon basladi");
@@ -96,13 +103,18 @@ void CalibrationBoard::startCalibrationProcess()
 
 uint8_t CalibrationBoard::createCalibrationFolders()
 {
+    QString sensor_id;
+    uint8_t status;
     if (cal_status_t.calibration_state != WAIT_STATE) return 2;
     if (log_directory_paths_file == NULL) file_folder_creator.createLogDirectoryPathsFile();
+    status = createSensorFolders();
+    if (status == 0)  {
+        mainWindow->setLineEditText("Sensör klasörleri oluşturulamadi.");
+        return 0;
+    }
 
-    QStringList sensors_folders;
-    uint8_t status;
-    sensors_folders = getSensorFolderNames();
-    for (const QString& sensor_id: sensors_folders) {
+    for (auto element = sensors_serial_no.constBegin(); element != sensors_serial_no.constEnd(); ++element) {
+        sensor_id = element.key();
         if (!sensor_log_folder_create_status[sensor_id]) {
             status = file_folder_creator.createSensorLogFolder(sensor_id);
             if (status == 1) {
@@ -140,49 +152,22 @@ uint8_t CalibrationBoard::createCalibrationFolders()
     return 1;
 }
 
-QStringList CalibrationBoard::getSensorFolderNames()
+void CalibrationBoard::getSensorFolderNames()
 {
-    uint8_t  sensor_counter = 0;
-    uint8_t sensor_no;
-    uint16_t serial_no;
     QRegularExpression regex("^s\\d{1,9}$");
     QStringList folder_names;
-    QStringList sensors_folders;
-    QString serial_no_str;
 
     folder_names = file_folder_creator.getFolderNames();
     for (const QString& folder_name: folder_names) {
         if (regex.match(folder_name).hasMatch()) {
-            sensors_folders << folder_name;
-            if (!sensor_folder_create_status.contains(folder_name)) sensor_folder_create_status.insert(folder_name, 1);
-            if (!sensor_module_map.contains(folder_name)) {
-                if (sensor_module_status[sensor_counter]) sensor_module_map.insert(folder_name,  sensor_counter + 1);
-                else sensor_module_map.insert(folder_name,  sensor_counter + 2);
-            }
             if (!sensor_ids.contains(folder_name)) sensor_ids.append(folder_name);
         }
-        sensor_counter++;
     }
-
-    for (auto it = sensors_serial_no.constBegin(); it != sensors_serial_no.constEnd(); ++it) {
-        sensor_no = it.key();
-        serial_no = it.value();
-        if (serial_no == 0) continue;
-        serial_no_str = QString("s%1").arg(QString::number(serial_no));
-        if (!sensor_folder_create_status.contains(serial_no_str)) {
-            if (file_folder_creator.createSensorFolder(serial_no_str) == 1) {
-                mainWindow->setLineEditText(QString("Sensor-%1 klasörü olusturuldu: %2").arg(QString::number(sensor_no)).arg(serial_no_str));
-                sensor_folder_create_status.insert(serial_no_str, 1);
-            }
-        }
-    }
-    return sensors_folders;
 }
 
 QString CalibrationBoard::findSensorFolderNameByValue(int sensor_no)
 {
-    //getSensorFolderNames();
-    for (auto it = sensor_module_map.constBegin(); it != sensor_module_map.constEnd(); ++it) {
+    for (auto it = sensors_serial_no.constBegin(); it != sensors_serial_no.constEnd(); ++it) {
         if (it.value() == sensor_no)
             return it.key();
     }
@@ -192,18 +177,20 @@ QString CalibrationBoard::findSensorFolderNameByValue(int sensor_no)
 
 uint8_t CalibrationBoard::createSensorFolders()
 {
+    QString sensor_id;
     uint8_t status;
     if (isArrayEmpty(sensor_module_status, NUM_OF_SENSOR_BOARD)) {
         mainWindow->setLineEditText("Sensör modülleri dizisi boş, önce !gabc ile kalibrasyon kartından verileri alınız."); //get active board count -> gabc
         return 0;
     } else {
-        if (!sensor_ids.isEmpty()) {
-            for (const QString& sensor_id: sensor_ids) {
+        if (!sensors_serial_no.isEmpty()) {
+            for (auto element = sensors_serial_no.constBegin(); element != sensors_serial_no.constEnd(); ++element) {
+                sensor_id = element.key();
+                //mainWindow->setLineEditText("sensör id: " + sensor_id);
                 status = file_folder_creator.createSensorFolder(sensor_id);
                 if (status == 1) {
                     mainWindow->setLineEditText(sensor_id + " klasörü oluşturuldu.");
                     sensor_folder_create_status.insert(sensor_id, 1);
-                    sensor_ids = getSensorFolderNames();
                 } else if (status == 2) {
                     mainWindow->setLineEditText(sensor_id + " klasörü zaten var.");
                     sensor_folder_create_status.insert(sensor_id, 1);
@@ -319,8 +306,6 @@ void CalibrationBoard::getSerialNoDataFromMCU()
     if (request_data_status[serial_no_request]) {
         if (request_data_status[serial_no_request]) qDebug() << "Serial No data get received.";
         else qDebug() << "Serial No data couldn't get received.";
-        getSensorFolderNames();
-        if (sensor_folder_create_status.size())
         serial_no_request = NONE;
         serial_no_request_command = "";
     } else {

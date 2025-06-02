@@ -158,6 +158,7 @@ uint8_t Creator::createMainLogFile(QString folder_name) {
         if (main_log_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
             qDebug() << "Log dosyasi başarıyla oluşturuldu.";
             main_log_stream = new QTextStream(main_log_file);
+            *main_log_stream << "Log dosyasi başarıyla oluşturuldu.";
         } else {
             qDebug() << "Log dosyasi oluşturulamadi.";
             return 0;
@@ -237,9 +238,9 @@ uint8_t Creator::createSensorLogFiles(QString folder_name) {
     QFile* kalFile     = new QFile(kal_path);
     QFile* kalEndFile  = new QFile(kal_end_path);
 
-    if (logFile->open(QIODevice::ReadWrite | QIODevice::Text) &&
-        kalFile->open(QIODevice::ReadWrite | QIODevice::Text) &&
-        kalEndFile->open(QIODevice::ReadWrite | QIODevice::Text)) {
+    if (logFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) &&
+        kalFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) &&
+        kalEndFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
 
         SensorFiles s;
         s.sensor_id = sensor_id;
@@ -251,8 +252,8 @@ uint8_t Creator::createSensorLogFiles(QString folder_name) {
         s.kal_stream = new QTextStream(kalFile);
         s.kal_end_stream = new QTextStream(kalEndFile);
 
-        sensor_map.insert(sensor_module_map[sensor_id], s);
-        qDebug() << sensor_id << ": tüm dosyalar başarıyla oluşturuldu.";
+        sensor_map.insert(sensors_serial_no[sensor_id], s);
+        qDebug() << sensor_id << ": tüm dosyalar başarıyla oluşturuldu.: " << sensors_serial_no[sensor_id];
 
     } else {
         qDebug() << sensor_id << ": dosya(lar) açılamadı.";

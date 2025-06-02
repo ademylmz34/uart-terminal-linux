@@ -35,7 +35,7 @@ void LogParser::setMainWindow(MainWindow *mw) {
 }
 
 LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
-    ParsedCommand result = { .type = CMD_UNKNOWN, .th_no = -1, .kn_no = -1, .s_no = -1, .or_no = -1 };
+    ParsedCommand result = { .type = CMD_UNKNOWN, .th_no = 0, .kn_no = 0, .s_no = 0, .or_no = 0 };
 
     if (strcmp(cmd, "R1") == 0) result.type = CMD_R1;
     else if (strcmp(cmd, "R2") == 0) result.type = CMD_R2;
@@ -248,8 +248,6 @@ void LogParser::parseCalibrationData(const char* input)
                     received_serial_no_count = 1;
                 }
                 header_labels[sensor_no]->setText(QString("s%1").arg(QString::number(serial_no)));
-                sensors_serial_no.insert(sensor_no, serial_no);
-                sensors_eeprom_is_data_exist.insert(sensor_no, 1);
             } else if (sscanf(input, "s%d bilgileri bos", &sensor_no) == 1) {
                 if (received_serial_no_count++ == active_sensor_count) {
                     request_data_status[current_request] = 1;
@@ -346,21 +344,13 @@ void LogParser::parseSerialNoData(const char* input) {
     int sensor_no, serial_no;
 
     if (sscanf(input, "s%d: %d", &sensor_no, &serial_no) == 2) {
-        if (!sensors_serial_no.contains(sensor_no)) sensors_serial_no.insert(sensor_no, serial_no);
+        QString serial_no_str = QString("s%1").arg(QString::number(serial_no));
+        if (!sensors_serial_no.contains(serial_no_str)) sensors_serial_no.insert(serial_no_str, sensor_no); // example: s3105 -> 1
         if (!sensors_eeprom_is_data_exist.contains(sensor_no)) sensors_eeprom_is_data_exist.insert(sensor_no, 1);
 
-        QString serial_no_str = QString("s%1").arg(QString::number(serial_no));
         if (received_serial_no_count++ == active_sensor_count) {
             request_data_status[serial_no_request] = 1;
             received_serial_no_count = 1;
-        }
-        if (serial_no_request == NONE)
-        {
-            if (serial_no != 0)
-            {
-                if (!sensor_module_map.contains(serial_no_str)) sensor_module_map.insert(serial_no_str,  sensor_no);
-                if (!sensor_ids.contains(serial_no_str)) sensor_ids.append(serial_no_str);
-            }
         }
         header_labels[sensor_no]->setText(QString("s%1").arg(QString::number(serial_no)));
 
@@ -368,8 +358,8 @@ void LogParser::parseSerialNoData(const char* input) {
         if (received_serial_no_count++ == active_sensor_count) {
             request_data_status[serial_no_request] = 1;
             received_serial_no_count = 1;
-        }//?spn s3104 0 s3105 0 s3106 s3107 s3108 s3109 s3110 s3111 s3112 s3113 s3114 s3115 s3116
-        sensors_eeprom_is_data_exist.insert(sensor_no, 0);
+        } // ?spn s3104 0 s3105 0 s3106 s3107 s3108 s3109 s3110 s3111 s3112 s3113 s3114 s3115 s3116
+        if (!sensors_eeprom_is_data_exist.contains(sensor_no)) sensors_eeprom_is_data_exist.insert(sensor_no, 0);
         header_labels[sensor_no]->setText("Veri Yok");
 
     } else if (sscanf(input, "Sensor-%d seri numarasi EEPROM'a yazilamadi: %d", &sensor_no, &serial_no) == 2) {
@@ -377,37 +367,17 @@ void LogParser::parseSerialNoData(const char* input) {
 
     } else if (sscanf(input, "Sensor-%d seri numarasi EEPROM'a yazildi: %d", &sensor_no, &serial_no) == 2) {
         mainWindow->setLineEditText(QString("Sensor-%1 seri numarasi %2 EEPROM'a yazildi.").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
-        QString serial_no_str = QString("s%1").arg(QString::number(serial_no));
 
-        if (!sensor_folder_create_status.contains(serial_no_str)) {
-            if (file_folder_creator.createSensorFolder(serial_no_str) == 1) {
-                mainWindow->setLineEditText(QString("Sensor-%1 klasörü olusturuldu: %2").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
-                sensor_folder_create_status.insert(serial_no_str, 1);
-            }
-        }
     } else if (sscanf(input, "Sensor-%d seri numarasi degistirilemedi: %d", &sensor_no, &serial_no) == 2) {
         mainWindow->setLineEditText(QString("Sensor-%1 seri numarasi %2 degistirilemedi.").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
         serial_no_changed = false;
 
     } else if (sscanf(input, "Sensor-%d seri numarasi degistirildi: %d", &sensor_no, &serial_no) == 2) {
         mainWindow->setLineEditText(QString("Sensor-%1 seri numarasi %2 degistirildi.").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
+        QString older_folder_name = calibration_board->findSensorFolderNameByValue(sensor_no);
         QString new_folder_name = QString("s%1").arg(QString::number(serial_no));
-        if (!sensors_serial_no.contains(sensor_no)) {
-            if (file_folder_creator.createSensorFolder(new_folder_name) == 1) {
-                mainWindow->setLineEditText(QString("Sensor-%1 klasörü olusturuldu: %2").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
-                sensor_folder_create_status.insert(new_folder_name, 1);
-            }
-        } else {
-            QString older_folder_name = QString("s%1").arg(sensors_serial_no[sensor_no]);
-            //QString older_folder_name = calibration_board->findSensorFolderNameByValue(sensor_no);
-            sensor_module_map.remove(older_folder_name);
-            sensor_ids.removeOne(older_folder_name);
-            sensor_folder_create_status.remove(older_folder_name);
-            sensors_serial_no.remove(sensors_serial_no[sensor_no]);
-            sensor_folder_create_status.insert(new_folder_name, 1);
-            if (file_folder_creator.changeFolderName(older_folder_name, new_folder_name)) mainWindow->setLineEditText(QString("Sensor-%1 klasör ismi degistirildi: %2").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
-            else mainWindow->setLineEditText(QString("Sensor-%1 klasör ismi degistirilemedi: %2").arg(QString::number(sensor_no)).arg(QString::number(serial_no)));
-        }
+        sensors_serial_no.remove(older_folder_name);
+        sensors_serial_no.insert(new_folder_name, sensor_no);
         serial_no_changed = true;
     }
 }
@@ -554,139 +524,156 @@ int8_t LogParser::processPacket(Packet* packet) {
     if (calibration_completed) return 0;
 
     switch (packet->command.type) {
-    /*case CMD_R1:
-    case CMD_R2:
-    case CMD_R3:
-        for (uint8_t i = 0; i < packet->data_count; i++) {
-            if (sscanf(packet->data[i].key, "s%d", &sensor_no) == 1) {
-                if (sensor_no == 0) continue;
-                sprintf(buff, ">%s %s %s %f\n", packet->date, packet->time, packet->command_str, packet->data[i].value);
-                *(file_folder_creator.sensor_streams[repeat_calibration_index][sensor_no - 1]) << buff;
+        /*case CMD_R1:
+        case CMD_R2:
+        case CMD_R3:
+            for (uint8_t i = 0; i < packet->data_count; i++) {
+                if (sscanf(packet->data[i].key, "s%d", &sensor_no) == 1) {
+                    if (sensor_no == 0) continue;
+                    sprintf(buff, ">%s %s %s %f\n", packet->date, packet->time, packet->command_str, packet->data[i].value);
+                    *(file_folder_creator.sensor_streams[repeat_calibration_index][sensor_no - 1]) << buff;
+                }
             }
-        }
-        break;
-    */
-    case CMD_RST:
-        command_line->messageBox("MCU yeniden başlatıldı, son log dosyalarının silinmesini istiyor musunuz?");
-        break;
-    case CMD_SN:
-        sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
-        parseSerialNoData(packet->data_str);
-        break;
-    case CMD_SK:
-        sprintf(buff, ">%s %s ", packet->date, packet->time);
-        for (uint8_t i = 0; i < packet->data_count; i++) {
-            if (
-                strcmp(packet->data[i].key, "OM") == 0 ||
-                strcmp(packet->data[i].key, "T") == 0  ||
-                strcmp(packet->data[i].key, "H") == 0
-            )
-            {
-                if (strcmp(packet->data[i].key, "T") == 0) temp_labels[packet->command.s_no]->setText(QString("%1 °C").arg(QString::number(packet->data[i].value, 'f', 2)));
-                else if (strcmp(packet->data[i].key, "H") == 0) hum_labels[packet->command.s_no]->setText(QString("%1 %").arg(QString::number(packet->data[i].value, 'f', 2)));
+            break;
+        */
+        case CMD_RST:
+            command_line->messageBox("MCU yeniden başlatıldı, son log dosyalarının silinmesini istiyor musunuz?");
+            break;
+        case CMD_SN:
+            sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
+            parseSerialNoData(packet->data_str);
+            break;
+        case CMD_SK:
+            sprintf(buff, ">%s %s ", packet->date, packet->time);
+            for (uint8_t i = 0; i < packet->data_count; i++) {
+                if (
+                    strcmp(packet->data[i].key, "OM") == 0 ||
+                    strcmp(packet->data[i].key, "T") == 0  ||
+                    strcmp(packet->data[i].key, "H") == 0
+                )
+                {
+                    if (strcmp(packet->data[i].key, "T") == 0) temp_labels[packet->command.s_no]->setText(QString("%1 °C").arg(QString::number(packet->data[i].value, 'f', 2)));
+                    else if (strcmp(packet->data[i].key, "H") == 0) hum_labels[packet->command.s_no]->setText(QString("%1 %").arg(QString::number(packet->data[i].value, 'f', 2)));
 
-                sprintf(str, "%.2f ", packet->data[i].value);
-            } else
-            {
-                if (strcmp(packet->data[i].key, "R1") == 0) r1_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
-                else if (strcmp(packet->data[i].key, "R2") == 0) r2_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
-                else if (strcmp(packet->data[i].key, "R3") == 0) r3_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
+                    sprintf(str, "%.2f ", packet->data[i].value);
+                } else
+                {
+                    if (strcmp(packet->data[i].key, "R1") == 0) r1_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
+                    else if (strcmp(packet->data[i].key, "R2") == 0) r2_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
+                    else if (strcmp(packet->data[i].key, "R3") == 0) r3_labels[packet->command.s_no]->setText(QString("%1").arg(QString::number(packet->data[i].value, 'f', 0)));
 
-                sprintf(str, "%.0f ", packet->data[i].value);
-            }
-            strcat(buff, str);
-        }
-        request_data_status[current_request] = 1;
-        //*(sensor_map[packet->command.s_no].log_stream) << buff << "\n";
-        break;
-
-    case CMD_KS:
-    case CMD_KL:
-        sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
-        *(calibration_stream) << buff;
-        if (packet->command.type == CMD_KS) {
-            parseCalibrationTime(packet->data_str);
-            //cal_ppb_cal_time ui->labelCalPpb->setText(QString::number(cal_ppb_cal_time));
-            //QString formatted = calibration_dt.toString("dd.MM.yyyy hh:mm:ss");
-            //calibration_dt ui->labelDateTime->setText(formatted);
-        }
-        break;
-
-    case CMD_L:
-        break;
-    case CMD_D:
-    case CMD_SMS:
-        sprintf(buff, ">%s %s %s %s\n", packet->date, packet->time, packet->command_str, packet->data_str);
-        parseCalibrationData(packet->data_str);
-        //*(main_log_stream) << buff;
-        break;
-    case CMD_TH:
-        //sprintf(buff, ">%s %s %s %.2f %s %.1f%%\n", packet->date, packet->time, packet->command_str, packet->th_data.temperature, packet->th_data.temp_unit, packet->th_data.humidity);
-        //*(file_folder_creator.sensor_streams[repeat_calibration_index][packet->command.s_no - 1]) << buff;
-        break;
-
-    case CMD_OM:
-    case CMD_KN_S:
-        sprintf(buff, ">%s %s %s ", packet->date, packet->time, packet->command_str);
-        for (uint8_t i = 0; i < packet->data_count; i++) {
-            if (sscanf(packet->data[i].key, "s%d", &sensor_no) == 1) {
-                if (packet->command.type == CMD_OM) {
-                    sprintf(str, "%.3f ", packet->data[i].value);
-                } else {
                     sprintf(str, "%.0f ", packet->data[i].value);
                 }
                 strcat(buff, str);
             }
-        }
-        if (packet->command.type == CMD_KN_S) {
-            //*(sensor_map[packet->command.s_no].kal_stream) << buff << "\n";
-        }
-        else if (packet->command.type == CMD_OM) {
-            //*(om106_map[DEVICE_1].om106_stream) << buff << "\n"; // log'un hangi om106l cihazından geldiğini bilmem lazım
-        }
-        break;
-
-    case CMD_KN_O3:
-    case CMD_KN_T:
-    case CMD_KN_H:
-    case CMD_KN_PWM:
-    case CMD_KN_CT:
-    case CMD_KN_CP:
-    case CMD_KN_FR:
-    case CMD_KN_PV:
-        if (packet->command.type == CMD_KN_PWM) {
-            parsePwmData(packet->data_str, &packet->pwm_data);
-            sprintf(buff, ">%s %s %s %d/%dmsec\n", packet->date, packet->time, packet->command_str, packet->pwm_data.duty, packet->pwm_data.period);
-        } else {
-            if (sscanf(packet->data[0].key, "s%d", &sensor_no) == 1) {
-                sprintf(buff, ">%s %s %s %.3f\n", packet->date, packet->time, packet->command_str, packet->data[0].value);
+            request_data_status[current_request] = 1;
+            //if (sensor_map[packet->command.s_no].log_stream != NULL) mainWindow->setLineEditText(QString("Sensor%1 id: %2").arg(packet->command.s_no).arg(sensor_map[packet->command.s_no].sensor_id));
+            if (sensor_map[packet->command.s_no].log_stream != NULL) {
+                *(sensor_map[packet->command.s_no].log_stream) << buff << "\n";
+                sensor_map[packet->command.s_no].log_stream->flush();
             }
-        }
-        *(calibration_stream) << buff;
-        break;
+            break;
 
-    case CMD_KB_S_R:
-    case CMD_KB_S_OR:
-    case CMD_KB_S_KN:
-    case CMD_KB_S_KN_B:
-        sprintf(buff, ">%s %s %s ", packet->date, packet->time, packet->command_str);
-        for (uint8_t i = 0; i < packet->data_count; i++) {
-            if (
-                strcmp(packet->data[i].key, "alpha") == 0 ||
-                strcmp(packet->data[i].key, "beta") == 0  ||
-                strcmp(packet->data[i].key, "logRR") == 0 ||
-                strcmp(packet->data[i].key, "logO3") == 0
-                ) {
-                sprintf(str, "%s: %.5f ", packet->data[i].key, packet->data[i].value);
+        case CMD_KS:
+        case CMD_KL:
+            sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
+            if (calibration_stream != NULL) {
+                *(calibration_stream) << buff;
+                calibration_stream->flush();
+            }
+            if (packet->command.type == CMD_KS) {
+                parseCalibrationTime(packet->data_str);
+                //cal_ppb_cal_time ui->labelCalPpb->setText(QString::number(cal_ppb_cal_time));
+                //QString formatted = calibration_dt.toString("dd.MM.yyyy hh:mm:ss");
+                //calibration_dt ui->labelDateTime->setText(formatted);
+            }
+            break;
+
+        case CMD_L:
+        case CMD_D:
+        case CMD_SMS:
+            sprintf(buff, ">%s %s %s %s\n", packet->date, packet->time, packet->command_str, packet->data_str);
+            parseCalibrationData(packet->data_str);
+            if(main_log_stream != NULL) {
+                *(main_log_stream) << buff;
+                main_log_stream->flush();
+            }
+            break;
+
+        case CMD_OM:
+        case CMD_KN_S:
+            sprintf(buff, ">%s %s %s ", packet->date, packet->time, packet->command_str);
+            for (uint8_t i = 0; i < packet->data_count; i++) {
+                if (sscanf(packet->data[i].key, "s%d", &sensor_no) == 1) {
+                    if (packet->command.type == CMD_OM) {
+                        sprintf(str, "%.3f ", packet->data[i].value);
+                    } else {
+                        sprintf(str, "%.0f ", packet->data[i].value);
+                    }
+                    strcat(buff, str);
+                }
+            }
+            if (packet->command.type == CMD_KN_S) {
+                if (sensor_map[packet->command.s_no].kal_stream != NULL) {
+                    *(sensor_map[packet->command.s_no].kal_stream) << buff << "\n";
+                    sensor_map[packet->command.s_no].kal_stream->flush();
+                }
+            }
+            else if (packet->command.type == CMD_OM) {
+                if (om106_map[DEVICE_1].om106_stream != NULL) {
+                    *(om106_map[DEVICE_1].om106_stream) << buff << "\n"; // log'un hangi om106l cihazından geldiğini bilmem lazım
+                    om106_map[DEVICE_1].om106_stream->flush();
+                }
+            }
+            break;
+
+        case CMD_KN_O3:
+        case CMD_KN_T:
+        case CMD_KN_H:
+        case CMD_KN_PWM:
+        case CMD_KN_CT:
+        case CMD_KN_CP:
+        case CMD_KN_FR:
+        case CMD_KN_PV:
+            if (packet->command.type == CMD_KN_PWM) {
+                parsePwmData(packet->data_str, &packet->pwm_data);
+                sprintf(buff, ">%s %s %s %d/%dmsec\n", packet->date, packet->time, packet->command_str, packet->pwm_data.duty, packet->pwm_data.period);
             } else {
-                sprintf(str, "%s: %.0f ", packet->data[i].key, packet->data[i].value);
+                if (sscanf(packet->data[0].key, "s%d", &sensor_no) == 1) {
+                    sprintf(buff, ">%s %s %s %.3f\n", packet->date, packet->time, packet->command_str, packet->data[0].value);
+                }
             }
-            strcat(buff, str);
-        }
-        *(sensor_map[packet->command.s_no].kal_end_stream) << buff << "\n";
-        break;
-    default:
-        break;
+            if (calibration_stream != NULL) {
+                *(calibration_stream) << buff;
+                calibration_stream->flush();
+            }
+            break;
+
+        case CMD_KB_S_R:
+        case CMD_KB_S_OR:
+        case CMD_KB_S_KN:
+        case CMD_KB_S_KN_B:
+            sprintf(buff, ">%s %s %s ", packet->date, packet->time, packet->command_str);
+            for (uint8_t i = 0; i < packet->data_count; i++) {
+                if (
+                    strcmp(packet->data[i].key, "alpha") == 0 ||
+                    strcmp(packet->data[i].key, "beta") == 0  ||
+                    strcmp(packet->data[i].key, "logRR") == 0 ||
+                    strcmp(packet->data[i].key, "logO3") == 0
+                    ) {
+                    sprintf(str, "%s: %.5f ", packet->data[i].key, packet->data[i].value);
+                } else {
+                    sprintf(str, "%s: %.0f ", packet->data[i].key, packet->data[i].value);
+                }
+                strcat(buff, str);
+            }
+            if (sensor_map[packet->command.s_no].kal_end_stream != NULL) {
+                *(sensor_map[packet->command.s_no].kal_end_stream) << buff << "\n";
+                sensor_map[packet->command.s_no].kal_end_stream->flush();
+            }
+            break;
+        default:
+            break;
     }
     return 1;
 }

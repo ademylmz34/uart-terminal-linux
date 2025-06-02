@@ -77,9 +77,9 @@ public:
     typedef struct {
         CommandType type;
         int8_t th_no; // silinecek
-        int8_t kn_no;
-        int8_t s_no;
-        int8_t or_no;
+        uint8_t kn_no;
+        uint8_t s_no;
+        uint8_t or_no;
     } ParsedCommand;
 
     // KEY-VALUE YAPISI

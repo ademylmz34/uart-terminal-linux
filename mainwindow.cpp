@@ -75,7 +75,7 @@ CalibrationValLabels cal_val_labels;
 MainWindowHeaderValLabels main_window_header_labels;
 
 QMap<uint8_t, QFrame*> sensor_frames;
-QMap<uint16_t, uint32_t> sensors_serial_no;
+QMap<QString, uint16_t> sensors_serial_no;
 QMap<uint8_t, uint8_t> sensors_eeprom_is_data_exist;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)

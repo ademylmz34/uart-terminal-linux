@@ -52,7 +52,7 @@ uint8_t CommandLine::parseLineCommandInput(Command command_type)
     switch (command_type) {
         case CMD_SPN:
             sensor_ids.clear();
-
+            calibration_board->getSensorFolderNames();
             if (command_line_parameters.size() != NUM_OF_SENSOR_BOARD) {
                 mainWindow->setLineEditText("Geçersiz giriş: 15 adet sXXXX.. formatında değer yok.");
                 return false;
@@ -71,6 +71,11 @@ uint8_t CommandLine::parseLineCommandInput(Command command_type)
                         mainWindow->setLineEditText("Aynı sensör ID birden fazla kez girildi: " + part);
                         sensor_module_map.clear();
                         return false;
+
+                    } else if (sensor_ids.contains(part)) {
+                        mainWindow->setLineEditText("Sensör numarasi daha önce kullanılmış farklı bir numara giriniz.: " + part);
+                        sensor_module_map.clear();
+                        return false;
                     }
                     seenIds.insert(part);
                 }
@@ -80,7 +85,12 @@ uint8_t CommandLine::parseLineCommandInput(Command command_type)
                         sensor_module_map.clear();
                         counter = 0;
                         return false;
+                    } else if (sensor_ids.contains(calibration_board->findSensorFolderNameByValue(counter + 1))) {
+                        mainWindow->setLineEditText("Daha önce kalibre edilmiş sensörün sensör numarasını değiştiremezsiniz.");
+                        sensor_module_map.clear();
+                        return false;
                     }
+                    //mainWindow->setLineEditText("old sensör id: " + calibration_board->findSensorFolderNameByValue(counter + 1));
                     //sensor_module_map.insert(part, counter + 1);
                 }
                 counter++;
@@ -89,6 +99,7 @@ uint8_t CommandLine::parseLineCommandInput(Command command_type)
             return true;
             break;
         case CMD_SPNC:
+            calibration_board->getSensorFolderNames();
             if (command_line_parameters.size() != 2) {
                 mainWindow->setLineEditText("Geçersiz format. Doğru kullanım: ?spnc <1-15> sXXXX");
                 return false;
@@ -119,7 +130,7 @@ uint8_t CommandLine::parseLineCommandInput(Command command_type)
                 mainWindow->setLineEditText("serial_no uzunluğu 1 ile 9 hane arasında olmalı.");
                 return false;
             }
-            if (sensor_module_map.contains(QString("s%1").arg(serialStr))) {
+            if (sensor_ids.contains(QString("s%1").arg(serialStr))) {
                 mainWindow->setLineEditText("serial_no kullanımda farklı bir serial no giriniz." + serialStr);
                 return false;
             }
@@ -170,7 +181,7 @@ uint8_t CommandLine::processCommand(Command command_type)
 {
     uint8_t status;
     switch (command_type) {
-        /*case CMD_CSF:
+        case CMD_CSF:
             status = calibration_board->createSensorFolders();
             if (status == 1) {
                 mainWindow->setLineEditText("Sensör klasörleri başarıyla oluşturuldu.");
@@ -178,8 +189,14 @@ uint8_t CommandLine::processCommand(Command command_type)
                 mainWindow->setLineEditText("Sensör klasörleri zaten var.");
             }
             break;
-        */
+
         case CMD_GCD:
+            calibration_board->getSensorFolderNames();
+            if (sensor_ids.isEmpty()) {
+                mainWindow->setLineEditText("sensör klasörleri bulunamadi");
+                break;
+            }
+            for (const QString& folder_name: sensor_ids) mainWindow->setLineEditText("folder_name: " + folder_name);
             //getCalibrationData();
             break;
 
@@ -201,12 +218,20 @@ uint8_t CommandLine::processCommand(Command command_type)
 
         case CMD_SPN:
             //?spn s31 0 s32 0 s345 s0 s378 s365 s147 s2354785 s655 s12 s13 s145 s3685
+            if (cal_status_t.calibration_state != WAIT_STATE) {
+                mainWindow->setLineEditText("Kalibrasyon başladıktan sonra seri numaraları değiştiremezsiniz.");
+                break;
+            }
             sensor_ids.clear();
             sensor_module_map.clear();
             if (parseLineCommandInput(command_type)) serial->sendData(mcu_command);
             break;
 
         case CMD_SPNC:
+            if (cal_status_t.calibration_state != WAIT_STATE) {
+                mainWindow->setLineEditText("Kalibrasyon başladıktan sonra seri numaraları değiştiremezsiniz.");
+                break;
+            }
             if (parseLineCommandInput(command_type)) serial->sendData(mcu_command);
             break;
 

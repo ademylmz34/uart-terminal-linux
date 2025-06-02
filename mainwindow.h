@@ -44,11 +44,14 @@ struct MainWindowHeaderValLabels {
     QLabel* current_date_time;
 };
 
+extern QMap<uint16_t, SensorFiles> sensor_map;
+extern QMap<Om106l_Devices, Om106Files> om106_map;
+
 extern CalibrationValLabels cal_val_labels;
 extern MainWindowHeaderValLabels main_window_header_labels;
 
 extern QMap<uint8_t, QFrame*> sensor_frames;
-extern QMap<uint16_t, uint32_t> sensors_serial_no;
+extern QMap<QString, uint16_t> sensors_serial_no;
 extern QMap<uint8_t, uint8_t> sensors_eeprom_is_data_exist;
 
 extern QDateTime current_dt;
