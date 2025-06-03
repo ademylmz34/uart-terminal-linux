@@ -158,7 +158,6 @@ uint8_t Creator::createMainLogFile(QString folder_name) {
         if (main_log_file->open(QIODevice::ReadWrite | QIODevice::Text)) {
             qDebug() << "Log dosyasi başarıyla oluşturuldu.";
             main_log_stream = new QTextStream(main_log_file);
-            *main_log_stream << "Log dosyasi başarıyla oluşturuldu.";
         } else {
             qDebug() << "Log dosyasi oluşturulamadi.";
             return 0;

@@ -8,6 +8,7 @@ enum Request {
     R_SENSOR_ID,
     R_CAL_STATUS,
     R_SENSOR_VALUES,
+    R_RESISTANCE_VALUES,
     NONE
 };
 

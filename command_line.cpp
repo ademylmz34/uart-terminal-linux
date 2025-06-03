@@ -21,7 +21,7 @@ void CommandLine::startCalibrationRequest(Request request, QString request_cmd) 
     request_command = request_cmd;
     data_received_timeout = 10;
     request_data_status[current_request] = 0;
-    get_calibration_data_timer->start(1000);
+    //get_calibration_data_timer->start(1000);
 }
 
 void CommandLine::startSerialNoDataRequest(Request request, QString request_cmd) {
@@ -32,7 +32,16 @@ void CommandLine::startSerialNoDataRequest(Request request, QString request_cmd)
     get_sensors_serial_no_timer->start(1000);
 }
 
-void CommandLine::getFirstData() { startCalibrationRequest(R_ACTIVE_SENSOR_COUNT, request_commands[R_ACTIVE_SENSOR_COUNT]); }
+void CommandLine::getFirstData()
+{
+    startCalibrationRequest(R_ACTIVE_SENSOR_COUNT, request_commands[R_ACTIVE_SENSOR_COUNT]);
+    startCalibrationRequest(R_SENSOR_ID, request_commands[R_SENSOR_ID]);
+    startCalibrationRequest(R_CABIN_INFO, request_commands[R_CABIN_INFO]);
+    startCalibrationRequest(R_RESISTANCE_VALUES, request_commands[R_RESISTANCE_VALUES]);
+    startCalibrationRequest(R_SENSOR_VALUES, request_commands[R_SENSOR_VALUES]);
+    startCalibrationRequest(R_CAL_STATUS, request_commands[R_CAL_STATUS]);
+
+}
 
 void CommandLine::getPeriodicData() { startCalibrationRequest(R_SENSOR_VALUES, request_commands[R_SENSOR_VALUES]); }
 
@@ -85,11 +94,12 @@ uint8_t CommandLine::parseLineCommandInput(Command command_type)
                         sensor_module_map.clear();
                         counter = 0;
                         return false;
-                    } else if (sensor_ids.contains(calibration_board->findSensorFolderNameByValue(counter + 1))) {
+                    }
+                    /*else if (sensor_ids.contains(calibration_board->findSensorFolderNameByValue(counter + 1))) {
                         mainWindow->setLineEditText("Daha önce kalibre edilmiş sensörün sensör numarasını değiştiremezsiniz.");
                         sensor_module_map.clear();
                         return false;
-                    }
+                    }*/
                     //mainWindow->setLineEditText("old sensör id: " + calibration_board->findSensorFolderNameByValue(counter + 1));
                     //sensor_module_map.insert(part, counter + 1);
                 }
@@ -174,6 +184,8 @@ void CommandLine::parseCommand(QString command)
         else if (command_str == "gcd") type = CMD_GCD;
         else if (command_str == "gabc") type = CMD_GABC;
     }
+
+    if (main_log_stream != NULL) *(main_log_stream) << command << "\n";
     processCommand(type);
 }
 
@@ -268,11 +280,6 @@ void CommandLine::messageBox(QString message)
                     qDebug() << key << "zaten yok" << folderPath;
                 }
             }
-            is_oml_log_folder_created = 0;
-            is_calibration_folders_created = 0;
-            sensor_log_folder_create_status.clear();
-            log_folder_names.clear();
-            calibration_board->clearLogDirectoryPathsFile();
         } else {
             qDebug() << "Log klasörleri zaten oluşturulmamış";
         }
@@ -282,6 +289,11 @@ void CommandLine::messageBox(QString message)
     } else {
         QMessageBox::warning(nullptr, "Zorunlu Seçim", "Lütfen bir seçim yapın.");
     }
+    is_oml_log_folder_created = 0;
+    is_calibration_folders_created = 0;
+    sensor_log_folder_create_status.clear();
+    log_folder_names.clear();
+    calibration_board->clearLogDirectoryPathsFile();
     get_calibration_status_timer->stop();
 }
 

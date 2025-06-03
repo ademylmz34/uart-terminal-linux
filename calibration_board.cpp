@@ -84,6 +84,10 @@ void CalibrationBoard::clearLogDirectoryPathsFile()
 
 void CalibrationBoard::startCalibrationProcess()
 {
+    if (is_calibration_folders_created) {
+       mainWindow->setLineEditText("Kalibrasyon klasörleri zaten var.");
+        return;
+    }
     uint8_t status;
     if (sensors_serial_no.isEmpty())
     {
@@ -95,7 +99,7 @@ void CalibrationBoard::startCalibrationProcess()
     if (status == 1) {
         is_calibration_folders_created = 1;
         mainWindow->setLineEditText("log klasörleri ve dosyalari olusturuldu, kalibrasyon basladi");
-        //serial->sendData(mcu_command);
+        serial->sendData(mcu_command);
     } else if (status == 2) {
         mainWindow->setLineEditText("Kalibrasyon işlemi devam ederken log klasörleri oluşturamazsınız.");
     }
@@ -230,7 +234,7 @@ void CalibrationBoard::getDataFromMCU()
             if (data_received_timeout == 0 || request_data_status[current_request]) {
                 if (request_data_status[current_request]) qDebug() << "Request data asc operation completed.";
                 else qDebug() << "Request data asc couldn't get received.";
-                current_request = R_CABIN_INFO;
+                current_request = R_SENSOR_ID;
                 request_command = request_commands[current_request];
                 data_received_timeout = 10;
                 request_data_status[current_request] = 0;
@@ -254,6 +258,18 @@ void CalibrationBoard::getDataFromMCU()
             if (data_received_timeout == 0 || request_data_status[current_request]) {
                 if (request_data_status[current_request]) qDebug() << "Request data ci operation completed.";
                 else qDebug() << "Request data ci couldn't get received.";
+                current_request = R_RESISTANCE_VALUES;
+                request_command = request_commands[current_request];
+                data_received_timeout = 10;
+                request_data_status[current_request] = 0;
+            } else {
+                serial->sendData(request_command);
+            }
+            break;
+        case R_RESISTANCE_VALUES:
+            if (data_received_timeout == 0 || request_data_status[current_request]) {
+                if (request_data_status[current_request]) qDebug() << "Request data rv operation completed.";
+                else qDebug() << "Request data rv couldn't get received.";
                 current_request = R_SENSOR_VALUES;
                 request_command = request_commands[current_request];
                 data_received_timeout = 10;
@@ -262,18 +278,6 @@ void CalibrationBoard::getDataFromMCU()
                 serial->sendData(request_command);
             }
             break;
-        /*case R_CAL_POINTS:
-            if (data_received_timeout == 0 || request_data_status[current_request]) {
-                if (request_data_status[current_request]) qDebug() << "Request data cp operation completed.";
-                else qDebug() << "Request data cp couldn't get received.";
-                current_request = R_SENSOR_VALUES;
-                request_command = request_commands[current_request];
-                data_received_timeout = 10;
-                request_data_status[current_request] = 0;
-            } else {
-                serial->sendData(request_command);
-            }
-            break;*/
         case R_SENSOR_VALUES:
             if (data_received_timeout == 0 || request_data_status[current_request]) {
                 if (request_data_status[current_request]) qDebug() << "Request data sv operation completed.";

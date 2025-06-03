@@ -32,6 +32,7 @@ QString line;
 
 uint8_t is_main_folder_created;
 uint8_t is_oml_log_folder_created;
+uint8_t number_of_resistors2calibrate;
 
 QMap<Request, QString> request_commands = {
     { R_ACTIVE_SENSOR_COUNT, "?gpa" },
@@ -39,7 +40,8 @@ QMap<Request, QString> request_commands = {
     { R_CAL_STATUS, "?gpk"},
     { R_CABIN_INFO, "?gpi"},
     { R_SENSOR_VALUES, "?gps"},
-    { R_SENSOR_ID, "?gpc"}
+    { R_SENSOR_ID, "?gpc"},
+    { R_RESISTANCE_VALUES, "?gpb"}
 };
 
 QMap<Request, uint8_t> request_data_status = {
@@ -48,7 +50,8 @@ QMap<Request, uint8_t> request_data_status = {
     { R_CAL_STATUS, 0 },
     { R_CABIN_INFO, 0},
     { R_SENSOR_VALUES, 0},
-    { R_SENSOR_ID, 0}
+    { R_SENSOR_ID, 0},
+    { R_RESISTANCE_VALUES, 0}
 };
 
 QMap<CalibrationStates, QString> calibration_state_str = {
@@ -209,12 +212,15 @@ void MainWindow::setLabels() {
     cal_val_labels.cal_point_end_time = ui->calPointEndTimelbl;
     cal_val_labels.cal_status = ui->calStatuslbl;
     cal_val_labels.cal_o3_average = ui->o3Averagelbl;
+    cal_val_labels.cal_ppb_for_end_time = ui->calPpbforEndTimelbl;
+    cal_val_labels.cal_r1_value = ui->r1lbl;
+    cal_val_labels.cal_r2_value = ui->r2lbl;
+    cal_val_labels.cal_r3_value = ui->r3lbl;
 
     main_window_header_labels.cabin_info = ui->CabinInfolbl;
     main_window_header_labels.calibration_start_date = ui->calStartDatelbl;
     main_window_header_labels.calibration_repeat_val = ui->calRepeatVallbl;
     main_window_header_labels.cabin_temp_val = ui->cabinTemplbl;
-    main_window_header_labels.cabin_o3_val = ui->cabinO3lbl;
     main_window_header_labels.current_date_time = ui->currentdateTimelbl;
 }
 
@@ -260,8 +266,9 @@ void MainWindow::aboutToExit()
     QTextStream out(&log);
     out << "std::terminate çağrıldı. Muhtemelen exception yakalanmadı.\n"; */
     command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
-    //serial->sendData("?r");
-    //serial->serial->waitForBytesWritten(2000);
+    serial->sendData("?r");
+    serial->serial->waitForBytesWritten(2000);
+    serial->serial->close();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

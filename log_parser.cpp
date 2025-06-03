@@ -40,9 +40,15 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
     if (strcmp(cmd, "R1") == 0) result.type = CMD_R1;
     else if (strcmp(cmd, "R2") == 0) result.type = CMD_R2;
     else if (strcmp(cmd, "R3") == 0) result.type = CMD_R3;
+    else if (strncmp(cmd, "TH", 2) == 0) result.type = CMD_TH;
     else if (strcmp(cmd, "SMS") == 0) result.type = CMD_SMS;
     else if (strcmp(cmd, "RST") == 0) result.type = CMD_RST;
     else if (strncmp(cmd, "SN", 2) == 0) result.type = CMD_SN;
+    else if (strcmp(cmd, "OM") == 0) result.type = CMD_OM;
+    else if (strcmp(cmd, "L") == 0) result.type = CMD_L;
+    else if (strcmp(cmd, "D") == 0) result.type = CMD_D;
+    else if (strcmp(cmd, "KL") == 0) result.type = CMD_KL;
+    else if (strcmp(cmd, "KS") == 0) result.type = CMD_KS;
     else if (strncmp(cmd, "SK", 2) == 0) {
         int s_no;
         if (sscanf(cmd, "SK-%d", &s_no) == 1) {
@@ -50,18 +56,6 @@ LogParser::ParsedCommand LogParser::parseCommandExtended(const char* cmd) {
             result.s_no = s_no;
         }
     }
-    else if (strncmp(cmd, "TH", 2) == 0) {
-        int no = atoi(cmd + 2);
-        if (no >= 1 && no <= 15) {
-            result.type = CMD_TH;
-            result.s_no = no;
-        }
-    }
-    else if (strcmp(cmd, "OM") == 0) result.type = CMD_OM;
-    else if (strcmp(cmd, "L") == 0) result.type = CMD_L;
-    else if (strcmp(cmd, "D") == 0) result.type = CMD_D;
-    else if (strcmp(cmd, "KL") == 0) result.type = CMD_KL;
-    else if (strcmp(cmd, "KS") == 0) result.type = CMD_KS;
     else if (strncmp(cmd, "KN", 2) == 0) {
         int kn, s;
         if (strstr(cmd, "-S")) {
@@ -216,6 +210,7 @@ void LogParser::parseCalibrationData(const char* input)
 
     int sensor_no;
     int serial_no;
+    int r1, r2, r3, resistance_count;
 
     size_t len;
 
@@ -264,6 +259,16 @@ void LogParser::parseCalibrationData(const char* input)
                 calibration_points[kal_point] = kal_point_val;
                 sprintf(buff, "L KN%d %d", kal_point, kal_point_val);
                 qDebug() << buff;
+                request_data_status[current_request] = 1;
+            }
+            break;
+
+        case R_RESISTANCE_VALUES:
+            if (sscanf(input, "%d %d %d %d", &r1, &r2, &r3, &resistance_count) == 4) {
+                cal_val_labels.cal_r1_value->setText(QString("%1 Ω").arg(r1));
+                cal_val_labels.cal_r2_value->setText(QString("%1 Ω").arg(r2));
+                cal_val_labels.cal_r3_value->setText(QString("%1 Ω").arg(r3));
+                number_of_resistors2calibrate = resistance_count;
                 request_data_status[current_request] = 1;
             }
             break;
@@ -393,29 +398,50 @@ void LogParser::parseCalibrationTime(const char* input) {
         time.setHMS(hour, minute, second);
         calibration_start_dt = QDateTime(date, time);
         main_window_header_labels.calibration_start_date->setText(calibration_start_dt.toString("hh:mm"));
-    } else if(sscanf(input, "KalBitisSaati %d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second) == 6)
+    } else if (sscanf(input, "KalBitisSaati %d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second) == 6)
     {
         date.setDate(year, month, day);
         time.setHMS(hour, minute, second);
         calibration_end_dt = QDateTime(date, time);
-    } else if(sscanf(input, "Kal%d-BasSaati %d-%d-%d %d:%d:%d", &cal_ppb, &year, &month, &day, &hour, &minute, &second) == 7)
+    } else if (sscanf(input, "Kal%d-BasSaati %d-%d-%d %d:%d:%d", &cal_ppb, &year, &month, &day, &hour, &minute, &second) == 7)
     {
         date.setDate(year, month, day);
         time.setHMS(hour, minute, second);
         calibration_ppb_start_dt = QDateTime(date, time);
         cal_ppb_cal_time = cal_ppb;
         cal_val_labels.cal_point_start_time->setText(calibration_ppb_start_dt.toString("hh:mm"));
-    } else if(sscanf(input, "Kal%d-BitisSaati %d-%d-%d %d:%d:%d", &cal_ppb, &year, &month, &day, &hour, &minute, &second) == 7)
+    } else if (sscanf(input, "Kal%d-BitisSaati %d-%d-%d %d:%d:%d", &cal_ppb, &year, &month, &day, &hour, &minute, &second) == 7)
     {
         date.setDate(year, month, day);
         time.setHMS(hour, minute, second);
         calibration_ppb_end_dt = QDateTime(date, time);
         cal_ppb_cal_time = cal_ppb;
         cal_val_labels.cal_point_end_time->setText(calibration_ppb_end_dt.toString("hh:mm"));
+        cal_val_labels.cal_ppb_for_end_time->setText(QString("%1 ppb").arg(cal_ppb));
     } else
     {
         qDebug() << "Tarih ve saat ayrıştırılamadı!";
     }
+}
+
+void LogParser::parse_th_data(const char* input, THData* th_data) {
+    float temp_value = 0.0f;
+    char unit[8];
+    char humidity_str[16];
+
+    int parsed = sscanf(input, "%f %7s %15s", &temp_value, unit, humidity_str);
+    if (parsed != 3) return;
+
+    th_data->temperature = temp_value;
+    strncpy(th_data->temp_unit, unit, sizeof(th_data->temp_unit) - 1);
+    th_data->temp_unit[sizeof(th_data->temp_unit) - 1] = '\0';
+
+    size_t len = strlen(humidity_str);
+    if (humidity_str[len - 1] == '%') {
+        humidity_str[len - 1] = '\0';
+    }
+
+    th_data->humidity = atof(humidity_str);
 }
 
 void LogParser::parseLineData(KeyValue* data, const char* line, uint8_t &data_count) {
@@ -473,7 +499,10 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     packet->command = parseCommandExtended(command);
     packet->command_str = strdup(command);
     //mainWindow->setLineEditText(line);
-    if (packet->command.type != CMD_D && packet->command.type != CMD_SN && packet->command.type != CMD_SK && packet->command.type != CMD_OM && packet->command.type != CMD_SMS) mainWindow->setLineEditText(line);
+
+    if (packet->command.type != CMD_TH && packet->command.type != CMD_D && packet->command.type != CMD_SN &&
+        packet->command.type != CMD_SK && packet->command.type != CMD_OM && packet->command.type != CMD_SMS)
+        mainWindow->setLineEditText(line);
 
     if (*p == ' ') p++;
 
@@ -488,7 +517,7 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
         return 0;
     }
 
-    if (packet->command.type == CMD_D || packet->command.type == CMD_KL || packet->command.type == CMD_KN_PWM
+    if (packet->command.type == CMD_D || packet->command.type == CMD_KL || packet->command.type == CMD_KN_PWM || packet->command.type == CMD_TH
         || packet->command.type == CMD_L || packet->command.type == CMD_KS || packet->command.type == CMD_SMS || packet->command.type == CMD_SN)
     {
         packet->data_str = strdup(p);
@@ -539,9 +568,9 @@ int8_t LogParser::processPacket(Packet* packet) {
         case CMD_RST:
             command_line->messageBox("MCU yeniden başlatıldı, son log dosyalarının silinmesini istiyor musunuz?");
             break;
-        case CMD_SN:
-            sprintf(buff, ">%s %s %s\n", packet->date, packet->time, packet->data_str);
-            parseSerialNoData(packet->data_str);
+        case CMD_TH:
+            parse_th_data(packet->data_str, &packet->th_data);
+            main_window_header_labels.cabin_temp_val->setText(QString("%1 %2").arg(packet->th_data.temperature).arg(packet->th_data.temp_unit));
             break;
         case CMD_SK:
             sprintf(buff, ">%s %s ", packet->date, packet->time);
@@ -590,13 +619,17 @@ int8_t LogParser::processPacket(Packet* packet) {
             break;
 
         case CMD_L:
+        case CMD_SN:
         case CMD_D:
         case CMD_SMS:
             sprintf(buff, ">%s %s %s %s\n", packet->date, packet->time, packet->command_str, packet->data_str);
-            parseCalibrationData(packet->data_str);
-            if(main_log_stream != NULL) {
-                *(main_log_stream) << buff;
-                main_log_stream->flush();
+            if (packet->command.type == CMD_SN) parseSerialNoData(packet->data_str);
+            else parseCalibrationData(packet->data_str);
+            if (packet->command.type != CMD_D) {
+                if (main_log_stream != NULL) {
+                    *(main_log_stream) << buff;
+                    main_log_stream->flush();
+                }
             }
             break;
 

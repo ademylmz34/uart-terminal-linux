@@ -168,7 +168,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="cabinO3lbl">
+           <widget class="QLabel" name="o3Averagelbl">
             <property name="font">
              <font>
               <pointsize>16</pointsize>
@@ -3401,7 +3401,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>200</x>
-                        <y>110</y>
+                        <y>80</y>
                         <width>121</width>
                         <height>18</height>
                        </rect>
@@ -3423,7 +3423,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>110</y>
+                        <y>80</y>
                         <width>161</width>
                         <height>20</height>
                        </rect>
@@ -3441,11 +3441,11 @@ background-color: rgb(38, 162, 105);</string>
                        <string>Başlama Saati:</string>
                       </property>
                      </widget>
-                     <widget class="QLabel" name="o3Averagelbl">
+                     <widget class="QLabel" name="r1lbl">
                       <property name="geometry">
                        <rect>
                         <x>200</x>
-                        <y>80</y>
+                        <y>160</y>
                         <width>111</width>
                         <height>18</height>
                        </rect>
@@ -3460,14 +3460,14 @@ background-color: rgb(38, 162, 105);</string>
                        <string notr="true">color: rgb(255, 255, 255);</string>
                       </property>
                       <property name="text">
-                       <string>42.86</string>
+                       <string>33K Ω</string>
                       </property>
                      </widget>
                      <widget class="QLabel" name="label_68">
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>80</y>
+                        <y>160</y>
                         <width>161</width>
                         <height>20</height>
                        </rect>
@@ -3482,14 +3482,14 @@ background-color: rgb(38, 162, 105);</string>
                        <string notr="true">color: rgb(255, 255, 255);</string>
                       </property>
                       <property name="text">
-                       <string>O3 Ortalaması:</string>
+                       <string>R1 Değeri:</string>
                       </property>
                      </widget>
                      <widget class="QLabel" name="calPointEndTimelbl">
                       <property name="geometry">
                        <rect>
                         <x>200</x>
-                        <y>140</y>
+                        <y>110</y>
                         <width>101</width>
                         <height>18</height>
                        </rect>
@@ -3510,9 +3510,9 @@ background-color: rgb(38, 162, 105);</string>
                      <widget class="QLabel" name="label_107">
                       <property name="geometry">
                        <rect>
-                        <x>10</x>
-                        <y>140</y>
-                        <width>161</width>
+                        <x>80</x>
+                        <y>110</y>
+                        <width>81</width>
                         <height>20</height>
                        </rect>
                       </property>
@@ -3549,7 +3549,7 @@ background-color: rgb(38, 162, 105);</string>
                        <string notr="true">color: rgb(255, 255, 255);</string>
                       </property>
                       <property name="text">
-                       <string>SET ENVIRONMENT CONDITIONS STATE</string>
+                       <string>WAIT_STATE</string>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -3559,7 +3559,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>260</y>
+                        <y>280</y>
                         <width>181</width>
                         <height>31</height>
                        </rect>
@@ -3581,7 +3581,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>290</y>
+                        <y>310</y>
                         <width>151</width>
                         <height>31</height>
                        </rect>
@@ -3603,7 +3603,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>340</y>
+                        <y>360</y>
                         <width>181</width>
                         <height>31</height>
                        </rect>
@@ -3625,7 +3625,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>410</y>
+                        <y>430</y>
                         <width>181</width>
                         <height>31</height>
                        </rect>
@@ -3647,7 +3647,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>380</y>
+                        <y>400</y>
                         <width>181</width>
                         <height>31</height>
                        </rect>
@@ -3672,7 +3672,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>460</y>
+                        <y>480</y>
                         <width>181</width>
                         <height>31</height>
                        </rect>
@@ -3694,7 +3694,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>510</y>
+                        <y>530</y>
                         <width>181</width>
                         <height>31</height>
                        </rect>
@@ -3716,7 +3716,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>560</y>
+                        <y>580</y>
                         <width>181</width>
                         <height>31</height>
                        </rect>
@@ -3738,7 +3738,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>320</y>
+                        <y>340</y>
                         <width>311</width>
                         <height>16</height>
                        </rect>
@@ -3751,7 +3751,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>370</y>
+                        <y>390</y>
                         <width>311</width>
                         <height>16</height>
                        </rect>
@@ -3764,7 +3764,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>440</y>
+                        <y>460</y>
                         <width>311</width>
                         <height>16</height>
                        </rect>
@@ -3777,7 +3777,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>490</y>
+                        <y>510</y>
                         <width>311</width>
                         <height>16</height>
                        </rect>
@@ -3790,7 +3790,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>10</x>
-                        <y>540</y>
+                        <y>560</y>
                         <width>311</width>
                         <height>16</height>
                        </rect>
@@ -3803,7 +3803,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>210</x>
-                        <y>280</y>
+                        <y>300</y>
                         <width>121</width>
                         <height>21</height>
                        </rect>
@@ -3825,7 +3825,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>210</x>
-                        <y>340</y>
+                        <y>360</y>
                         <width>121</width>
                         <height>21</height>
                        </rect>
@@ -3847,7 +3847,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>210</x>
-                        <y>400</y>
+                        <y>420</y>
                         <width>121</width>
                         <height>21</height>
                        </rect>
@@ -3869,7 +3869,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>210</x>
-                        <y>460</y>
+                        <y>480</y>
                         <width>121</width>
                         <height>21</height>
                        </rect>
@@ -3891,7 +3891,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>210</x>
-                        <y>510</y>
+                        <y>530</y>
                         <width>121</width>
                         <height>21</height>
                        </rect>
@@ -3913,7 +3913,7 @@ background-color: rgb(38, 162, 105);</string>
                       <property name="geometry">
                        <rect>
                         <x>210</x>
-                        <y>560</y>
+                        <y>580</y>
                         <width>121</width>
                         <height>21</height>
                        </rect>
@@ -3929,6 +3929,116 @@ background-color: rgb(38, 162, 105);</string>
                       </property>
                       <property name="text">
                        <string>0</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="calPpbforEndTimelbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>110</y>
+                        <width>71</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>200 PPB</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="r2lbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>190</y>
+                        <width>111</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>47K Ω</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_69">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>190</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>R2 Değeri:</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="r3lbl">
+                      <property name="geometry">
+                       <rect>
+                        <x>200</x>
+                        <y>220</y>
+                        <width>111</width>
+                        <height>18</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                        <italic>true</italic>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>120K Ω</string>
+                      </property>
+                     </widget>
+                     <widget class="QLabel" name="label_70">
+                      <property name="geometry">
+                       <rect>
+                        <x>10</x>
+                        <y>220</y>
+                        <width>161</width>
+                        <height>20</height>
+                       </rect>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>R3 Değeri:</string>
                       </property>
                      </widget>
                     </widget>

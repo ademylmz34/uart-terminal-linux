@@ -33,6 +33,10 @@ struct CalibrationValLabels {
     QLabel* cal_stabilization_duration;
     QLabel* cal_const_cal_temp;
     QLabel* cal_clean_air_duration;
+    QLabel* cal_ppb_for_end_time;
+    QLabel* cal_r1_value;
+    QLabel* cal_r2_value;
+    QLabel* cal_r3_value;
 };
 
 struct MainWindowHeaderValLabels {
@@ -69,6 +73,7 @@ extern QMap<uint8_t, QLabel*> r3_labels;
 
 extern uint8_t sensor_module_status[NUM_OF_SENSOR_BOARD];
 extern uint8_t active_sensor_count;
+extern uint8_t number_of_resistors2calibrate;
 
 extern QMap<QString, uint8_t> sensor_module_map;
 extern QMap<QString, QString> log_folder_names;

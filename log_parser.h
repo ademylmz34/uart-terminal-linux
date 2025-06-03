@@ -88,6 +88,13 @@ public:
         float value;
     } KeyValue;
 
+    // TH VERİSİ (Sıcaklık, Nem)
+    typedef struct {
+        float temperature;
+        char temp_unit[8];
+        float humidity;
+    } THData;
+
     // PWM Verisi
     typedef struct {
         uint16_t duty;
@@ -103,6 +110,7 @@ public:
         KeyValue* data;
         char* data_str;
         uint8_t data_count;
+        THData th_data;
         PWMData pwm_data;
     } Packet;
 
@@ -121,6 +129,7 @@ private:
     int8_t calibration_completed;
     ParsedCommand parseCommandExtended(const char*);
     CalibrationStates getCalibrationState(int);
+    void parse_th_data(const char*, THData*);
     void parseLineData(KeyValue*, const char*, uint8_t &) ;
     void parseCalibrationData(const char*);
     void parseSerialNoData(const char*);

@@ -24,7 +24,7 @@ void Serial::setMainWindow(MainWindow *mw) {
 
 uint8_t Serial::uartLineProcess(char* input)
 {
-    if (main_log_stream != NULL) *(main_log_stream) << input;
+    //if (main_log_stream != NULL) *(main_log_stream) << input;
     if (uart_log_parser->parseLine(input, &uart_log_parser->packet) == 0) {
         uart_log_parser->processPacket(&uart_log_parser->packet);
         uart_log_parser->freePacket(&uart_log_parser->packet);
