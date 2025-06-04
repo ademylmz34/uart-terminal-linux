@@ -21,31 +21,12 @@ void CommandLine::startCalibrationRequest(Request request, QString request_cmd) 
     request_command = request_cmd;
     data_received_timeout = 10;
     request_data_status[current_request] = 0;
-    //get_calibration_data_timer->start(1000);
+    get_calibration_data_timer->start(200);
 }
 
-void CommandLine::startSerialNoDataRequest(Request request, QString request_cmd) {
-    serial_no_request = request;
-    serial_no_request_command = request_cmd;
-    serial_no_data_received_timeout = 10;
-    request_data_status[serial_no_request] = 0;
-    get_sensors_serial_no_timer->start(1000);
-}
-
-void CommandLine::getFirstData()
-{
-    startCalibrationRequest(R_ACTIVE_SENSOR_COUNT, request_commands[R_ACTIVE_SENSOR_COUNT]);
-    startCalibrationRequest(R_SENSOR_ID, request_commands[R_SENSOR_ID]);
-    startCalibrationRequest(R_CABIN_INFO, request_commands[R_CABIN_INFO]);
-    startCalibrationRequest(R_RESISTANCE_VALUES, request_commands[R_RESISTANCE_VALUES]);
-    startCalibrationRequest(R_SENSOR_VALUES, request_commands[R_SENSOR_VALUES]);
-    startCalibrationRequest(R_CAL_STATUS, request_commands[R_CAL_STATUS]);
-
-}
+void CommandLine::getFirstData() { startCalibrationRequest(R_ACTIVE_SENSOR_COUNT, request_commands[R_ACTIVE_SENSOR_COUNT]); }
 
 void CommandLine::getPeriodicData() { startCalibrationRequest(R_SENSOR_VALUES, request_commands[R_SENSOR_VALUES]); }
-
-void CommandLine::getSerialNoData() { startSerialNoDataRequest(R_SENSOR_ID, request_commands[R_SENSOR_ID]); }
 
 uint8_t CommandLine::parseLineCommandInput(Command command_type)
 {

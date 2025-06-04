@@ -62,7 +62,6 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
                 mainWindow->setLineEditText(QString("Port-%1 bağlantı yeniden kuruldu: %2").arg(deviceIndex).arg(portPath));
                 om106l_device_status[deviceIndex - 1] = 1;
                 command_line->getFirstData();
-                command_line->getSerialNoData();
                 mainWindow->disableConnectionButton();
                 mainWindow->disableBaudCmb();
             }

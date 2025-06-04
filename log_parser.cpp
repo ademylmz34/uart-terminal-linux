@@ -353,17 +353,18 @@ void LogParser::parseSerialNoData(const char* input) {
         if (!sensors_serial_no.contains(serial_no_str)) sensors_serial_no.insert(serial_no_str, sensor_no); // example: s3105 -> 1
         if (!sensors_eeprom_is_data_exist.contains(sensor_no)) sensors_eeprom_is_data_exist.insert(sensor_no, 1);
 
-        if (received_serial_no_count++ == active_sensor_count) {
+        /*if (received_serial_no_count++ == active_sensor_count) {
             request_data_status[serial_no_request] = 1;
             received_serial_no_count = 1;
-        }
+        }*/
         header_labels[sensor_no]->setText(QString("s%1").arg(QString::number(serial_no)));
 
     } else if (sscanf(input, "s%d bilgileri bos", &sensor_no) == 1) {
-        if (received_serial_no_count++ == active_sensor_count) {
+        /*if (received_serial_no_count++ == active_sensor_count) {
             request_data_status[serial_no_request] = 1;
             received_serial_no_count = 1;
-        } // ?spn s3104 0 s3105 0 s3106 s3107 s3108 s3109 s3110 s3111 s3112 s3113 s3114 s3115 s3116
+        }*/
+        // ?spn s3104 0 s3105 0 s3106 s3107 s3108 s3109 s3110 s3111 s3112 s3113 s3114 s3115 s3116
         if (!sensors_eeprom_is_data_exist.contains(sensor_no)) sensors_eeprom_is_data_exist.insert(sensor_no, 0);
         header_labels[sensor_no]->setText("Veri Yok");
 
@@ -501,7 +502,7 @@ int8_t LogParser::parseLine(const char* input, Packet* packet) {
     //mainWindow->setLineEditText(line);
 
     if (packet->command.type != CMD_TH && packet->command.type != CMD_D && packet->command.type != CMD_SN &&
-        packet->command.type != CMD_SK && packet->command.type != CMD_OM && packet->command.type != CMD_SMS)
+        packet->command.type != CMD_SK && packet->command.type != CMD_OM && packet->command.type != CMD_SMS )
         mainWindow->setLineEditText(line);
 
     if (*p == ' ') p++;

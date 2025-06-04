@@ -117,7 +117,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     connect(serial->serial, &QSerialPort::readyRead, serial, &Serial::readSerial);
 
-    connect(get_calibration_status_timer, &QTimer::timeout, command_line, &CommandLine::getPeriodicData);
+    //connect(get_calibration_status_timer, &QTimer::timeout, command_line, &CommandLine::getPeriodicData);
 
     QDateTime now = QDateTime::currentDateTime();
     QString zaman = now.toString("dd.MM.yyyy hh:mm");
@@ -266,9 +266,9 @@ void MainWindow::aboutToExit()
     QTextStream out(&log);
     out << "std::terminate çağrıldı. Muhtemelen exception yakalanmadı.\n"; */
     command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
-    serial->sendData("?r");
-    serial->serial->waitForBytesWritten(2000);
-    serial->serial->close();
+    //serial->sendData("?r");
+    //serial->serial->waitForBytesWritten(2000);
+    //serial->serial->close();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

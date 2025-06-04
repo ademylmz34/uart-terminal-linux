@@ -70,7 +70,16 @@ public:
         CMD_KB_S_OR,
         CMD_KB_S_R,
         CMD_KB_S_KN,
-        CMD_KB_S_KN_B
+        CMD_KB_S_KN_B,
+
+        CMD_D_SMS,
+        CMD_D_RV,
+        CMD_D_CI,
+        CMD_D_CS,
+        CMD_D_CP,
+        CMD_D_SK,
+        CMD_D_TH,
+        CMD_D_SN
     } CommandType;
 
     // KOMUT ve PARAMETRELER

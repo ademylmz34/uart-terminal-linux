@@ -86,13 +86,10 @@ extern uint8_t serial_no_changed;
 
 extern int calibration_points[NUM_OF_CAL_POINTS];
 extern Request current_request;
-extern Request serial_no_request;
 
 extern QString line;
 
 extern QTimer *get_calibration_status_timer;
-
-//extern QStringList sensors_folder;
 
 extern Serial *serial;
 extern CommandLine *command_line;
