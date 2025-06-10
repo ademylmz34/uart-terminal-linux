@@ -4,10 +4,6 @@
 
 #include <QDebug>
 
-bool is_auto_mode = true; // true: zincir çalışsın, false: sadece bir request
-
-QString request_command;
-
 QString mcu_command;
 QStringList command_line_parameters;
 QStringList sensor_ids;
@@ -20,13 +16,26 @@ uint8_t is_calibration_folders_created;
 QMap<QString, uint8_t> sensor_folder_create_status;
 QMap<QString, uint8_t> sensor_log_folder_create_status;
 
-QMap<Request, RequestStep> requestFlow = {
-    { R_ACTIVE_SENSOR_COUNT, { R_SENSOR_ID } },
-    { R_SENSOR_ID,           { R_CABIN_INFO } },
-    { R_CABIN_INFO,          { R_RESISTANCE_VALUES } },
-    { R_RESISTANCE_VALUES,   { R_SENSOR_VALUES } },
-    { R_SENSOR_VALUES,       { R_CAL_STATUS } },
-    { R_CAL_STATUS,          { NONE } }
+QMap<CalibrationStates, QString> calibration_state_str = {
+    { WAIT_STATE, "WAIT STATE" },
+    { CLEAN_AIR_STATE, "CLEAN AIR STATE" },
+    { SET_ENVIRONMENT_CONDITIONS_STATE, "SET ENVIRONMENT CONDITIONS STATE" },
+    { ZERO_CALIBRATION_STATE, "ZERO CALIBRATION STATE"},
+    { SPAN_CALIBRATION_START_STATE, "SPAN CALIBRATION START STATE" },
+    { SPAN_CALIBRATION_MID_STATE, "SPAN CALIBRATION MID STATE" },
+    { SPAN_CALIBRATION_END_STATE, "SPAN CALIBRATION END STATE" },
+    { RETURN_TO_ZERO_STATE, "RETURN TO ZERO STATE"},
+    { REPEAT_CALIBRATION_STATE, "REPEAT CALIBRATION STATE"},
+    { END_STATE, "END STATE"}
+};
+
+QVector<Request_t> request_sequence = {
+    { R_ACTIVE_SENSOR_COUNT, R_SENSOR_ID,         "?gpa", IDLE },
+    { R_SENSOR_ID,           R_CABIN_INFO,        "?gpc", IDLE },
+    { R_CABIN_INFO,          R_RESISTANCE_VALUES, "?gpi", IDLE },
+    { R_RESISTANCE_VALUES,   R_SENSOR_VALUES,     "?gpb", IDLE },
+    { R_SENSOR_VALUES,       R_CAL_STATUS,        "?gps", IDLE },
+    { R_CAL_STATUS,          NONE,                "?gpk", IDLE }
 };
 
 CalibrationBoard::CalibrationBoard(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
@@ -40,7 +49,6 @@ CalibrationBoard::CalibrationBoard(QObject *parent): QObject(parent)  // üst s�
 
     memset(sensor_module_status, 0, NUM_OF_SENSOR_BOARD);
     /*uint8_t temp_values[15] = {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-
     memcpy(sensor_module_status, temp_values, sizeof(sensor_module_status));*/
 }
 
@@ -90,7 +98,7 @@ void CalibrationBoard::clearLogDirectoryPathsFile()
 void CalibrationBoard::startCalibrationProcess()
 {
     if (is_calibration_folders_created) {
-       mainWindow->setLineEditText("Kalibrasyon klasörleri zaten var.");
+        mainWindow->setLineEditText("Kalibrasyon klasörleri zaten var.");
         return;
     }
     uint8_t status;
@@ -183,7 +191,6 @@ QString CalibrationBoard::findSensorFolderNameByValue(int sensor_no)
     return "";
 }
 
-
 uint8_t CalibrationBoard::createSensorFolders()
 {
     QString sensor_id;
@@ -232,26 +239,40 @@ uint8_t CalibrationBoard::isArrayEmpty(const uint8_t* arr, size_t len)
     return 1;
 }
 
-void CalibrationBoard::getDataFromMCU()
-{
-    if (current_request != NONE && requestFlow.contains(current_request)) {
-        if (data_received_timeout == 0 || request_data_status[current_request]) {
-            current_request = requestFlow[current_request].next_request;
+RequestStatus CalibrationBoard::getRequestStatus(Request request) {
+    for (const Request_t& r : request_sequence) {
+        if (r.current_request == request)
+            return r.request_status;
+    }
+    return IDLE; // ya da NONE varsa
+}
 
-            if (current_request != NONE) {
-                request_command = request_commands[current_request];
-                data_received_timeout = 10;
-                request_data_status[current_request] = 0;
-            } else {
-                request_command = "";
-                get_calibration_data_timer->stop();
-            }
-        } else {
-            serial->sendData(request_command);
+void CalibrationBoard::updateRequestStatus(Request request, RequestStatus new_status) {
+    for (Request_t& r : request_sequence) {
+        if (r.current_request == request) {
+            r.request_status = new_status;
+            break;
         }
     }
+}
 
-    if (current_request == NONE) get_calibration_data_timer->stop();
+void CalibrationBoard::getDataFromMCU()
+{
+    if (data_received_timeout == 0 || request.request_status == RECEIVED) {
+        request.request_status = IDLE;
+
+        if (request.next_request != NONE) {
+            auto next_request = std::find_if(request_sequence.begin(), request_sequence.end(), [&](const Request_t& r) { return r.current_request == request.next_request; });
+            request = *next_request;
+            data_received_timeout = 10;
+
+        } else {
+            get_calibration_data_timer->stop();
+        }
+    } else {
+        serial->sendData(request.request_command);
+        if (request.request_status == IDLE) request.request_status = SENT;
+    }
 }
 
 void CalibrationBoard::getCalibrationData()
@@ -261,7 +282,5 @@ void CalibrationBoard::getCalibrationData()
     } else if (data_received_timeout == 0) {
         data_received_timeout = 10;
     }
-    if (current_request != NONE) {
-        getDataFromMCU();
-    }
+    getDataFromMCU();
 }

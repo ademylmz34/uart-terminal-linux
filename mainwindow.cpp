@@ -15,8 +15,6 @@ uint8_t active_sensor_count;
 uint8_t serial_no_changed;
 
 int calibration_points[NUM_OF_CAL_POINTS] = {20, 50, 100, 200, 500, 0, 0, 0, 0, 0};
-Request current_request;
-Request serial_no_request;
 
 QMap<QString, uint8_t> sensor_module_map;
 QMap<QString, QString> log_folder_names;
@@ -33,39 +31,6 @@ QString line;
 uint8_t is_main_folder_created;
 uint8_t is_oml_log_folder_created;
 uint8_t number_of_resistors2calibrate;
-
-QMap<Request, QString> request_commands = {
-    { R_ACTIVE_SENSOR_COUNT, "?gpa" },
-    { R_CAL_POINTS, "?gpd" },
-    { R_CAL_STATUS, "?gpk"},
-    { R_CABIN_INFO, "?gpi"},
-    { R_SENSOR_VALUES, "?gps"},
-    { R_SENSOR_ID, "?gpc"},
-    { R_RESISTANCE_VALUES, "?gpb"}
-};
-
-QMap<Request, uint8_t> request_data_status = {
-    { R_ACTIVE_SENSOR_COUNT, 0 },
-    { R_CAL_POINTS, 0 },
-    { R_CAL_STATUS, 0 },
-    { R_CABIN_INFO, 0},
-    { R_SENSOR_VALUES, 0},
-    { R_SENSOR_ID, 0},
-    { R_RESISTANCE_VALUES, 0}
-};
-
-QMap<CalibrationStates, QString> calibration_state_str = {
-    { WAIT_STATE, "WAIT STATE" },
-    { CLEAN_AIR_STATE, "CLEAN AIR STATE" },
-    { SET_ENVIRONMENT_CONDITIONS_STATE, "SET ENVIRONMENT CONDITIONS STATE" },
-    { ZERO_CALIBRATION_STATE, "ZERO CALIBRATION STATE"},
-    { SPAN_CALIBRATION_START_STATE, "SPAN CALIBRATION START STATE" },
-    { SPAN_CALIBRATION_MID_STATE, "SPAN CALIBRATION MID STATE" },
-    { SPAN_CALIBRATION_END_STATE, "SPAN CALIBRATION END STATE" },
-    { RETURN_TO_ZERO_STATE, "RETURN TO ZERO STATE"},
-    { REPEAT_CALIBRATION_STATE, "REPEAT CALIBRATION STATE"},
-    { END_STATE, "END STATE"}
-};
 
 QMap<uint8_t, QLabel*> header_labels;
 QMap<uint8_t, QLabel*> temp_labels;
@@ -110,14 +75,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     connect(ui->btnConnect, &QPushButton::clicked, serial, &Serial::connectSerial);
     connect(ui->btnClear, &QPushButton::clicked, this, &MainWindow::onBtnClearClicked);
-    //connect(ui->btnSend, &QPushButton::clicked, command_line, &CommandLine::commandLineProcess);
     connect(ui->lineEdit, &QLineEdit::returnPressed, command_line, &CommandLine::commandLineProcess);
 
     connect(serial->connection_check_timer, &QTimer::timeout, serial, &Serial::checkConnectionStatus);
 
-    connect(serial->serial, &QSerialPort::readyRead, serial, &Serial::readSerial);
+    connect(serial->serial_port, &QSerialPort::readyRead, serial, &Serial::readSerial);
 
-    //connect(get_calibration_status_timer, &QTimer::timeout, command_line, &CommandLine::getPeriodicData);
+    connect(get_calibration_status_timer, &QTimer::timeout, command_line, &CommandLine::getPeriodicData);
 
     QDateTime now = QDateTime::currentDateTime();
     QString zaman = now.toString("dd.MM.yyyy hh:mm");
@@ -261,13 +225,8 @@ void MainWindow::onBtnClearClicked()
 
 void MainWindow::aboutToExit()
 {
-    /*QFile log("crash_log.txt");
-    log.open(QIODevice::Append | QIODevice::Text);
-    QTextStream out(&log);
-    out << "std::terminate çağrıldı. Muhtemelen exception yakalanmadı.\n"; */
     command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
     //serial->sendData("?r");
-    //serial->serial->waitForBytesWritten(2000);
     //serial->serial->close();
 }
 
@@ -277,5 +236,3 @@ void MainWindow::closeEvent(QCloseEvent *event)
     aboutToExit();
     event->accept();
 }
-
-

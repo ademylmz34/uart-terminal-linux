@@ -26,8 +26,7 @@ public:
     void getSerialNoData();
     void commandLineProcess();
     void messageBox(QString);
-    void startCalibrationRequest(Request, QString);
-    void startSerialNoDataRequest(Request, QString);
+    void startCalibrationRequest(Request);
 private:
     MainWindow *mainWindow = nullptr;
 

@@ -48,13 +48,8 @@ public:
         CMD_R1,
         CMD_R2,
         CMD_R3,
-        CMD_TH,
         CMD_OM,
         CMD_L,
-        CMD_D,
-        CMD_SMS,
-        CMD_SN,
-        CMD_SK,
         CMD_KL,
         CMD_KS,
         CMD_RST,
@@ -91,59 +86,52 @@ public:
         uint8_t or_no;
     } ParsedCommand;
 
-    // KEY-VALUE YAPISI
-    typedef struct {
-        char key[MAX_KEY_LEN];
-        float value;
-    } KeyValue;
-
-    // TH VERİSİ (Sıcaklık, Nem)
-    typedef struct {
-        float temperature;
-        char temp_unit[8];
-        float humidity;
-    } THData;
-
-    // PWM Verisi
-    typedef struct {
-        uint16_t duty;
-        uint16_t period;
-    } PWMData;
-
     // BİR SATIRLIK PAKET
     typedef struct {
         char date[11];
         char time[9];
         ParsedCommand command;
         char* command_str;
-        KeyValue* data;
         char* data_str;
-        uint8_t data_count;
-        THData th_data;
-        PWMData pwm_data;
     } Packet;
 
     uint8_t received_serial_no_count;
+    QMap<CommandType, std::function<void()>> cmd_funcs;
 
     Packet packet;
     void setMainWindow(MainWindow*);
-    int8_t parseLine(const char*, Packet*);
-    int8_t processPacket(Packet*);
-    void freePacket(Packet*);
+    bool parseLine(const char*, Packet);
 
 private:
     MainWindow* mainWindow;
 
     int8_t repeat_calibration_index;
     int8_t calibration_completed;
+
     ParsedCommand parseCommandExtended(const char*);
     CalibrationStates getCalibrationState(int);
-    void parse_th_data(const char*, THData*);
-    void parseLineData(KeyValue*, const char*, uint8_t &) ;
-    void parseCalibrationData(const char*);
-    void parseSerialNoData(const char*);
-    void parseCalibrationTime(const char*);
-    int8_t parsePwmData(const char*, PWMData*);
-    void printCommandInfo(const Packet*);
+
+    void initCommandFunctions();
+
+    void parse_om_data();
+    void parse_kn_s_data();
+    void parse_kb_s_r_data();
+    void parse_kb_s_or_data();
+    void parse_kb_s_kn_data();
+    void parse_kn_float_data();
+    void parse_kn_decimal_data();
+    void parse_pwm_data();
+    void parse_sk_data();
+    void parse_ks_data();
+
+    void parse_sms_data();
+    void parse_rv_data();
+    void parse_ci_data();
+    void parse_cs_data();
+    void parse_cp_data();
+    void parse_th_data();
+    void parse_sn_data();
+
+    void log_data();
 };
 #endif // LOG_PARSER_H

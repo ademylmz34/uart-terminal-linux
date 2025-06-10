@@ -11,14 +11,22 @@
 
 class MainWindow;
 
-struct RequestStep {
-    Request next_request;
+enum RequestStatus {
+    IDLE,
+    SENT,
+    RECEIVED
 };
 
-extern QMap<Request, RequestStep> requestFlow;
-extern bool is_auto_mode;
+struct Request_t {
+    Request current_request;
+    Request next_request;
+    QString request_command;
+    RequestStatus request_status;
+};
 
-extern QString request_command;
+extern Request_t request;
+extern QVector<Request_t> request_sequence;
+
 extern QStringList command_line_parameters;
 extern QString mcu_command;
 
@@ -32,29 +40,34 @@ extern QStringList sensor_ids;
 extern QMap<QString, uint8_t> sensor_folder_create_status;
 extern QMap<QString, uint8_t> sensor_log_folder_create_status;
 
+extern QMap<CalibrationStates, QString> calibration_state_str;
+
 class CalibrationBoard : public QObject {
     Q_OBJECT
 
-    public:
-        explicit CalibrationBoard(QObject *parent = nullptr);
-        ~CalibrationBoard();
+public:
+    explicit CalibrationBoard(QObject *parent = nullptr);
+    ~CalibrationBoard();
 
-        QString findSensorFolderNameByValue(int);
-        uint8_t readLogDirectoryPaths();
-        uint8_t createSensorFolders();
-        void setMainWindow(MainWindow*);
-        void startCalibrationProcess();
-        void clearLogDirectoryPathsFile();
-        void getSensorFolderNames();
-    private:
-        MainWindow *mainWindow = nullptr;
+    QString findSensorFolderNameByValue(int);
+    uint8_t readLogDirectoryPaths();
+    uint8_t createSensorFolders();
+    void setMainWindow(MainWindow*);
+    void startCalibrationProcess();
+    void clearLogDirectoryPathsFile();
+    void getSensorFolderNames();
 
-        uint8_t writeLogDirectoryPaths(const QMap<QString, QString>&);
-        uint8_t createCalibrationFolders();
-        uint8_t isArrayEmpty(const uint8_t*, size_t);
+    RequestStatus getRequestStatus(Request);
+    void updateRequestStatus(Request, RequestStatus);
+private:
+    MainWindow *mainWindow = nullptr;
 
-        void getCalibrationData();
-        void getDataFromMCU();
+    uint8_t writeLogDirectoryPaths(const QMap<QString, QString>&);
+    uint8_t createCalibrationFolders();
+    uint8_t isArrayEmpty(const uint8_t*, size_t);
+
+    void getCalibrationData();
+    void getDataFromMCU();
 };
 
 #endif // CALIBRATION_BOARD_H

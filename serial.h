@@ -25,7 +25,7 @@ public:
     ~Serial();
 
     QTimer *connection_check_timer;
-    QSerialPort *serial;
+    QSerialPort *serial_port;
 
     void sendData(QString);
     void setMainWindow(MainWindow*);

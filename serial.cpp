@@ -4,7 +4,7 @@
 
 Serial::Serial(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
-    serial = new QSerialPort();
+    serial_port = new QSerialPort();
     selected_port_name   = "/dev/ttyUSB0";
     connection_check_timer   = new QTimer(this);
     baud_rate = 115200;
@@ -14,8 +14,7 @@ Serial::Serial(QObject *parent): QObject(parent)  // üst sınıfa parametre gö
 Serial::~Serial()
 {
     delete connection_check_timer;
-    delete serial;
-    //delete serial_2;
+    delete serial_port;
 }
 
 void Serial::setMainWindow(MainWindow *mw) {
@@ -24,13 +23,7 @@ void Serial::setMainWindow(MainWindow *mw) {
 
 uint8_t Serial::uartLineProcess(char* input)
 {
-    //if (main_log_stream != NULL) *(main_log_stream) << input;
-    if (uart_log_parser->parseLine(input, &uart_log_parser->packet) == 0) {
-        uart_log_parser->processPacket(&uart_log_parser->packet);
-        uart_log_parser->freePacket(&uart_log_parser->packet);
-    } else {
-        printf("Hatali satir atlandi.\n");
-    }
+    if (!uart_log_parser->parseLine(input, uart_log_parser->packet)) mainWindow->setLineEditText("Hatali satir atlandi.\n");
     return 0;
 }
 
@@ -76,22 +69,22 @@ void Serial::checkPortConnection(QSerialPort* port, const QString& portPath, int
 
 void Serial::checkConnectionStatus()
 {
-    checkPortConnection(serial, selected_port_name, DEVICE_1);
+    checkPortConnection(serial_port, selected_port_name, DEVICE_1);
 }
 
 void Serial::connectSerial()
 {
-    if (!serial->isOpen())
+    if (!serial_port->isOpen())
     {
-        serial->setPortName(selected_port_name);
+        serial_port->setPortName(selected_port_name);
         //serial->setBaudRate(ui->cmbBaudRate->itemText(3).toInt());
-        serial->setBaudRate(mainWindow->getCmbBaudRateValue());
-        serial->setDataBits(QSerialPort::Data8);
-        serial->setParity(QSerialPort::NoParity);
-        serial->setStopBits(QSerialPort::OneStop);
-        serial->setFlowControl(QSerialPort::NoFlowControl);
+        serial_port->setBaudRate(mainWindow->getCmbBaudRateValue());
+        serial_port->setDataBits(QSerialPort::Data8);
+        serial_port->setParity(QSerialPort::NoParity);
+        serial_port->setStopBits(QSerialPort::OneStop);
+        serial_port->setFlowControl(QSerialPort::NoFlowControl);
 
-        if (serial->open(QIODevice::ReadWrite))
+        if (serial_port->open(QIODevice::ReadWrite))
         {
             mainWindow->setLineEditText("Port-1 acildi.");
             om106l_device_status[DEVICE_1] = 1;
@@ -100,7 +93,7 @@ void Serial::connectSerial()
             om106l_device_status[DEVICE_1] = 0;
         }
     } else {
-        serial->close();
+        serial_port->close();
         mainWindow->setLineEditText("Port-1 kapatildi.");
         om106l_device_status[DEVICE_1] = 0;
     }
@@ -109,9 +102,9 @@ void Serial::connectSerial()
 void Serial::readSerial()
 {
     char ch;
-    while (serial->bytesAvailable())
+    while (serial_port->bytesAvailable())
     {
-        serial->read(&ch, 1);
+        serial_port->read(&ch, 1);
 
         if (ch == '\n')
         {
@@ -130,10 +123,10 @@ void Serial::readSerial()
 
 void Serial::sendData(QString command)
 {
-    if (serial->isOpen()) {
-        serial->write(command.toUtf8());
-        serial->write("\r\n");
-        serial->waitForBytesWritten(2000);
+    if (serial_port->isOpen()) {
+        serial_port->write(command.toUtf8());
+        serial_port->write("\r\n");
+        serial_port->waitForBytesWritten(2000);
     }
 }
 

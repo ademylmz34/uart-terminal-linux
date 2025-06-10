@@ -60,10 +60,6 @@ extern QMap<uint8_t, uint8_t> sensors_eeprom_is_data_exist;
 
 extern QDateTime current_dt;
 
-extern QMap<Request, QString> request_commands;
-extern QMap<Request, uint8_t> request_data_status;
-extern QMap<CalibrationStates, QString> calibration_state_str;
-
 extern QMap<uint8_t, QLabel*> header_labels;
 extern QMap<uint8_t, QLabel*> temp_labels;
 extern QMap<uint8_t, QLabel*> hum_labels;
@@ -85,7 +81,6 @@ extern uint8_t is_oml_log_folder_created;
 extern uint8_t serial_no_changed;
 
 extern int calibration_points[NUM_OF_CAL_POINTS];
-extern Request current_request;
 
 extern QString line;
 
@@ -98,7 +93,7 @@ extern LogParser *uart_log_parser;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 QT_END_NAMESPACE
 class CommandLine;
@@ -107,28 +102,28 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    public:
-        MainWindow(QWidget *parent = nullptr);
-        int getCmbBaudRateValue();
+public:
+    MainWindow(QWidget *parent = nullptr);
+    int getCmbBaudRateValue();
 
-        QString getLineEditText() const;
-        void disableBaudCmb();
-        void disableConnectionButton();
-        void setLineEditText(const QString&);
-        void Log2LinePlainText(const QString &);
-        ~MainWindow();
+    QString getLineEditText() const;
+    void disableBaudCmb();
+    void disableConnectionButton();
+    void setLineEditText(const QString&);
+    void Log2LinePlainText(const QString &);
+    ~MainWindow();
 
-    private slots:
-        void onBtnClearClicked();
+private slots:
+    void onBtnClearClicked();
 
-    private:
-        Ui::MainWindow *ui;
-        QTimer* current_date_time_timer;
+private:
+    Ui::MainWindow *ui;
+    QTimer* current_date_time_timer;
 
-        void setLabels();
-        void sendHeartBeat();
-        void aboutToExit();
-    protected:
-        void closeEvent(QCloseEvent *event) override;
+    void setLabels();
+    void sendHeartBeat();
+    void aboutToExit();
+protected:
+    void closeEvent(QCloseEvent *event) override;
 };
 #endif // MAINWINDOW_H

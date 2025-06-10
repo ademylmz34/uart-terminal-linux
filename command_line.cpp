@@ -2,6 +2,8 @@
 #include <QMessageBox>
 #include <QDebug>
 
+Request_t request;
+
 CommandLine::CommandLine(QObject *parent): QObject(parent)  // üst sınıfa parametre gönderimi
 {
 
@@ -16,17 +18,16 @@ void CommandLine::setMainWindow(MainWindow *mw) {
     mainWindow = mw;
 }
 
-void CommandLine::startCalibrationRequest(Request request, QString request_cmd) {
-    current_request = request;
-    request_command = request_cmd;
+void CommandLine::startCalibrationRequest(Request request_type) {
+    auto current_request = std::find_if(request_sequence.begin(), request_sequence.end(), [&](const Request_t& r) { return r.current_request == request_type; });
+    request = *current_request;
     data_received_timeout = 10;
-    request_data_status[current_request] = 0;
     get_calibration_data_timer->start(200);
 }
 
-void CommandLine::getFirstData() { startCalibrationRequest(R_ACTIVE_SENSOR_COUNT, request_commands[R_ACTIVE_SENSOR_COUNT]); }
+void CommandLine::getFirstData() { startCalibrationRequest(R_ACTIVE_SENSOR_COUNT); }
 
-void CommandLine::getPeriodicData() { startCalibrationRequest(R_SENSOR_VALUES, request_commands[R_SENSOR_VALUES]); }
+void CommandLine::getPeriodicData() { startCalibrationRequest(R_SENSOR_VALUES); }
 
 uint8_t CommandLine::parseLineCommandInput(Command command_type)
 {
@@ -40,101 +41,101 @@ uint8_t CommandLine::parseLineCommandInput(Command command_type)
     int s_no;
 
     switch (command_type) {
-        case CMD_SPN:
-            sensor_ids.clear();
-            calibration_board->getSensorFolderNames();
-            if (command_line_parameters.size() != NUM_OF_SENSOR_BOARD) {
-                mainWindow->setLineEditText("Geçersiz giriş: 15 adet sXXXX.. formatında değer yok.");
+    case CMD_SPN:
+        sensor_ids.clear();
+        calibration_board->getSensorFolderNames();
+        if (command_line_parameters.size() != NUM_OF_SENSOR_BOARD) {
+            mainWindow->setLineEditText("Geçersiz giriş: 15 adet sXXXX.. formatında değer yok.");
+            return false;
+        }
+        for (const QString& part : command_line_parameters) {
+            if ((sensor_module_status[counter] == 0 && part != "0") || (sensor_module_status[counter] == 1 && part == "0")) {
+                mainWindow->setLineEditText("Sensör kartındaki slotlara göre değerleri giriniz.");
                 return false;
             }
-            for (const QString& part : command_line_parameters) {
-                if ((sensor_module_status[counter] == 0 && part != "0") || (sensor_module_status[counter] == 1 && part == "0")) {
-                    mainWindow->setLineEditText("Sensör kartındaki slotlara göre değerleri giriniz.");
+            if (!regex.match(part).hasMatch() && part != "0") {
+                mainWindow->setLineEditText("Geçersiz format:" + part);
+                return false;
+            }
+            if (part != "0") {
+                if (seenIds.contains(part)) {
+                    mainWindow->setLineEditText("Aynı sensör ID birden fazla kez girildi: " + part);
+                    sensor_module_map.clear();
                     return false;
-                }
-                if (!regex.match(part).hasMatch() && part != "0") {
-                    mainWindow->setLineEditText("Geçersiz format:" + part);
-                    return false;
-                }
-                if (part != "0") {
-                    if (seenIds.contains(part)) {
-                        mainWindow->setLineEditText("Aynı sensör ID birden fazla kez girildi: " + part);
-                        sensor_module_map.clear();
-                        return false;
 
-                    } else if (sensor_ids.contains(part)) {
-                        mainWindow->setLineEditText("Sensör numarasi daha önce kullanılmış farklı bir numara giriniz.: " + part);
-                        sensor_module_map.clear();
-                        return false;
-                    }
-                    seenIds.insert(part);
+                } else if (sensor_ids.contains(part)) {
+                    mainWindow->setLineEditText("Sensör numarasi daha önce kullanılmış farklı bir numara giriniz.: " + part);
+                    sensor_module_map.clear();
+                    return false;
                 }
-                if (sensor_module_status[counter]) {
-                    if (part.mid(1).trimmed().remove('0').isEmpty()) {
-                        mainWindow->setLineEditText("serial_no yalnızca sıfırlardan oluşamaz.:" + part + "counter: " + QString::number(counter));
-                        sensor_module_map.clear();
-                        counter = 0;
-                        return false;
-                    }
-                    /*else if (sensor_ids.contains(calibration_board->findSensorFolderNameByValue(counter + 1))) {
+                seenIds.insert(part);
+            }
+            if (sensor_module_status[counter]) {
+                if (part.mid(1).trimmed().remove('0').isEmpty()) {
+                    mainWindow->setLineEditText("serial_no yalnızca sıfırlardan oluşamaz.:" + part + "counter: " + QString::number(counter));
+                    sensor_module_map.clear();
+                    counter = 0;
+                    return false;
+                }
+                /*else if (sensor_ids.contains(calibration_board->findSensorFolderNameByValue(counter + 1))) {
                         mainWindow->setLineEditText("Daha önce kalibre edilmiş sensörün sensör numarasını değiştiremezsiniz.");
                         sensor_module_map.clear();
                         return false;
                     }*/
-                    //mainWindow->setLineEditText("old sensör id: " + calibration_board->findSensorFolderNameByValue(counter + 1));
-                    //sensor_module_map.insert(part, counter + 1);
-                }
-                counter++;
+                //mainWindow->setLineEditText("old sensör id: " + calibration_board->findSensorFolderNameByValue(counter + 1));
+                //sensor_module_map.insert(part, counter + 1);
             }
-            //sensor_ids = command_line_parameters;
-            return true;
-            break;
-        case CMD_SPNC:
-            calibration_board->getSensorFolderNames();
-            if (command_line_parameters.size() != 2) {
-                mainWindow->setLineEditText("Geçersiz format. Doğru kullanım: ?spnc <1-15> sXXXX");
-                return false;
-            }
-            s_no = command_line_parameters[0].toInt(&ok);
-            if (!ok || s_no < 1 || s_no > 15) {
-                mainWindow->setLineEditText("sensor_no geçersiz. 1 ile 15 arasında olmalı.");
-                return false;
-            }
-            if (sensor_module_status[s_no - 1] == false) {
-                mainWindow->setLineEditText("sensor slotu bos olmayan sensor numarasi giriniz.");
-                return false;
-            }
-            //sensor_no = static_cast<uint16_t>(s_no);
+            counter++;
+        }
+        //sensor_ids = command_line_parameters;
+        return true;
+        break;
+    case CMD_SPNC:
+        calibration_board->getSensorFolderNames();
+        if (command_line_parameters.size() != 2) {
+            mainWindow->setLineEditText("Geçersiz format. Doğru kullanım: ?spnc <1-15> sXXXX");
+            return false;
+        }
+        s_no = command_line_parameters[0].toInt(&ok);
+        if (!ok || s_no < 1 || s_no > 15) {
+            mainWindow->setLineEditText("sensor_no geçersiz. 1 ile 15 arasında olmalı.");
+            return false;
+        }
+        if (sensor_module_status[s_no - 1] == false) {
+            mainWindow->setLineEditText("sensor slotu bos olmayan sensor numarasi giriniz.");
+            return false;
+        }
+        //sensor_no = static_cast<uint16_t>(s_no);
 
-            /*QString serialStr = parts[1];
+        /*QString serialStr = parts[1];
             if (!serialStr.startsWith('s')) {
                 mainWindow->setLineEditText("serial_no 's' harfiyle başlamalı.");
                 return false;
             } */
 
-            serialStr = command_line_parameters[1]; // s3105 → 3105
-            if (serialStr.trimmed().remove('0').isEmpty()) {
-                mainWindow->setLineEditText("serial_no yalnızca sıfırlardan oluşamaz.");
-                return false;
-            }
-            if (serialStr.length() < 1 || serialStr.length() > 9) {
-                mainWindow->setLineEditText("serial_no uzunluğu 1 ile 9 hane arasında olmalı.");
-                return false;
-            }
-            if (sensor_ids.contains(QString("s%1").arg(serialStr))) {
-                mainWindow->setLineEditText("serial_no kullanımda farklı bir serial no giriniz." + serialStr);
-                return false;
-            }
+        serialStr = command_line_parameters[1]; // s3105 → 3105
+        if (serialStr.trimmed().remove('0').isEmpty()) {
+            mainWindow->setLineEditText("serial_no yalnızca sıfırlardan oluşamaz.");
+            return false;
+        }
+        if (serialStr.length() < 1 || serialStr.length() > 9) {
+            mainWindow->setLineEditText("serial_no uzunluğu 1 ile 9 hane arasında olmalı.");
+            return false;
+        }
+        if (sensor_ids.contains(QString("s%1").arg(serialStr))) {
+            mainWindow->setLineEditText("serial_no kullanımda farklı bir serial no giriniz." + serialStr);
+            return false;
+        }
 
-            serialStr.toUInt(&isNumeric);
-            if (!isNumeric) {
-                mainWindow->setLineEditText("serial_no sadece rakamlardan oluşmalı.");
-                return false;
-            }
-            return true;
-            break;
-        default:
-            break;
+        serialStr.toUInt(&isNumeric);
+        if (!isNumeric) {
+            mainWindow->setLineEditText("serial_no sadece rakamlardan oluşmalı.");
+            return false;
+        }
+        return true;
+        break;
+    default:
+        break;
     }
     return true;
 }
@@ -174,65 +175,65 @@ uint8_t CommandLine::processCommand(Command command_type)
 {
     uint8_t status;
     switch (command_type) {
-        case CMD_CSF:
-            status = calibration_board->createSensorFolders();
-            if (status == 1) {
-                mainWindow->setLineEditText("Sensör klasörleri başarıyla oluşturuldu.");
-            } else if (status == 2) {
-                mainWindow->setLineEditText("Sensör klasörleri zaten var.");
-            }
-            break;
+    case CMD_CSF:
+        status = calibration_board->createSensorFolders();
+        if (status == 1) {
+            mainWindow->setLineEditText("Sensör klasörleri başarıyla oluşturuldu.");
+        } else if (status == 2) {
+            mainWindow->setLineEditText("Sensör klasörleri zaten var.");
+        }
+        break;
 
-        case CMD_GCD:
-            calibration_board->getSensorFolderNames();
-            if (sensor_ids.isEmpty()) {
-                mainWindow->setLineEditText("sensör klasörleri bulunamadi");
-                break;
-            }
-            for (const QString& folder_name: sensor_ids) mainWindow->setLineEditText("folder_name: " + folder_name);
-            //getCalibrationData();
+    case CMD_GCD:
+        calibration_board->getSensorFolderNames();
+        if (sensor_ids.isEmpty()) {
+            mainWindow->setLineEditText("sensör klasörleri bulunamadi");
             break;
+        }
+        for (const QString& folder_name: sensor_ids) mainWindow->setLineEditText("folder_name: " + folder_name);
+        //getCalibrationData();
+        break;
 
-        case CMD_GABC:
-            //getActiveBoardCount();
-            break;
+    case CMD_GABC:
+        //getActiveBoardCount();
+        break;
 
-        case CMD_SC:
-            calibration_board->startCalibrationProcess();
-            break;
+    case CMD_SC:
+        calibration_board->startCalibrationProcess();
+        break;
 
-        case CMD_R:
-            serial->sendData(mcu_command);
-            break;
+    case CMD_R:
+        serial->sendData(mcu_command);
+        break;
 
-        case CMD_SM:
-            serial->sendData(mcu_command);
-            break;
+    case CMD_SM:
+        serial->sendData(mcu_command);
+        break;
 
-        case CMD_SPN:
-            //?spn s31 0 s32 0 s345 s0 s378 s365 s147 s2354785 s655 s12 s13 s145 s3685
-            if (cal_status_t.calibration_state != WAIT_STATE) {
-                mainWindow->setLineEditText("Kalibrasyon başladıktan sonra seri numaraları değiştiremezsiniz.");
-                break;
-            }
-            sensor_ids.clear();
-            sensor_module_map.clear();
-            if (parseLineCommandInput(command_type)) serial->sendData(mcu_command);
+    case CMD_SPN:
+        //?spn s31 0 s32 0 s345 s0 s378 s365 s147 s2354785 s655 s12 s13 s145 s3685
+        if (cal_status_t.calibration_state != WAIT_STATE) {
+            mainWindow->setLineEditText("Kalibrasyon başladıktan sonra seri numaraları değiştiremezsiniz.");
             break;
+        }
+        sensor_ids.clear();
+        sensor_module_map.clear();
+        if (parseLineCommandInput(command_type)) serial->sendData(mcu_command);
+        break;
 
-        case CMD_SPNC:
-            if (cal_status_t.calibration_state != WAIT_STATE) {
-                mainWindow->setLineEditText("Kalibrasyon başladıktan sonra seri numaraları değiştiremezsiniz.");
-                break;
-            }
-            if (parseLineCommandInput(command_type)) serial->sendData(mcu_command);
+    case CMD_SPNC:
+        if (cal_status_t.calibration_state != WAIT_STATE) {
+            mainWindow->setLineEditText("Kalibrasyon başladıktan sonra seri numaraları değiştiremezsiniz.");
             break;
+        }
+        if (parseLineCommandInput(command_type)) serial->sendData(mcu_command);
+        break;
 
-        case CMD_NONE:
-            break;
+    case CMD_NONE:
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
     return 1;
 }
