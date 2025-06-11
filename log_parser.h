@@ -100,7 +100,7 @@ public:
 
     Packet packet;
     void setMainWindow(MainWindow*);
-    bool parseLine(const char*, Packet);
+    bool parseLine(const char*, Packet*);
 
 private:
     MainWindow* mainWindow;

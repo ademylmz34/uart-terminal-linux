@@ -167,7 +167,7 @@ void CommandLine::parseCommand(QString command)
         else if (command_str == "gabc") type = CMD_GABC;
     }
 
-    if (main_log_stream != NULL) *(main_log_stream) << command << "\n";
+    //if (main_log_stream != nullptr) *(main_log_stream) << command << "\n";
     processCommand(type);
 }
 
@@ -192,6 +192,11 @@ uint8_t CommandLine::processCommand(Command command_type)
         }
         for (const QString& folder_name: sensor_ids) mainWindow->setLineEditText("folder_name: " + folder_name);
         //getCalibrationData();
+        calibration_board->clearLogDirectoryPathsFile();
+        file_folder_creator.freeFiles();
+        cal_status_t.calibration_state = WAIT_STATE;
+        command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
+        mainWindow->setLineEditText("KALİBRASYON TAMAMLANDI!!!");
         break;
 
     case CMD_GABC:
@@ -235,6 +240,7 @@ uint8_t CommandLine::processCommand(Command command_type)
     default:
         break;
     }
+
     return 1;
 }
 

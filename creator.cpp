@@ -67,8 +67,10 @@ void Creator::freeFiles() {
         }
 
         if (main_log_file != NULL) delete main_log_file;
-        if (main_log_stream != NULL) delete main_log_stream;
-
+        if (main_log_stream != NULL) {
+            delete main_log_stream;
+            main_log_stream = nullptr;
+        }
 
         if (calibration_log_file->isOpen()) {
             calibration_log_file->close();

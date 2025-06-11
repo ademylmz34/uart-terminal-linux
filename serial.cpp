@@ -23,7 +23,7 @@ void Serial::setMainWindow(MainWindow *mw) {
 
 uint8_t Serial::uartLineProcess(char* input)
 {
-    if (!uart_log_parser->parseLine(input, uart_log_parser->packet)) mainWindow->setLineEditText("Hatali satir atlandi.\n");
+    if (!uart_log_parser->parseLine(input, &uart_log_parser->packet)) mainWindow->setLineEditText("Hatali satir atlandi.\n");
     return 0;
 }
 

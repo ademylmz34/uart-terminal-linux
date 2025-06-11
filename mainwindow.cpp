@@ -177,6 +177,7 @@ void MainWindow::setLabels() {
     cal_val_labels.cal_status = ui->calStatuslbl;
     cal_val_labels.cal_o3_average = ui->o3Averagelbl;
     cal_val_labels.cal_ppb_for_end_time = ui->calPpbforEndTimelbl;
+    cal_val_labels.cal_ppb_for_start_time = ui->calPpbforStartTimelbl;
     cal_val_labels.cal_r1_value = ui->r1lbl;
     cal_val_labels.cal_r2_value = ui->r2lbl;
     cal_val_labels.cal_r3_value = ui->r3lbl;
@@ -226,8 +227,8 @@ void MainWindow::onBtnClearClicked()
 void MainWindow::aboutToExit()
 {
     command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
-    //serial->sendData("?r");
-    //serial->serial->close();
+    serial->sendData("?r");
+    serial->serial_port->close();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

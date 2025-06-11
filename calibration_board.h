@@ -56,9 +56,6 @@ public:
     void startCalibrationProcess();
     void clearLogDirectoryPathsFile();
     void getSensorFolderNames();
-
-    RequestStatus getRequestStatus(Request);
-    void updateRequestStatus(Request, RequestStatus);
 private:
     MainWindow *mainWindow = nullptr;
 

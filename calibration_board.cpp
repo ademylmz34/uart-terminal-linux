@@ -91,8 +91,10 @@ uint8_t CalibrationBoard::readLogDirectoryPaths()
 
 void CalibrationBoard::clearLogDirectoryPathsFile()
 {
-    log_directory_paths_file->close();
-    log_directory_paths_file->open(QIODevice::WriteOnly | QIODevice::Text);
+    if (log_directory_paths_file != NULL) {
+        log_directory_paths_file->close();
+        log_directory_paths_file->open(QIODevice::WriteOnly | QIODevice::Text);
+    }
 }
 
 void CalibrationBoard::startCalibrationProcess()
@@ -112,7 +114,7 @@ void CalibrationBoard::startCalibrationProcess()
     if (status == 1) {
         is_calibration_folders_created = 1;
         mainWindow->setLineEditText("log klasörleri ve dosyalari olusturuldu, kalibrasyon basladi");
-        serial->sendData(mcu_command);
+        //serial->sendData(mcu_command);
     } else if (status == 2) {
         mainWindow->setLineEditText("Kalibrasyon işlemi devam ederken log klasörleri oluşturamazsınız.");
     }
@@ -239,23 +241,6 @@ uint8_t CalibrationBoard::isArrayEmpty(const uint8_t* arr, size_t len)
     return 1;
 }
 
-RequestStatus CalibrationBoard::getRequestStatus(Request request) {
-    for (const Request_t& r : request_sequence) {
-        if (r.current_request == request)
-            return r.request_status;
-    }
-    return IDLE; // ya da NONE varsa
-}
-
-void CalibrationBoard::updateRequestStatus(Request request, RequestStatus new_status) {
-    for (Request_t& r : request_sequence) {
-        if (r.current_request == request) {
-            r.request_status = new_status;
-            break;
-        }
-    }
-}
-
 void CalibrationBoard::getDataFromMCU()
 {
     if (data_received_timeout == 0 || request.request_status == RECEIVED) {
@@ -271,7 +256,7 @@ void CalibrationBoard::getDataFromMCU()
         }
     } else {
         serial->sendData(request.request_command);
-        if (request.request_status == IDLE) request.request_status = SENT;
+        request.request_status = SENT;
     }
 }
 

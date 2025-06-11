@@ -34,6 +34,7 @@ struct CalibrationValLabels {
     QLabel* cal_const_cal_temp;
     QLabel* cal_clean_air_duration;
     QLabel* cal_ppb_for_end_time;
+    QLabel* cal_ppb_for_start_time;
     QLabel* cal_r1_value;
     QLabel* cal_r2_value;
     QLabel* cal_r3_value;
