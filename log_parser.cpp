@@ -468,7 +468,7 @@ void LogParser::parse_cs_data() {
             cal_val_labels.cal_status->setText(calibration_state_str[getCalibrationState(calibration_state)]);
             if (calibration_state == END_STATE) {
                 calibration_board->clearLogDirectoryPathsFile();
-                file_folder_creator.freeFiles();
+                //file_folder_creator.freeFiles(); düşünülecek
                 cal_status_t.calibration_state = WAIT_STATE;
                 mainWindow->setLineEditText("KALİBRASYON TAMAMLANDI!!!");
             }
@@ -577,9 +577,11 @@ void LogParser::log_data() {
             calibration_stream->flush();
         }
     } else if (packet.command.type != CMD_L) {
-        if (main_log_stream != NULL) {
-            *(main_log_stream) << buff;
-            main_log_stream->flush();
+        if (main_log_file != NULL) {
+            if (main_log_stream != NULL) {
+                *(main_log_stream) << buff;
+                main_log_stream->flush();
+            }
         }
     }
 }
@@ -605,11 +607,9 @@ bool LogParser::parseLine(const char* input, Packet *packet) {
     if (packet->command_str[0] != 'D' && packet->command.type != CMD_OM) mainWindow->setLineEditText(line);
 
     if (*p == ' ') p++; // Komut sonrası veriye erişim
+    if (*p == '\0' && packet->command.type != CMD_L) return false;
 
-    if (packet->command.type == CMD_L && *p == '\0') return true;
-    if (*p == '\0') return false;
-
-    packet->data_str = strdup(p);
+    if (*p != NULL) packet->data_str = strdup(p);
 
     if (cmd_funcs.contains(packet->command.type)) cmd_funcs[packet->command.type]();
 

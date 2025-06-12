@@ -147,28 +147,30 @@ void CommandLine::parseCommand(QString command)
     command = command.trimmed();
     type = CMD_NONE;
 
-    if (command.startsWith("?")) {
-        mcu_command = command;
+    if (command.startsWith("?") || command.startsWith("!")) {
+        if (command.startsWith("?")) {
+            mcu_command = command;
 
-        if (command == "?r") type = CMD_R;
-        else if (command == "?sc") type = CMD_SC;
-        else if (command.startsWith("?spn") || command.startsWith("?spnc")) {
-            command_line_parameters = command.split(" ", Qt::SkipEmptyParts);
-            command_line_parameters.removeFirst();
-            if (command.startsWith("?spnc")) type = CMD_SPNC;
-            else if (command.startsWith("?spn")) type = CMD_SPN;
+            if (command == "?r") type = CMD_R;
+            else if (command == "?sc") type = CMD_SC;
+            else if (command.startsWith("?spn") || command.startsWith("?spnc")) {
+                command_line_parameters = command.split(" ", Qt::SkipEmptyParts);
+                command_line_parameters.removeFirst();
+                if (command.startsWith("?spnc")) type = CMD_SPNC;
+                else if (command.startsWith("?spn")) type = CMD_SPN;
+            }
+            else if (command.startsWith("?") && command.isLower()) type = CMD_SM;
+
+        } else if (command.startsWith("!")) {
+            command_str = command.mid(1);
+            if (command_str.startsWith("csf")) type = CMD_CSF;
+            else if (command_str == "gcd") type = CMD_GCD;
+            else if (command_str == "gabc") type = CMD_GABC;
         }
-        else if (command.startsWith("?") && command.isLower()) type = CMD_SM;
 
-    } else if (command.startsWith("!")) {
-        command_str = command.mid(1);
-        if (command_str.startsWith("csf")) type = CMD_CSF;
-        else if (command_str == "gcd") type = CMD_GCD;
-        else if (command_str == "gabc") type = CMD_GABC;
+        if (main_log_file != NULL) { if (main_log_stream != nullptr) *(main_log_stream) << command << "\n"; }
+        processCommand(type);
     }
-
-    //if (main_log_stream != nullptr) *(main_log_stream) << command << "\n";
-    processCommand(type);
 }
 
 uint8_t CommandLine::processCommand(Command command_type)
@@ -192,10 +194,11 @@ uint8_t CommandLine::processCommand(Command command_type)
         }
         for (const QString& folder_name: sensor_ids) mainWindow->setLineEditText("folder_name: " + folder_name);
         //getCalibrationData();
-        calibration_board->clearLogDirectoryPathsFile();
-        file_folder_creator.freeFiles();
-        cal_status_t.calibration_state = WAIT_STATE;
-        command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
+        //command_line->messageBox("Uygulamadan çıkış yapılıyor, son log dosyalarının silinmesini istiyor musunuz");
+        //calibration_board->clearLogDirectoryPathsFile();
+        //cal_status_t.calibration_state = WAIT_STATE;
+        is_calibration_folders_created = 0;
+        sensor_log_folder_create_status.clear();
         mainWindow->setLineEditText("KALİBRASYON TAMAMLANDI!!!");
         break;
 
@@ -246,7 +249,7 @@ uint8_t CommandLine::processCommand(Command command_type)
 
 void CommandLine::messageBox(QString message)
 {
-    if (cal_status_t.calibration_state == WAIT_STATE && log_folder_names.isEmpty()) return;
+    //if (cal_status_t.calibration_state == WAIT_STATE && log_folder_names.isEmpty()) return;
 
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(mainWindow,
@@ -281,8 +284,8 @@ void CommandLine::messageBox(QString message)
     is_calibration_folders_created = 0;
     sensor_log_folder_create_status.clear();
     log_folder_names.clear();
-    calibration_board->clearLogDirectoryPathsFile();
-    get_calibration_status_timer->stop();
+    if (log_directory_paths_file != NULL) calibration_board->clearLogDirectoryPathsFile();
+    //get_calibration_status_timer->stop();
 }
 
 void CommandLine::commandLineProcess()

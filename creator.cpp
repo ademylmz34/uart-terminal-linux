@@ -152,6 +152,14 @@ uint8_t Creator::createMainFolder() {
 uint8_t Creator::createMainLogFile(QString folder_name) {
     time_stamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmm");
     QString file_path = QString("%1/%2_log.txt").arg(folder_name).arg(time_stamp);
+    if (main_log_file != NULL) {
+        if (main_log_file->isOpen()) {
+            main_log_file->close();
+            delete main_log_file;
+            delete main_log_stream;
+            qDebug() << "eski log dosyası silindi";
+        }
+    }
     main_log_file = new QFile(file_path);
     if (QFile::exists(file_path)) {
         qDebug() << "Log dosyası zaten var.";
@@ -170,6 +178,15 @@ uint8_t Creator::createMainLogFile(QString folder_name) {
 
 uint8_t Creator::createCalibrationLogFile(QString folder_name) {
     QString file_path = QString("%1/calibration_log.txt").arg(folder_name);
+    if (calibration_log_file != NULL) {
+        if (calibration_log_file->isOpen()) {
+            calibration_log_file->close();
+            delete calibration_log_file;
+            delete calibration_stream;
+            qDebug() << "eski kalibrasyon dosyası silindi";
+        }
+    }
+
     calibration_log_file = new QFile(file_path);
     if (QFile::exists(file_path)) {
         qDebug() << "Kalibrasyon log dosyası zaten var.";
@@ -242,6 +259,33 @@ uint8_t Creator::createSensorLogFiles(QString folder_name) {
     if (logFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) &&
         kalFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) &&
         kalEndFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+
+        if (sensor_map[sensors_serial_no[sensor_id]].log_file != NULL) {
+            if(sensor_map[sensors_serial_no[sensor_id]].log_file->isOpen()) {
+                sensor_map[sensors_serial_no[sensor_id]].log_file->close();
+                delete sensor_map[sensors_serial_no[sensor_id]].log_file;
+                delete sensor_map[sensors_serial_no[sensor_id]].log_stream;
+                qDebug() << "eski sensör " << sensors_serial_no[sensor_id] << " " << " log file dosyası silindi";
+            }
+        }
+
+        if (sensor_map[sensors_serial_no[sensor_id]].kal_log_file != NULL) {
+            if(sensor_map[sensors_serial_no[sensor_id]].kal_log_file->isOpen()) {
+                sensor_map[sensors_serial_no[sensor_id]].kal_log_file->close();
+                delete sensor_map[sensors_serial_no[sensor_id]].kal_log_file;
+                sensor_map[sensors_serial_no[sensor_id]].kal_stream;
+                qDebug() << "eski sensör " << sensors_serial_no[sensor_id] << " " << " kal_log_file dosyası silindi";
+            }
+        }
+
+        if (sensor_map[sensors_serial_no[sensor_id]].kal_end_log_file != NULL) {
+            if(sensor_map[sensors_serial_no[sensor_id]].kal_end_log_file->isOpen()) {
+                sensor_map[sensors_serial_no[sensor_id]].kal_end_log_file->close();
+                delete sensor_map[sensors_serial_no[sensor_id]].kal_end_log_file;
+                sensor_map[sensors_serial_no[sensor_id]].kal_end_stream;
+                qDebug() << "eski sensör " << sensors_serial_no[sensor_id] << " " << " kal_end_stream dosyası silindi";
+            }
+        }
 
         SensorFiles s;
         s.sensor_id = sensor_id;
@@ -325,6 +369,15 @@ uint8_t Creator::createOm106LogFiles(QString folder_name) {
     for (int i = 1; i <= NUM_OF_OM106L_DEVICE; i++) {
         if (om106l_device_status[i]) {
             QString path = QString("%1/kabin-%2_omlogs.txt").arg(folder_name).arg(i);
+            if (om106_map[DEVICE_1].om106_log_file != NULL) {
+                if (om106_map[DEVICE_1].om106_log_file->isOpen()) {
+                    om106_map[DEVICE_1].om106_log_file->close();
+                    delete om106_map[DEVICE_1].om106_log_file;
+                    delete om106_map[DEVICE_1].om106_stream;
+                    qDebug() << "eski " << i << " " << "om106log dosyası silindi";
+                }
+            }
+
             QFile* file = new QFile(path);
             Om106Files om;
             if (file->open(QIODevice::ReadWrite)) {
